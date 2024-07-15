@@ -2,12 +2,12 @@ import { StyleSheet } from "react-native";
 
 export const customStyle = StyleSheet.create({
     inputBox: {
-        width: 300,
+        width: '90%',
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#DAE0E2',
         borderRadius: 6,
-        margin: 10,
+        marginVertical: 10,
         paddingHorizontal: 8
     },
     inputStyle: {
@@ -18,6 +18,7 @@ export const customStyle = StyleSheet.create({
         marginLeft: 4
     },
     heading: {
+        textAlign: 'center',
         marginTop: 20,
         fontSize: 28,
         color: '#000',
@@ -25,7 +26,7 @@ export const customStyle = StyleSheet.create({
     },
     loginBtn: {
         backgroundColor: '#592DA1',
-        width: 300,
+        width: '90%',
         padding: 8,
         borderRadius: 6,
         marginTop: 35

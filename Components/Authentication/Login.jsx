@@ -32,6 +32,7 @@ export default function Login() {
                     <Icon name="key" size={26} color="#592DA1" />
                     <TextInput
                         placeholder='Password'
+                        secureTextEntry
                         placeholderTextColor="#535C68"
                         style={customStyle.inputStyle}
                     >
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
         marginTop: 6
     },
     passText: {
-        color: '#000',
+        color: '#592DA1',
         fontSize: 18,
         fontWeight: 'bold',
     },
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     regText: {
         marginTop: 5,
         fontSize: 16,
-        color: '#000',
+        color: '#592DA1',
         fontWeight: 'bold',
         textDecorationLine: 'underline',
     },

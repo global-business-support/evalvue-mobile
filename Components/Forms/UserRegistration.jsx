@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   regText: {
     marginTop: 5,
     fontSize: 16,
-    color: '#000',
+    color: '#592DA1',
     fontWeight: 'bold',
     textDecorationLine: 'underline',
   },

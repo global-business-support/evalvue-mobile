@@ -4,6 +4,12 @@ import { customStyle } from '../Styles/customStyle';
 
 const OtpPassword = () => {
     const [otpValue, setOtpValue] = useState(new Array(6).fill(""));
+    const [enteredEmail, setEnteredEmail] = useState(null);
+    const [email, setEmail] = useState(null);
+
+    const handleEmail = () => {
+        setEmail(enteredEmail);
+    };
 
     const renderItem = ({ item, index }) => (
         <TextInput
@@ -19,6 +25,32 @@ const OtpPassword = () => {
         />
     );
 
+   if(email == null){
+    return (
+        <View style={styles.centeredView}>
+            <View style={styles.otpBox}>
+                <Text style={customStyle.heading}>Send Verification Email</Text>
+                <View style={[customStyle.inputBox, styles.otpInputBox]}>
+                    <TextInput
+                        placeholder='Email'
+                        placeholderTextColor="#535C68"
+                        style={customStyle.inputStyle}
+                        value={enteredEmail}
+                        onChangeText={(value) => setEnteredEmail(value)}
+                    />
+                </View>
+                <TouchableOpacity
+                    style={customStyle.loginBtn}
+                >
+                    <Text 
+                    style={customStyle.loginText}
+                    onPress={()=>handleEmail()}
+                    >Send OTP</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+   }else{
     return (
         <View style={styles.centeredView}>
             <View style={styles.otpBox}>
@@ -36,11 +68,14 @@ const OtpPassword = () => {
                 <TouchableOpacity
                     style={customStyle.loginBtn}
                 >
-                    <Text style={customStyle.loginText}>Submit</Text>
+                    <Text 
+                    style={customStyle.loginText}
+                    >Submit</Text>
                 </TouchableOpacity>
             </View>
         </View>
-    );
+    )
+   } 
 };
 
 const styles = StyleSheet.create({
@@ -81,8 +116,8 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
         marginTop: 20
     },
-    submitBtn: {
-        // marginTop: 100
+    otpInputBox: {
+        marginTop: 30
     }
 });
 
