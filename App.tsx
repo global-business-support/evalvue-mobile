@@ -7,7 +7,7 @@ import SplashScreen from './Components/SplashScreen.jsx';
 function App(): React.JSX.Element {
   return (
     <>
-      <View style={{flex:1}}>
+      <Viewz>
       </View>
     </>
   );
