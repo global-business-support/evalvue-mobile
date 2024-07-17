@@ -8,14 +8,21 @@ import SplashScreen from "../Components/SplashScreen.jsx";
 export default [
     {
         id:'1',
-        image: require("../assets/about-mission3.jpg")
+        component: <SplashScreen />
     },
     {
         id:'2',
         image: require("../assets/about-vision1.jpg")
     },
-    <Login/>
-    
+    {
+        id:'3',
+        component: <SplashScreen />
+    },
+    {
+        id:'4',
+        component: <Login />
+        
+    }
     
 ]
 
