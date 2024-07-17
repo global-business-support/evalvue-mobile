@@ -10,20 +10,20 @@ export const customStyle = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#DAE0E2',
         borderRadius: 6,
-        marginVertical: 10,
+        marginVertical: 4,
         paddingHorizontal: 8
     },
     inputStyle: {
         width: '90%',
-        fontSize: 18,
+        fontSize: 14,
         color: '#000',
-        fontWeight: '600',
+        fontWeight: '500',
         marginLeft: 4
     },
     heading: {
         textAlign: 'center',
         marginTop: 20,
-        fontSize: 28,
+        fontSize: 20,
         color: '#000',
         fontWeight: 'bold',
     },
@@ -32,11 +32,12 @@ export const customStyle = StyleSheet.create({
         width: '90%',
         padding: 8,
         borderRadius: 6,
-        marginTop: 35
+        marginTop: 35,
+        marginBottom:6
     },
     loginText: {
         color: '#FFF',
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: 'bold',
         textAlign: 'center'
     },
@@ -48,10 +49,10 @@ export const customStyle = StyleSheet.create({
     lableContainer: {
         width: '90%',
         flexDirection: 'row',
-        marginTop: 30
+        marginTop: 20
     },
     lableHeading: {
-        fontSize: 18,
+        fontSize: 14,
         color: '#000',
         fontWeight: '500',
     },
@@ -67,7 +68,7 @@ export const customStyle = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#DAE0E2',
         borderRadius: 6,
-        marginVertical: 10,
+        marginVertical: 6,
         paddingHorizontal: 8,
         paddingVertical: 8,
         borderWidth: 1,
@@ -75,7 +76,7 @@ export const customStyle = StyleSheet.create({
     },
     fileBtnText: {
         color: '#592DA1',
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: '400',
         marginLeft: 8
     },
