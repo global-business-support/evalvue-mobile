@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ScrollView,
 } from 'react-native';
 import { customStyle } from '../Styles/customStyle';
 import { Image } from 'react-native-elements';
@@ -30,49 +31,51 @@ const ForgotPassword = () => {
   };
 
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.container}>
-      <Image
-          source={{
-            uri: 'http://test.evalvue.com/assets/newpassword-removebg-preview-DMfh6wlr.png'
-          }}
-          style={styles.passwordLogo}
-        />
-      <Text style={[customStyle.heading, styles.heading]}>Reset Your Password</Text>
-      <View style={customStyle.inputBox}>
-      <TextInput
-        style={customStyle.inputStyle}
-        placeholder="Enter new password"
-        placeholderTextColor="#535C68"
-        secureTextEntry
-        value={newPassword}
-        onChangeText={(text) => setNewPassword(text)}
-      />
+    <ScrollView>
+      <View style={styles.mainContainer}>
+        <View style={styles.container}>
+          <Image
+            source={{
+              uri: 'http://test.evalvue.com/assets/newpassword-removebg-preview-DMfh6wlr.png'
+            }}
+            style={styles.passwordLogo}
+          />
+          <Text style={[customStyle.heading, styles.heading]}>Reset Your Password</Text>
+          <View style={customStyle.inputBox}>
+            <TextInput
+              style={customStyle.inputStyle}
+              placeholder="Enter new password"
+              placeholderTextColor="#535C68"
+              secureTextEntry
+              value={newPassword}
+              onChangeText={(text) => setNewPassword(text)}
+            />
+          </View>
+          <View style={customStyle.inputBox}>
+            <TextInput
+              style={customStyle.inputStyle}
+              placeholder="Confirm new password"
+              placeholderTextColor="#535C68"
+              secureTextEntry
+              value={confirmPassword}
+              onChangeText={(text) => setConfirmPassword(text)}
+            />
+          </View>
+
+          {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+          <TouchableOpacity style={customStyle.loginBtn} onPress={handleSubmit}>
+            <Text style={customStyle.loginText}>Submit</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={customStyle.inputBox}>
-      <TextInput
-        style={customStyle.inputStyle}
-        placeholder="Confirm new password"
-        placeholderTextColor="#535C68"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={(text) => setConfirmPassword(text)}
-      />
-      </View>
-      
-      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
-      <TouchableOpacity style={customStyle.loginBtn} onPress={handleSubmit}>
-        <Text style={customStyle.loginText}>Submit</Text>
-      </TouchableOpacity>
-    </View>
-    </View>
-    
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   mainContainer: {
-    marginVertical: 'auto'
+    marginVertical: 'auto',
+    backgroundColor: '#FFF',
   },
   container: {
     flex: 1,

@@ -1,16 +1,16 @@
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { customStyle } from '../Styles/customStyle';
+import logo from '../../assets/evalvue-logo.jpg';
 
 export default function Login() {
     return (
+        <ScrollView>
         <View style={customStyle.loginContainer}>
             <View>
                 <Image
-                    source={{
-                        uri: 'http://test.evalvue.com/assets/evalvuelogo-Cc-YEGpi.jpg'
-                    }}
+                    source={logo}
                     style={styles.loginLogo}
                 />
             </View>
@@ -20,7 +20,7 @@ export default function Login() {
             </View>
             <View style={styles.inputContainer}>
                 <View style={customStyle.inputBox}>
-                    <Icon name="email" size={26} color="#592DA1" />
+                    <Icon name="email" size={20} color="#592DA1" />
                     <TextInput
                         placeholder='Email'
                         placeholderTextColor="#535C68"
@@ -29,7 +29,7 @@ export default function Login() {
                     </TextInput>
                 </View>
                 <View style={customStyle.inputBox}>
-                    <Icon name="key" size={26} color="#592DA1" />
+                    <Icon name="key" size={20} color="#592DA1" />
                     <TextInput
                         placeholder='Password'
                         secureTextEntry
@@ -52,6 +52,7 @@ export default function Login() {
                 <Text style={styles.regText}>Register Now</Text>
             </View>
         </View>
+        </ScrollView>
     )
 };
 
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
     },
     text: {
         marginTop: 5,
-        fontSize: 16
+        fontSize: 12
     },
     inputContainer: {
         marginTop: 70
@@ -74,26 +75,19 @@ const styles = StyleSheet.create({
     },
     passText: {
         color: '#592DA1',
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: 'bold',
     },
     footerContainer: {
         flexDirection: 'row',
         marginTop: 14,
+        paddingBottom: 8
     },
     regText: {
         marginTop: 5,
-        fontSize: 16,
+        fontSize: 12,
         color: '#592DA1',
         fontWeight: 'bold',
         textDecorationLine: 'underline',
     },
-    emailIcon: {
-        width: 10,
-        height: 10
-    },
-    icon: {
-        height: 20,
-        width: 20
-    }
 });

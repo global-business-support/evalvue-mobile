@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 
-export default function Header() {
+export default function LandingPage() {
   return (
     <View>
-      <Text>Header</Text>
+      <Text>LandingPage</Text>
     </View>
   )
 };

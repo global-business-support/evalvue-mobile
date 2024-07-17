@@ -1,76 +1,80 @@
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import CloseIcon from 'react-native-vector-icons/AntDesign';
 import { Image } from 'react-native-elements/dist/image/Image';
-import { customStyle } from '../Styles/customStyle';
+import { windowHeight } from '../Styles/customStyle';
 import { Rating } from 'react-native-elements';
+import ImgIcon from 'react-native-vector-icons/FontAwesome6';
 
 export default function PostReview() {
-    const [empRating, setEmpRating] = useState(0);
+    const [rating, setRating] = useState(0);
 
-    const handleRating = (rating)=>{
-        setEmpRating(rating);
-        console.log(empRating)
+    const handleRatingFinish = (ratingValue) => {
+        setRating(ratingValue)
     };
-    useEffect(() => {
-        console.log(empRating);
-    }, [empRating]);
     return (
-        <View style={styles.mainContainer}>
-            <View style={styles.headerContainer}>
-                <CloseIcon name="close" size={36} color="#000" style={styles.close} />
-                <View style={styles.orgContainer}>
-                    <Image
-                        source={{
-                            uri: 'http://test.evalvue.com/assets/evalvuelogo-Cc-YEGpi.jpg'
-                        }}
-                        style={styles.loginLogo}
+        <KeyboardAvoidingView>
+            <View style={styles.mainContainer}>
+                <View>
+                    <View style={styles.headerContainer}>
+                        {/* <CloseIcon name="close" size={36} color="#000" style={styles.close} /> */}
+                        <View style={styles.orgContainer}>
+                            <Image
+                                source={{
+                                    uri: 'http://test.evalvue.com/assets/evalvuelogo-Cc-YEGpi.jpg'
+                                }}
+                                style={styles.loginLogo}
+                            />
+                            <Text style={styles.orgHeading}>Evalvue</Text>
+                        </View>
+                        <View style={[styles.orgContainer, styles.postBtnContainer]}>
+                            <Text style={styles.btnText}>
+                                Post
+                            </Text>
+                        </View>
+                    </View>
+
+                    <View>
+                        <TextInput
+                            multiline
+                            numberOfLines={14}
+                            placeholder='Write your review here...'
+                            placeholderTextColor="#535C68"
+                            style={styles.inputStyle}
+                        >
+                        </TextInput>
+                    </View>
+                </View>
+                <View style={styles.footerContainer}>
+                    <Rating
+                        type="custom"
+                        ratingColor="gold"
+                        ratingCount={5}
+                        startingValue={0}
+                        imageSize={30}
+                        onFinishRating={handleRatingFinish}
                     />
-                    <Text style={styles.orgHeading}>Evalvue</Text>
-                </View>
-                <View style={[styles.orgContainer, styles.postBtnContainer]}>
-                    <Text style={styles.btnText}>
-                        Post
-                    </Text>
+                    <ImgIcon name="image" size={30} color="#000" />
                 </View>
             </View>
-            <View>
-                <Rating
-                showRating
-                type="custom"
-                ratingColor="black"
-                ratingCount={5}
-                startingValue={0}
-                imageSize={30}
-                onFinishRating={()=>handleRating()}
-                />
-            </View>
-            <View>
-                <TextInput
-                    multiline
-                    numberOfLines={14}
-                    placeholder='Write your review here...'
-                    placeholderTextColor="#535C68"
-                    style={styles.inputStyle}
-                >
-                </TextInput>
-            </View>
-        </View>
+        </KeyboardAvoidingView>
     )
 };
 
 const styles = StyleSheet.create({
     mainContainer: {
-        // flex: 1,
-        // backgroundColor: 'pink',
+        height: windowHeight,
+        justifyContent: 'space-between',
+        backgroundColor: '#FFF',
     },
     headerContainer: {
         paddingVertical: 20,
+        paddingHorizontal: 12,
         width: '100%',
         flexDirection: 'row',
         backgroundColor: '#FFF',
         alignItems: 'center',
-        justifyContent: 'space-around'
+        justifyContent: 'space-between'
     },
     orgContainer: {
         flexDirection: 'row',
@@ -78,17 +82,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     loginLogo: {
-        height: 60,
-        width: 60,
-        // marginTop: 50,
-        borderRadius: 65 / 2,
-        // backgroundColor: 'gray'
+        height: 45,
+        width: 45,
+        borderRadius: 45 / 2,
     },
     orgHeading: {
-        fontSize: 28,
+        fontSize: 22,
         fontWeight: '500',
         marginLeft: 10
-
     },
     close: {
         marginHorizontal: 8
@@ -100,22 +101,18 @@ const styles = StyleSheet.create({
         paddingVertical: 6
     },
     btnText: {
-        fontSize: 20
+        fontSize: 14
     },
-    // inputBox: {
-    //     flex: 1,
-    //     // flexDirection: 'row',
-    //     alignItems: 'center',
-    //     backgroundColor: '#DAE0E2',
-    //     borderRadius: 6,
-    //     marginVertical: 10,
-    //     paddingHorizontal: 8
-    // },
     inputStyle: {
         paddingHorizontal: 22,
-        fontSize: 22,
+        fontSize: 16,
         color: '#000',
         fontWeight: '400',
         textAlignVertical: 'top'
     },
+    footerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        paddingBottom: 50
+    }
 });
