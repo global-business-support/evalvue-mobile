@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet } from "react-native";
 
 export const windowHeight = Dimensions.get('window').height;
-export const primary = '#592DA1'
+export const primary = '#592DA1';
 
 export const customStyle = StyleSheet.create({
     inputBox: {
@@ -15,14 +15,19 @@ export const customStyle = StyleSheet.create({
     },
     inputStyle: {
         width: '90%',
-        fontSize: 14,
+        fontSize: 12,
         color: '#000',
-        fontWeight: '500',
         marginLeft: 4
     },
     heading: {
         textAlign: 'center',
         marginTop: 20,
+        fontSize: 20,
+        color: '#000',
+        fontWeight: 'bold',
+    },
+    listHeading: {
+        textAlign: 'left',
         fontSize: 20,
         color: '#000',
         fontWeight: 'bold',
@@ -76,8 +81,11 @@ export const customStyle = StyleSheet.create({
     },
     fileBtnText: {
         color: '#592DA1',
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: '400',
         marginLeft: 8
     },
+
+    // ==================list style=======================
+    
 });

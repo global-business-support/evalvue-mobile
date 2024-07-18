@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
     },
     text: {
         marginTop: 5,
-        fontSize: 12
+        fontSize: 12,
+        color: 'gray'
     },
     inputContainer: {
         marginTop: 70
