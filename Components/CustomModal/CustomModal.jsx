@@ -1,8 +1,8 @@
+import {Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Text} from 'react-native-elements';
+import Check from 'react-native-vector-icons/AntDesign';
+import {primary} from '../Styles/customStyle';
 
-import { Modal, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Text } from "react-native-elements";
-import Check from 'react-native-vector-icons/AntDesign'
-import { primary } from "../Styles/customStyle";
 const CustomModal = ({visible, onClose}) => {
   return (
     <Modal
@@ -17,7 +17,9 @@ const CustomModal = ({visible, onClose}) => {
           </TouchableOpacity>
           <View style={styles.content}>
             <View style={styles.iconContainer}>
-              <Text style={styles.icon}><Check name="checkcircle" size={43}/></Text>
+              <Text style={styles.icon}>
+                <Check name="checkcircle" size={43} />
+              </Text>
             </View>
             <Text style={styles.title}>Modal Title</Text>
             <Text style={styles.subtitle}>
@@ -37,7 +39,6 @@ const CustomModal = ({visible, onClose}) => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },

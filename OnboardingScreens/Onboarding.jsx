@@ -1,4 +1,12 @@
-import {View, Text, FlatList, StyleSheet, Animated} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Animated,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useState, useRef} from 'react';
 import slides from './slides.js';
 import OnboardingItem from './OnboardingItem.jsx';
@@ -18,24 +26,37 @@ const Onboarding = () => {
 
   const viewConfig = useRef({viewAreaCoveragePercentThreshold: 50}).current;
 
-  const Previous = () => {
-    if (currentIndex > 0) {
-      slidesRef.current.scrollToIndex({index: currentIndex - 1});
-    } else {
-      console.log('Last item.');
-    }
-  };
+  // const Previous = () => {
+  //   if (currentIndex > 0) {
+  //     slidesRef.current.scrollToIndex({index: currentIndex - 1});
+  //   } else {
+  //     console.log('Last item.');
+  //   }
+  // };
   const Next = () => {
     if (currentIndex < slides.length - 1) {
       slidesRef.current.scrollToIndex({index: currentIndex + 1});
     } else {
-      return <Login />;
+      console.log('Last item');
     }
+  };
+  const Skip = () => {
+    slidesRef.current.scrollToIndex({index: slides.length - 1});
   };
 
   return (
     <View style={styles.container}>
-      <View style={{flex: 3}}>
+      <View style={{flex: 3, width: '100%'}}>
+        <View
+          style={{
+            width: '100%',
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+          }}>
+          <TouchableOpacity style={styles.pressable} onPress={Skip}>
+            <Text style={styles.skipButton}>Skip</Text>
+          </TouchableOpacity>
+        </View>
         <FlatList
           data={slides}
           renderItem={({item}) => <OnboardingItem item={item} />}
@@ -57,20 +78,24 @@ const Onboarding = () => {
       </View>
       <View style={styles.flexbox}>
         <View style={styles.flexbox}>
-          <PreviousButton
+          {/* <PreviousButton
             Previous={Previous}
             percentage={(currentIndex + 1) * (100 / slides.length)}
-          />
-          <NextButton
-            Next={Next}
-            percentage={(currentIndex + 1) * (100 / slides.length)}
-          />
+          /> */}
+          {currentIndex < slides.length - 1 && (
+            <NextButton
+              Next={Next}
+              percentage={(currentIndex + 1) * (100 / slides.length)}
+            />
+          )}
         </View>
-        <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
-          <Paginator
-            data={slides}
-            scrollX={scrollX}
-          />
+        <View
+          style={{
+            width: '100%',
+            flexDirection: 'row',
+            justifyContent: 'start',
+          }}>
+          <Paginator data={slides} scrollX={scrollX} />
         </View>
       </View>
     </View>
@@ -93,6 +118,17 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     position: 'absolute',
     bottom: 20,
+  },
+  pressable: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 45,
+    width: 85,
+  },
+  skipButton: {
+    color: 'white',
+    fontSize: 17,
+    fontWeight: '500',
   },
 });
 

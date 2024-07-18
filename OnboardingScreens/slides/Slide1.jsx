@@ -1,16 +1,16 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import {View, Text, Image, StyleSheet} from 'react-native';
 
 const SplashScreen = () => {
   return (
     <View style={styles.container}>
-      <View style={styles.topCircle} />
-      <Image 
-        source={require('../assets/logo.png')} // Update the path to your logo image
+      {/* <View style={styles.topCircle} /> */}
+      <Image
+        source={require('../../assets/logo.png')} // Update the path to your logo image
         style={styles.logo}
       />
       {/* <Text style={styles.text}>Your App Name</Text> */}
-      <View style={styles.bottomCircle} />
+      {/* <View style={styles.bottomCircle} /> */}
     </View>
   );
 };
