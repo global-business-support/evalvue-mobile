@@ -1,6 +1,6 @@
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { customStyle } from '../Styles/customStyle';
+import { customStyle, primary } from '../Styles/customStyle';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import NameIcon from 'react-native-vector-icons/Ionicons';
 import PhoneIcon from 'react-native-vector-icons/FontAwesome';
@@ -67,8 +67,10 @@ export default function UserRegistration() {
         </View>
         <View>
           <CheckBox
-            title={'I agree with the terms and conditions.'}
+            title={'I agree with terms and conditions.'}
             checked={true}
+            size={16}
+            checkedColor={primary}
           />
         </View>
         <TouchableOpacity
@@ -109,7 +111,8 @@ const styles = StyleSheet.create({
   },
   text: {
     marginTop: 5,
-    fontSize: 12
+    fontSize: 12,
+    color: '#000'
   },
   checkbox: {
     fontSize: 12

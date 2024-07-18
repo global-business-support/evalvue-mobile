@@ -53,9 +53,8 @@ export default function OrgRegistration() {
                                 <Picker
                                     selectedValue={selectedValue}
                                     onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-
                                 >
-                                    <Picker.Item label="Select Option" value="placeholder" style={styles.pickerItem} />
+                                    <Picker.Item label="Select Option" value="placeholder" style={styles.pickerItem} color="#535C68" />
                                     <Picker.Item label="Aadhar Card" value="Aadhar Card" style={styles.pickerItem} />
                                     <Picker.Item label="Pan Card" value="Pan Card" style={styles.pickerItem} />
                                     <Picker.Item label="Driving Licence" value="Driving Licence" style={styles.pickerItem} />
@@ -86,7 +85,7 @@ export default function OrgRegistration() {
                                     onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
 
                                 >
-                                    <Picker.Item label="Select Option" value="placeholder" style={styles.pickerItem} />
+                                    <Picker.Item label="Select Option" value="placeholder" style={styles.pickerItem} color="#535C68" />
                                     <Picker.Item label="Technology Sector" value="Technology Sector" style={styles.pickerItem} />
                                     <Picker.Item label="Technology Sector" value="Technology Sector" style={styles.pickerItem} />
                                     <Picker.Item label="Technology Sector" value="Technology Sector" style={styles.pickerItem} />
@@ -104,7 +103,7 @@ export default function OrgRegistration() {
                                     onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
 
                                 >
-                                    <Picker.Item label="Select Option" value="placeholder" style={styles.pickerItem} />
+                                    <Picker.Item label="Select Option" value="placeholder" style={styles.pickerItem} color="#535C68" />
                                     <Picker.Item label="Public Sector" value="Public Sector" style={styles.pickerItem} />
                                     <Picker.Item label="Private Sector" value="Private Sector" style={styles.pickerItem} />
                                 </Picker>
@@ -147,7 +146,7 @@ export default function OrgRegistration() {
                                     onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
 
                                 >
-                                    <Picker.Item label="Select any one" value="placeholder" style={styles.pickerItem} />
+                                    <Picker.Item label="Select any one" value="placeholder" style={styles.pickerItem} color="#535C68" />
                                     <Picker.Item label="1 - 100" value="1-100" style={styles.pickerItem} />
                                     <Picker.Item label="Above 100" value="Above 100" style={styles.pickerItem} />
                                 </Picker>
@@ -190,7 +189,7 @@ export default function OrgRegistration() {
                                     onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
 
                                 >
-                                    <Picker.Item label="Select Country" value="placeholder" style={styles.pickerItem} />
+                                    <Picker.Item label="Select Country" value="placeholder" style={styles.pickerItem} color="#535C68" />
                                     <Picker.Item label="1 - 100" value="1-100" style={styles.pickerItem} />
                                     <Picker.Item label="Above 100" value="Above 100" style={styles.pickerItem} />
                                 </Picker>
@@ -207,7 +206,7 @@ export default function OrgRegistration() {
                                     onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
 
                                 >
-                                    <Picker.Item label="Select City" value="placeholder" style={styles.pickerItem} />
+                                    <Picker.Item label="Select City" value="placeholder" style={styles.pickerItem} color="#535C68" />
                                     <Picker.Item label="1 - 100" value="1-100" style={styles.pickerItem} />
                                     <Picker.Item label="Above 100" value="Above 100" style={styles.pickerItem} />
                                 </Picker>
@@ -224,7 +223,7 @@ export default function OrgRegistration() {
                                     onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
 
                                 >
-                                    <Picker.Item label="Select any one" value="placeholder" style={styles.pickerItem} />
+                                    <Picker.Item label="Select any one" value="placeholder" style={styles.pickerItem} color="#535C68" />
                                     <Picker.Item label="1 - 100" value="1-100" style={styles.pickerItem} />
                                     <Picker.Item label="Above 100" value="Above 100" style={styles.pickerItem} />
                                 </Picker>
@@ -286,7 +285,8 @@ const styles = StyleSheet.create({
     },
     pickerItem: {
         color: '#535C68',
-        fontSize: 14,
+        fontSize: 12,
+        color: '#FFF'
     },
     addHeading: {
         fontSize: 18,
