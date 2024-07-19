@@ -5,6 +5,11 @@ import {ScrollView, Text, View} from 'react-native';
 import Onboarding from './OnboardingScreens/Onboarding.jsx';
 import CustomModal from './Components/CustomModal/CustomModal.jsx';
 import PdfRender from './Components/PdfRender/PdfRender.jsx';
+import EmployeeDetails from './Components/Pages/EmployeeDetails.jsx';
+import OrgList from './Components/Pages/OrgList.jsx';
+import Profile from './Components/Pages/Profile.jsx';
+import Feed from './Components/Pages/Feed.jsx';
+import LandingPage from './Components/Header-Footer/LandingPage.jsx';
 
 function App(): React.JSX.Element {
   const [modalVisible, setModalVisible] = useState(true);
@@ -19,10 +24,8 @@ function App(): React.JSX.Element {
 
   return (
     <>
-      <View style={{flex: 1}}>
-        {/* <Onboarding /> */}
+      <View style={{flex: 1, backgroundColor: 'white'}}>
         {/* <PdfRender /> */}
-        <CustomModal visible={modalVisible} onClose={handleCloseModal} />
       </View>
     </>
   );

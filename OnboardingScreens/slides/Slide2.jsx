@@ -30,9 +30,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   textsmall: {
-    fontSize: 15,
+    fontSize: 14,
     color: 'white',
-    width: '75%',
+    width: '82%',
     textAlign: 'justify',
   },
   image: {

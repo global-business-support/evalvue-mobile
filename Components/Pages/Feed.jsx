@@ -1,10 +1,19 @@
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import DotIcon from 'react-native-vector-icons/Entypo';
-import { Image } from 'react-native-elements';
+import {Image} from 'react-native-elements';
 import logo from '../../assets/TCS.jpg';
 import kisaan from '../../assets/kisaan.jpg';
 import review from '../../assets/review.jpeg';
+import SearchIcon from 'react-native-vector-icons/AntDesign';
+import ReviewCards from '../ReviewCards/ReviewCards';
 
 export default function Feed() {
   return (
@@ -13,706 +22,23 @@ export default function Feed() {
         <View style={styles.profileLogo}>
           <Text style={styles.profileText}>R</Text>
         </View>
-        <TextInput
-          style={styles.inputStyle}
-          placeholder='Search by aadhar...'
-          placeholderTextColor="#535C68"
-        />
-        <DotIcon name='dots-three-vertical' size={22} color='#47535E' />
+        <TouchableOpacity style={styles.searchBtn}>
+          <SearchIcon name="search1" size={16} color="#616C6F" />
+          <Text style={styles.searchText}>Click to Search Employee</Text>
+        </TouchableOpacity>
+        <DotIcon name="dots-three-vertical" size={22} color="#47535E" />
       </View>
-      <ScrollView>
-        <View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* =================COPIED REVIEWS=================== */}
-        <View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Infosys</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>3d</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Aman Chhalotre</Text>
-                <Text style={styles.dsgText}>Frontend Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Wipro Consultancy</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2m</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Keshav Bishnoi</Text>
-                <Text style={styles.dsgText}>Backend Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>1y</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View><View style={styles.mainConatiner}>
-          <View style={styles.firstContainer}>
-            <View style={styles.subContainer}>
-              <Image
-                source={logo}
-                style={styles.orgImg}
-              />
-              <View>
-                <Text style={styles.orgName}>Tata Counsultancy Services</Text>
-              </View>
-            </View>
-            <Text style={styles.orgName}>2min</Text>
-          </View>
-          <View style={styles.secondContainer}>
-            <View style={styles.empContainer}>
-              <Image
-                source={kisaan}
-                style={styles.empImg}
-              />
-              <View>
-                <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
-                <Text style={styles.dsgText}>Software Developer</Text>
-              </View>
-            </View>
-            <View style={styles.commentConatiner}>
-              <Text style={styles.commentText}>
-                A review is an evaluation of a publication, product, service, or company or a critical take on current affairs in literature, politics or culture. In addition to a critical evaluation
-              </Text>
-              <Image
-                source={review}
-                style={styles.reviewImg}
-              />
-            </View>
-          </View>
-        </View>
-        {/* ==================================== */}
+      <ScrollView style={{paddingHorizontal: 10}}>
+        <ReviewCards />
       </ScrollView>
     </View>
-  )
-};
+  );
+}
 
 const styles = StyleSheet.create({
   parentContainer: {
+    flex: 1,
+    backgroundColor: 'white',
     justifyContent: 'space-between',
   },
   headerContainer: {
@@ -720,7 +46,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 8,
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   profileLogo: {
     width: 40,
@@ -728,21 +54,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 40 / 2,
-    backgroundColor: 'gray'
+    backgroundColor: 'gray',
   },
   profileText: {
     fontSize: 22,
     fontWeight: '400',
-    color: '#FFF'
+    color: '#FFF',
   },
-  inputStyle: {
+  searchBtn: {
     backgroundColor: '#DAE0E2',
     width: '70%',
     height: 35,
     borderRadius: 10,
     fontSize: 10,
     color: '#2C3335',
-    paddingHorizontal: 8
+    paddingHorizontal: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchText: {
+    fontSize: 14,
+    color: '#616C6F',
+    marginLeft: 6,
   },
   mainConatiner: {
     flex: 1,
@@ -761,7 +94,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     paddingHorizontal: 8,
-    paddingVertical: 4
+    paddingVertical: 4,
   },
   subContainer: {
     flexDirection: 'row',
@@ -770,7 +103,7 @@ const styles = StyleSheet.create({
   orgImg: {
     width: 25,
     height: 25,
-    borderRadius: 25 / 2
+    borderRadius: 25 / 2,
   },
   secondContainer: {
     backgroundColor: '#FFF',
@@ -781,12 +114,12 @@ const styles = StyleSheet.create({
   empContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 8
+    padding: 8,
   },
   empImg: {
     width: 35,
     height: 35,
-    borderRadius: 35 / 2
+    borderRadius: 35 / 2,
   },
   commentConatiner: {
     padding: 10,
@@ -796,33 +129,33 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     shadowOffset: {
       width: 2,
-      height: 2
-    }
+      height: 2,
+    },
   },
   reviewImg: {
     width: '100%',
     height: 150,
-    borderRadius: 6
+    borderRadius: 6,
   },
   orgName: {
     color: '#535C68',
     fontSize: 11,
-    marginLeft: 4
+    marginLeft: 4,
   },
   empNameStyle: {
     color: '#2C3335',
     fontSize: 13,
-    marginLeft: 4
+    marginLeft: 4,
   },
   commentText: {
     color: '#535C68',
     fontSize: 10,
     marginBottom: 6,
-    textAlign: 'justify'
+    textAlign: 'justify',
   },
   dsgText: {
     color: '#2C3335',
     fontSize: 8,
-    marginLeft: 4
-  }
+    marginLeft: 4,
+  },
 });

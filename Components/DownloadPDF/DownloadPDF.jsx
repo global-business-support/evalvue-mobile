@@ -7,54 +7,66 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
+import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
 import Icon from 'react-native-vector-icons/AntDesign';
 
-const DownloadPDF = ({uri}) => {
-  const downloadPDF = async () => {
-    const url = 'http://api.evalvue.com/media/Refund/Refund Policy.pdf'; // URL of the PDF file
-    const localFile = `${RNFS.DownloadDirectoryPath}/Refund_Policy.pdf`;
-
-    // Check for permissions on Android
-    if (Platform.OS === 'android') {
+const DownloadPDF = ({url}) => {
+  async function downloadPdf() {
+    try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: 'Storage Permission Needed',
-          message: 'App needs access to your storage to download the file',
-        },
       );
-      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        Alert.alert(
-          'Permission Denied!',
-          'You need to give storage permission to download the file',
-        );
-        return;
+      if (!granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Storage permission not granted');
       }
+      const {config, fs} = RNFetchBlob;
+      const downloads = fs.dirs.DownloadDir;
+      const response = await fetch(
+        'https://api.evalvue.com/media/Refund/Refund%20Policy.pdf',
+      );
+      const blob = await response.blob();
+      const filePath = `${RNFS.DocumentDirectoryPath}/RefundPolicy.pdf`;
+      const exists = await fs.exists(filePath);
+      console.log(filePath);
+      // if (exists) {
+      //   await fs.unlink(filePath);
+      // }
+      const result = await config({
+        fileCache: true,
+        addAndroidDownloads: {
+          useDownloadManager: true,
+          notification: true,
+          path: filePath,
+          description: 'Downloading PDF document',
+          mediaScannable: true,
+        },
+      }).fetch('GET', blob.uri);
+      console.log('PDF document downloaded successfully', result.path());
+    } catch (err) {
+      console.warn(err);
     }
+  }
 
-    RNFS.downloadFile({
-      fromUrl: url,
-      toFile: localFile,
-    })
-      .promise.then(result => {
-        console.log(result);
-        console.log(localFile);
-        if (result.statusCode === 200) {
-          Alert.alert('Download Successful', `File saved to ${localFile}`);
-        } else {
-          Alert.alert('Download Failed', `Status code: ${result.statusCode}`);
-        }
-      })
-      .catch(error => {
-        Alert.alert('Download Error', error.message);
-      });
-  };
+  async function requestStoragePermission() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Storage permission granted');
+      } else {
+        console.log('Storage permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
 
   return (
     <View style={styles.downloadcontainer}>
       <TouchableOpacity>
-        <Icon name="download" style={styles.icon} onPress={downloadPDF} />
+        <Icon name="download" style={styles.icon} onPress={downloadPdf} />
       </TouchableOpacity>
     </View>
   );
