@@ -26,12 +26,6 @@ export const customStyle = StyleSheet.create({
         color: '#000',
         fontWeight: 'bold',
     },
-    listHeading: {
-        textAlign: 'left',
-        fontSize: 20,
-        color: '#000',
-        fontWeight: 'bold',
-    },
     loginBtn: {
         backgroundColor: '#592DA1',
         width: '90%',
