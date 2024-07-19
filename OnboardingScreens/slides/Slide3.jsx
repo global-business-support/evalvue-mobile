@@ -17,12 +17,6 @@ export default function Slide3() {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>Login</Text>
         </TouchableOpacity>
-        <Text style={{fontSize: 20, color: 'white', textAlign: 'center'}}>
-          or
-        </Text>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.text}>Sign up</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );

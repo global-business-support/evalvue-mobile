@@ -6,6 +6,8 @@ import {
   Animated,
   Pressable,
   TouchableOpacity,
+  StatusBar,
+  SafeAreaView,
 } from 'react-native';
 import React, {useState, useRef} from 'react';
 import slides from './slides.js';
@@ -129,6 +131,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 17,
     fontWeight: '500',
+    marginTop: 10,
+    marginRight: 10,
   },
 });
 
