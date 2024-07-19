@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { customStyle } from '../Styles/customStyle';
 import logo from '../../assets/evalvue-logo.jpg';
 
-export default function Login() {
+export default function Login({navigation}) {
     return (
         <ScrollView>
         <View style={customStyle.loginContainer}>
@@ -49,7 +49,7 @@ export default function Login() {
             </TouchableOpacity>
             <View style={styles.footerContainer}>
                 <Text style={styles.text}>Don't have registration yet?</Text>
-                <Text style={styles.regText}>Register Now</Text>
+                <Text onPress={()=>{navigation.navigate("Register")}} style={styles.regText}>Register Now</Text>
             </View>
         </View>
         </ScrollView>
