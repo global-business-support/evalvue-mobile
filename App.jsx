@@ -13,8 +13,10 @@ import {NavigationContainer} from '@react-navigation/native';
 import AppStack from './AppStack.tsx';
 import AppDrawer from './Drawer/AppDrawer.jsx'
 import AppTabs from './Drawer/AppTabs.jsx';
+import { windowHeight } from './Components/Styles/customStyle.js';
 export default function App() {
   return (
+    <View style={{backgroundColor: '#FFF', height: windowHeight}}>
     <NavigationContainer>
       {/* <Drawer.Navigator>
         <Drawer.Screen name="Feed" component={Login} />
@@ -24,5 +26,6 @@ export default function App() {
       {/* <AppDrawer/> */}
       {/* <AppTabs/> */}
     </NavigationContainer>
+    </View>
   );
 }
