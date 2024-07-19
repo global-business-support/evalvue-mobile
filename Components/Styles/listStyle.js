@@ -1,15 +1,50 @@
 import { StyleSheet } from "react-native";
+import { primary } from "./customStyle";
 
 export const listStyle = StyleSheet.create({
     listMainContainer: {},
     listHeaderContainer: {
         padding: 10
     },
+    listHeading: {
+        textAlign: 'left',
+        fontSize: 20,
+        color: '#000',
+        fontWeight: 'bold',
+    },
+    listTitleDetailsContainer: {
+        backgroundColor: primary,
+        borderRadius: 6,
+        paddingHorizontal: 8,
+        paddingVertical: 12,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 6,
+        justifyContent: 'space-between'
+    },
+    listOrgContainer: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    listText: {
+        color: '#FFF',
+        fontSize: 14,
+        marginLeft: 4,
+        fontWeight: '500'
+    },
+    listSubText: {
+        color: '#FFF',
+        fontSize: 10,
+        marginLeft: 6,
+    },
+    listAddStyle: {
+        fontWeight: 'bold'
+    },
     searchInputStyle: {
         backgroundColor: '#F2EFF8',
-        height: 35,
+        height: 40,
         borderRadius: 10,
-        fontSize: 10,
+        fontSize: 12,
         color: '#592DA1',
         paddingHorizontal: 8,
         marginTop: 6
@@ -51,10 +86,10 @@ export const listStyle = StyleSheet.create({
     },
     listBtn: {
         color: '#592DA1',
-        fontSize: 12,
+        fontSize: 13,
         marginRight: 6
     },
-    listCityText: {
+    listSubTitleText: {
         color: '#535C68',
         fontSize: 10,
         marginLeft: 6,
