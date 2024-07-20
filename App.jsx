@@ -2,7 +2,7 @@
 import 'react-native-gesture-handler';
 // import './gesture-handler';
 import React, {useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {ScrollView, StatusBar} from 'react-native';
 import Login from './Components/Authentication/Login';
 import Register from './Components/Forms/UserRegistration';
 // import OtpPassword from './Components/Authentication/OtpPassword';
@@ -16,12 +16,17 @@ import AppTabs from './Drawer/AppTabs.jsx';
 export default function App() {
   return (
     <NavigationContainer>
+      <StatusBar 
+       animated={true}
+        backgroundColor="white"
+        barStyle='dark-content'
+        />
       {/* <Drawer.Navigator>
         <Drawer.Screen name="Feed" component={Login} />
         <Drawer.Screen name="Article" component={Register} />
       </Drawer.Navigator> */}
       {/* <AppStack/> */}
-      {/* <AppDrawer/> */}
+      <AppDrawer/>
       {/* <AppTabs/> */}
     </NavigationContainer>
   );

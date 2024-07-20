@@ -10,7 +10,7 @@ export const customStyle = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#DAE0E2',
         borderRadius: 6,
-        marginVertical: 4,
+        marginVertical: 8,
         paddingHorizontal: 8
     },
     inputStyle: {
