@@ -7,7 +7,7 @@ import AddIcon from 'react-native-vector-icons/MaterialIcons';
 import kisaan from '../../assets/kisaan.jpg';
 import { primary } from '../Styles/customStyle';
 
-export default function EmployeeList() {
+export default function EmployeeList({ navigation }) {
     return (
         <View style={listStyle.listMainContainer}>
             <View style={listStyle.listHeaderContainer}>
@@ -45,7 +45,10 @@ export default function EmployeeList() {
                             </View>
                         </View>
                         <View style={listStyle.listBtnContainer}>
-                            <Text style={listStyle.listBtn}>Review</Text>
+                            <Text 
+                            style={listStyle.listBtn}
+                            onPress={()=>navigation.navigate('EmployeeDetails')}
+                            >Review</Text>
                             <DotIcon name='dots-three-vertical' size={16} color='#47535E' />
                         </View>
                     </View>

@@ -37,6 +37,92 @@ const ReviewCards = () => {
           </View>
         </View>
       </View>
+
+
+      <View style={styles.mainContainer}>
+        <View style={styles.firstContainer}>
+          <View style={styles.subContainer}>
+            <Image source={logo} style={styles.orgImg} />
+            <View>
+              <Text style={styles.orgName}>Tata Counsultancy Services</Text>
+            </View>
+          </View>
+          <Text style={styles.orgName}>2min</Text>
+        </View>
+        <View style={styles.secondContainer}>
+          <View style={styles.empContainer}>
+            <Image source={kisaan} style={styles.empImg} />
+            <View>
+              <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
+              <Text style={styles.dsgText}>Software Developer</Text>
+            </View>
+          </View>
+          <View style={styles.commentConatiner}>
+            <Text style={styles.commentText}>
+              A review is an evaluation of a publication, product, service, or
+              company oa a critical take on current affairs in literature,
+              politics or culture. In addition to a critical evaluation
+            </Text>
+            <Image source={review} style={styles.reviewImg} />
+          </View>
+        </View>
+      </View>
+      <View style={styles.mainContainer}>
+        <View style={styles.firstContainer}>
+          <View style={styles.subContainer}>
+            <Image source={logo} style={styles.orgImg} />
+            <View>
+              <Text style={styles.orgName}>Tata Counsultancy Services</Text>
+            </View>
+          </View>
+          <Text style={styles.orgName}>2min</Text>
+        </View>
+        <View style={styles.secondContainer}>
+          <View style={styles.empContainer}>
+            <Image source={kisaan} style={styles.empImg} />
+            <View>
+              <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
+              <Text style={styles.dsgText}>Software Developer</Text>
+            </View>
+          </View>
+          <View style={styles.commentConatiner}>
+            <Text style={styles.commentText}>
+              A review is an evaluation of a publication, product, service, or
+              company oa a critical take on current affairs in literature,
+              politics or culture. In addition to a critical evaluation
+            </Text>
+            <Image source={review} style={styles.reviewImg} />
+          </View>
+        </View>
+      </View>
+      <View style={styles.mainContainer}>
+        <View style={styles.firstContainer}>
+          <View style={styles.subContainer}>
+            <Image source={logo} style={styles.orgImg} />
+            <View>
+              <Text style={styles.orgName}>Tata Counsultancy Services</Text>
+            </View>
+          </View>
+          <Text style={styles.orgName}>2min</Text>
+        </View>
+        <View style={styles.secondContainer}>
+          <View style={styles.empContainer}>
+            <Image source={kisaan} style={styles.empImg} />
+            <View>
+              <Text style={styles.empNameStyle}>Jaydeep Sharma</Text>
+              <Text style={styles.dsgText}>Software Developer</Text>
+            </View>
+          </View>
+          <View style={styles.commentConatiner}>
+            <Text style={styles.commentText}>
+              A review is an evaluation of a publication, product, service, or
+              company oa a critical take on current affairs in literature,
+              politics or culture. In addition to a critical evaluation
+            </Text>
+            <Image source={review} style={styles.reviewImg} />
+          </View>
+        </View>
+      </View>
     </View>
   );
 };
@@ -51,10 +137,8 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: '#FFF',
-    marginHorizontal: 10,
+    marginHorizontal: 6,
     marginVertical: 6,
-    // borderBottomWidth: 0.3,
-    // borderColor: '#4C4B4B',
   },
   firstContainer: {
     flexDirection: 'row',
@@ -99,8 +183,6 @@ const styles = StyleSheet.create({
     margin: 5,
     marginBottom: 5,
     justifyContent: 'center',
-    // borderWidth: 0.3,
-    // borderColor: '#99AAAB',
     backgroundColor: 'white',
     borderRadius: 6,
     shadowOffset: {

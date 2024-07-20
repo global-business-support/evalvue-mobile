@@ -6,7 +6,18 @@ import FileIcon from 'react-native-vector-icons/AntDesign';
 import { Picker } from '@react-native-picker/picker';
 
 export default function OrgRegistration() {
-    const [selectedValue, setSelectedValue] = useState('');
+    const [selectedValue, setSelectedValue] = useState({
+        documentType: '',
+        orgSector: '',
+        orgListed: '',
+        empCount: '',
+        country: '',
+        state: '',
+        city: '',
+    });
+    const updateData = (key, itemValue) => {
+        setSelectedValue(prevState => Object.assign({}, prevState, { [key]: itemValue }));
+      };
 
     return (
         <ScrollView>
@@ -51,8 +62,8 @@ export default function OrgRegistration() {
                             </View>
                             <View style={styles.option}>
                                 <Picker
-                                    selectedValue={selectedValue}
-                                    onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                                    selectedValue={selectedValue.documentType}
+                                    onValueChange={(itemValue)=>updateData('documentType', itemValue)}
                                 >
                                     <Picker.Item label="Select Option" value="placeholder" style={styles.pickerItem} color="#535C68" />
                                     <Picker.Item label="Aadhar Card" value="Aadhar Card" style={styles.pickerItem} />
@@ -81,8 +92,8 @@ export default function OrgRegistration() {
                             </View>
                             <View style={styles.option}>
                                 <Picker
-                                    selectedValue={selectedValue}
-                                    onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                                    selectedValue={selectedValue.orgSector}
+                                    onValueChange={(itemValue)=>updateData('orgSector', itemValue)}
 
                                 >
                                     <Picker.Item label="Select Option" value="placeholder" style={styles.pickerItem} color="#535C68" />
@@ -99,8 +110,8 @@ export default function OrgRegistration() {
                             </View>
                             <View style={styles.option}>
                                 <Picker
-                                    selectedValue={selectedValue}
-                                    onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                                    selectedValue={selectedValue.orgListed}
+                                    onValueChange={(itemValue)=>updateData('orgListed', itemValue)}
 
                                 >
                                     <Picker.Item label="Select Option" value="placeholder" style={styles.pickerItem} color="#535C68" />
@@ -142,8 +153,8 @@ export default function OrgRegistration() {
                             </View>
                             <View style={styles.option}>
                                 <Picker
-                                    selectedValue={selectedValue}
-                                    onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                                    selectedValue={selectedValue.empCount}
+                                    onValueChange={(itemValue)=>updateData('empCount', itemValue)}
 
                                 >
                                     <Picker.Item label="Select any one" value="placeholder" style={styles.pickerItem} color="#535C68" />
@@ -185,13 +196,12 @@ export default function OrgRegistration() {
                             </View>
                             <View style={styles.option}>
                                 <Picker
-                                    selectedValue={selectedValue}
-                                    onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                                    selectedValue={selectedValue.country}
+                                    onValueChange={(itemValue)=>updateData('country', itemValue)}
 
                                 >
                                     <Picker.Item label="Select Country" value="placeholder" style={styles.pickerItem} color="#535C68" />
-                                    <Picker.Item label="1 - 100" value="1-100" style={styles.pickerItem} />
-                                    <Picker.Item label="Above 100" value="Above 100" style={styles.pickerItem} />
+                                    <Picker.Item label="India" value="India" style={styles.pickerItem} />
                                 </Picker>
                             </View>
                         </View>
@@ -202,13 +212,13 @@ export default function OrgRegistration() {
                             </View>
                             <View style={styles.option}>
                                 <Picker
-                                    selectedValue={selectedValue}
-                                    onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                                    selectedValue={selectedValue.state}
+                                    onValueChange={(itemValue)=>updateData('state', itemValue)}
 
                                 >
-                                    <Picker.Item label="Select City" value="placeholder" style={styles.pickerItem} color="#535C68" />
-                                    <Picker.Item label="1 - 100" value="1-100" style={styles.pickerItem} />
-                                    <Picker.Item label="Above 100" value="Above 100" style={styles.pickerItem} />
+                                    <Picker.Item label="Select State" value="placeholder" style={styles.pickerItem} color="#535C68" />
+                                    <Picker.Item label="Madhya Pradesh" value="Madhya Pradesh" style={styles.pickerItem} />
+                                    <Picker.Item label="Arunachal Pradesh" value="Arunachal Pradesh" style={styles.pickerItem} />
                                 </Picker>
                             </View>
                         </View>
@@ -219,13 +229,13 @@ export default function OrgRegistration() {
                             </View>
                             <View style={styles.option}>
                                 <Picker
-                                    selectedValue={selectedValue}
-                                    onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                                    selectedValue={selectedValue.city}
+                                    onValueChange={(itemValue)=>updateData('city', itemValue)}
 
                                 >
-                                    <Picker.Item label="Select any one" value="placeholder" style={styles.pickerItem} color="#535C68" />
-                                    <Picker.Item label="1 - 100" value="1-100" style={styles.pickerItem} />
-                                    <Picker.Item label="Above 100" value="Above 100" style={styles.pickerItem} />
+                                    <Picker.Item label="Select City" value="placeholder" style={styles.pickerItem} color="#535C68" />
+                                    <Picker.Item label="Indore" value="Indore" style={styles.pickerItem} />
+                                    <Picker.Item label="Bhopal" value="Bhopal" style={styles.pickerItem} />
                                 </Picker>
                             </View>
                         </View>
@@ -271,7 +281,8 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 25
     },
     orgScroll: {
-        height: windowHeight - ((22 * windowHeight) / 100),
+        flex: 1,
+        // height: windowHeight - ((26 * windowHeight) / 100),
         backgroundColor: '#FFF',
     },
     option: {
@@ -284,9 +295,10 @@ const styles = StyleSheet.create({
         borderColor: '#592DA1'
     },
     pickerItem: {
-        color: '#535C68',
+        color: 'red',
         fontSize: 12,
-        color: '#FFF'
+        color: 'black',
+        backgroundColor: '#DAE0E2',
     },
     addHeading: {
         fontSize: 18,

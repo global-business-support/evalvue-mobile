@@ -4,7 +4,7 @@ import React from 'react';
 export default function Notifications() {
   return (
     <View>
-      <Text>Notifications</Text>
+      <Text style={{color: 'red'}}>Notifications</Text>
     </View>
   )
 };
