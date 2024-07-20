@@ -2,9 +2,12 @@ import { StyleSheet } from "react-native";
 import { primary } from "./customStyle";
 
 export const listStyle = StyleSheet.create({
-    listMainContainer: {},
+    listMainContainer: {
+        flex: 1
+    },
     listHeaderContainer: {
-        padding: 10
+        padding: 10,
+        backgroundColor: '#FFF'
     },
     listHeading: {
         textAlign: 'left',
@@ -73,7 +76,7 @@ export const listStyle = StyleSheet.create({
         borderRadius: 48 / 2
     },
     listTitleText: {
-        color: '#535C68',
+        color: '#000',
         fontSize: 12,
         marginLeft: 4,
         fontWeight: '500'

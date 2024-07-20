@@ -11,6 +11,7 @@ import ReviewCards from '../ReviewCards/ReviewCards';
 import {Image} from 'react-native-elements';
 
 import kisaan from '../../assets/kisaan.jpg';
+import { primary } from '../Styles/customStyle';
 
 export default function EmployeeDetails() {
   return (
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
   },
   headerPartTwo: {
     gap: 20,
-    backgroundColor: '#6639AF',
+    backgroundColor: primary,
     borderRadius: 5,
     paddingHorizontal: 8,
     paddingVertical: 15,

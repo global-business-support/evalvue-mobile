@@ -5,7 +5,7 @@ import { Image } from 'react-native-elements';
 import DotIcon from 'react-native-vector-icons/Entypo';
 import { listStyle } from '../Styles/listStyle';
 
-export default function OrgList() {
+export default function OrgList({ navigation }) {
     return (
         <View style={listStyle.listMainContainer}>
             <View style={listStyle.listHeaderContainer}>
@@ -17,6 +17,7 @@ export default function OrgList() {
                 />
             </View>
             <ScrollView>
+
                 <View style={listStyle.listFooterConatiner}>
                     <View style={listStyle.listContainer}>
                         <View style={listStyle.listSubContainer}>
@@ -30,11 +31,17 @@ export default function OrgList() {
                             </View>
                         </View>
                         <View style={listStyle.listBtnContainer}>
-                            <Text style={listStyle.listBtn}>View</Text>
+                            <Text 
+                            style={listStyle.listBtn}
+                            onPress={() => navigation.navigate('EmployeeList')}
+                            >
+                                View
+                                </Text>
                             <DotIcon name='dots-three-vertical' size={16} color='#47535E' />
                         </View>
                     </View>
                 </View>
+
             </ScrollView>
         </View>
     )
