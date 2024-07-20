@@ -12,7 +12,7 @@ export default function DrawerContent(props) {
         <Text style={styles.headingText}>Profile</Text>
         <TouchableOpacity
           onPress={() => {
-            DrawerActions.CloseDrawer();
+            DrawerActions.closeDrawer();
           }}>
           <Icon name="cross" style={styles.icon} />
         </TouchableOpacity>

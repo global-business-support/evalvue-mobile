@@ -7,6 +7,7 @@ import Login from '../Components/Authentication/Login';
 import Register from '../Components/Forms/UserRegistration';
 import DrawerContent from './DrawerContent';
 import PdfRender from '../Components/PdfRender/PdfRender';
+import Feed from '../Components/Pages/Feed';
 
 const Drawer = createDrawerNavigator();
 
@@ -15,13 +16,14 @@ function AppDrawer() {
     <Drawer.Navigator
      drawerContent={props => <DrawerContent {...props}/>}
      screenOptions={{
+    //  headerShown: false,
       drawerStyle:{
         width :'90%'
       }
      }}
     >
      
-      <Drawer.Screen name="View all feed" component={Register} 
+      <Drawer.Screen name="View all feed" component={Feed} 
       options={{
         drawerActiveBackgroundColor : "#DAE0E2",
         drawerActiveTintColor : 'black'

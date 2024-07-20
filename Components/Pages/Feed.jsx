@@ -15,9 +15,11 @@ export default function Feed({ navigation }) {
   return (
     <View style={styles.parentContainer}>
       <View style={styles.headerContainer}>
-        <View style={styles.profileLogo}>
+        <TouchableOpacity
+        style={styles.profileLogo}
+        >
           <Text style={styles.profileText}>R</Text>
-        </View>
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.searchBtn}
           onPress={() => navigation.navigate('SearchByAadhar')}

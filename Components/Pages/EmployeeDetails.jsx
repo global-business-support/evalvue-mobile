@@ -21,7 +21,6 @@ export default function EmployeeDetails() {
           <View style={{flexDirection: 'row', gap: 6}}>
             <View>
               <View style={styles.profileLogo}>
-                {/* <Text style={styles.profileText}>R</Text> */}
                 <Image source={kisaan} style={styles.profileLogo} />
               </View>
             </View>
@@ -92,7 +91,7 @@ export default function EmployeeDetails() {
         </View>
       </View>
 
-      <ScrollView style={{paddingHorizontal: 6}}>
+      <ScrollView>
         <ReviewCards />
         <ReviewCards />
         <ReviewCards />
@@ -107,7 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   headerContainer: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 4,
     paddingTop: 10,
   },
   headerPartOne: {
@@ -140,11 +139,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 45 / 2,
     // backgroundColor: '#EA7773',
-  },
-  profileText: {
-    fontSize: 20,
-    fontWeight: '400',
-    color: '#FFF',
   },
   nameText: {
     color: '#FFF',
