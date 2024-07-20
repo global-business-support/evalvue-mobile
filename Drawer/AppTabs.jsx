@@ -11,6 +11,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SearchByAadhar from '../Components/Pages/SearchByAadhar';
 import EmployeeList from '../Components/Pages/EmployeeList';
 import EmployeeDetails from '../Components/Pages/EmployeeDetails';
+import EmpForm from '../Components/Forms/EmpForm';
+import AppDrawer from './AppDrawer';
 const Tab = createBottomTabNavigator();
 
 const Stack = createStackNavigator();
@@ -31,6 +33,8 @@ function OrgStackScreen() {
       <OrgStack.Screen name="OrganizationList" component={OrgList} />
       <OrgStack.Screen name="EmployeeList" component={EmployeeList} />
       <OrgStack.Screen name="EmployeeDetails" component={EmployeeDetails} />
+      <OrgStack.Screen name="AddOrganization" component={OrgRegistration} />
+      <OrgStack.Screen name="AddEmployee" component={EmpForm} />
     </OrgStack.Navigator>
   );
 };

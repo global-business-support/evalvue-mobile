@@ -160,7 +160,8 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 25
     },
     orgScroll: {
-        height: windowHeight - ((22 * windowHeight) / 100),
+        flex: 1,
+        // height: windowHeight - ((22 * windowHeight) / 100),
         backgroundColor: '#FFF',
     }
 });

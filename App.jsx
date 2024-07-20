@@ -2,7 +2,7 @@
 import 'react-native-gesture-handler';
 // import './gesture-handler';
 import React, {useState} from 'react';
-import {ScrollView, StatusBar} from 'react-native';
+import {ScrollView, StatusBar, View} from 'react-native';
 import Login from './Components/Authentication/Login';
 import Register from './Components/Forms/UserRegistration';
 // import OtpPassword from './Components/Authentication/OtpPassword';

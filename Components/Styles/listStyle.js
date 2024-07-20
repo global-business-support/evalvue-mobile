@@ -88,13 +88,23 @@ export const listStyle = StyleSheet.create({
         paddingLeft: 4
     },
     listBtn: {
-        color: '#592DA1',
+        color: '#FFF',
         fontSize: 13,
-        marginRight: 6
+        textAlign: 'center'
     },
     listSubTitleText: {
         color: '#535C68',
         fontSize: 10,
         marginLeft: 6,
+    },
+    btnStyle: {
+        backgroundColor: primary,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 10,
+        borderRadius: 2,
+        flexDirection: 'row',
+        paddingVertical: 3,
+        marginRight: 3
     }
 });
