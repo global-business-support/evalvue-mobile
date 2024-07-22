@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
 import {
+  StyleSheet,
   View,
   Alert,
   PermissionsAndroid,
@@ -12,27 +12,29 @@ import RNFS from 'react-native-fs';
 import Icon from 'react-native-vector-icons/AntDesign';
 
 const DownloadPDF = ({url}) => {
+  // const parsedUrl = new URL(url);
+  const pathname = url;
+  const fileName = pathname.split('/').pop();
+
   async function downloadPdf() {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      );
-      if (!granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Storage permission not granted');
+      // Check storage permission (Android only)
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        );
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Storage permission denied');
+          return;
+        }
       }
+
       const {config, fs} = RNFetchBlob;
       const downloads = fs.dirs.DownloadDir;
-      const response = await fetch(
-        'https://api.evalvue.com/media/Refund/Refund%20Policy.pdf',
-      );
-      const blob = await response.blob();
-      const filePath = `${RNFS.DocumentDirectoryPath}/RefundPolicy.pdf`;
-      const exists = await fs.exists(filePath);
-      console.log(filePath);
-      // if (exists) {
-      //   await fs.unlink(filePath);
-      // }
-      const result = await config({
+      const filePath = `${downloads}/${fileName}`;
+
+      // Using RNFetchBlob to download the PDF
+      config({
         fileCache: true,
         addAndroidDownloads: {
           useDownloadManager: true,
@@ -41,32 +43,26 @@ const DownloadPDF = ({url}) => {
           description: 'Downloading PDF document',
           mediaScannable: true,
         },
-      }).fetch('GET', blob.uri);
-      console.log('PDF document downloaded successfully', result.path());
+      })
+        .fetch('GET', url)
+        .then(res => {
+          console.log('PDF downloaded successfully:', res.path());
+          Alert.alert('Success', 'PDF downloaded successfully');
+        })
+        .catch(error => {
+          console.error('Download error:', error);
+          Alert.alert('Error', 'Failed to download PDF');
+        });
     } catch (err) {
-      console.warn(err);
-    }
-  }
-
-  async function requestStoragePermission() {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Storage permission granted');
-      } else {
-        console.log('Storage permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
+      console.error('Download error:', err);
+      Alert.alert('Error', 'Failed to download PDF');
     }
   }
 
   return (
     <View style={styles.downloadcontainer}>
-      <TouchableOpacity>
-        <Icon name="download" style={styles.icon} onPress={downloadPdf} />
+      <TouchableOpacity onPress={downloadPdf}>
+        <Icon name="download" style={styles.icon} />
       </TouchableOpacity>
     </View>
   );
