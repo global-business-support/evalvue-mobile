@@ -1,9 +1,14 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Entypo';
+import LogIcon from 'react-native-vector-icons/MaterialIcons';
 import kisaan from '../assets/kisaan.jpg';
 import {DrawerActions} from '@react-navigation/native';
-import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import {
+  DrawerContentScrollView,
+  DrawerItemList,
+} from '@react-navigation/drawer';
+import {primary} from '../Components/Styles/customStyle';
 
 export default function DrawerContent(props) {
   return (
@@ -12,7 +17,7 @@ export default function DrawerContent(props) {
         <Text style={styles.headingText}>Profile</Text>
         <TouchableOpacity
           onPress={() => {
-            DrawerActions.closeDrawer();
+            props.navigation.closeDrawer();
           }}>
           <Icon name="cross" style={styles.icon} />
         </TouchableOpacity>
@@ -27,18 +32,28 @@ export default function DrawerContent(props) {
         </View>
       </View>
       <View>
-          <Text style={{fontSize : 20, color: 'black', fontWeight : '500'}}>How can we help ?</Text>
+        <Text style={{fontSize: 20, color: 'black', fontWeight: '500'}}>
+          How can we help ?
+        </Text>
       </View>
-      <DrawerContentScrollView {...props}>
-          <DrawerItemList {...props}/>
-      </DrawerContentScrollView>
+      <View style={{flex: 1}}>
+        <DrawerContentScrollView {...props}>
+          <DrawerItemList {...props} />
+        </DrawerContentScrollView>
+      </View>
+      <View style={styles.loginView}>
+        <TouchableOpacity style={styles.loginTouchable}>
+          <LogIcon name="logout" style={styles.logIcon} />
+          <Text style={styles.logText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   Container: {
-     flex : 1,
+    flex: 1,
     display: 'flex',
     gap: 15,
     padding: 15,
@@ -79,5 +94,31 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
     fontWeight: '500',
+  },
+  loginView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    height: 'auto',
+    width: '100%',
+  },
+  loginTouchable: {
+    width: '90%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 5,
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: primary,
+  },
+  logIcon: {
+    fontSize: 18,
+    color: 'white',
+  },
+  logText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: 'white',
   },
 });

@@ -9,8 +9,8 @@ import React from 'react';
 import Pdf from 'react-native-pdf';
 import DownloadPDF from '../DownloadPDF/DownloadPDF';
 
-export default function PdfRender() {
-  const url = 'http://api.evalvue.com/media/Refund/Refund Policy.pdf';
+export default function PdfRender({pdfUrl}) {
+  const url = pdfUrl;
   const source = {
     uri: url,
     cache: true,
@@ -25,16 +25,16 @@ export default function PdfRender() {
         trustAllCerts={false}
         source={source}
         onLoadComplete={(numberOfPages, filePath) => {
-          console.log(`Number of pages: ${numberOfPages}`);
+          // console.log(`Number of pages: ${numberOfPages}`);
         }}
         onPageChanged={(page, numberOfPages) => {
-          console.log(`Current page: ${page}`);
+          // console.log(`Current page: ${page}`);
         }}
         onError={error => {
           console.log(error);
         }}
         onPressLink={uri => {
-          console.log(`Link pressed: ${uri}`);
+          // console.log(`Link pressed: ${uri}`);
         }}
         style={{flex: 1, width, height}}
       />

@@ -7,23 +7,24 @@ import {
 } from 'react-native';
 import React from 'react';
 import DotIcon from 'react-native-vector-icons/Entypo';
-import { Image } from 'react-native-elements';
+import {Image} from 'react-native-elements';
 import SearchIcon from 'react-native-vector-icons/AntDesign';
 import ReviewCards from '../ReviewCards/ReviewCards';
 
-export default function Feed({ navigation }) {
+export default function Feed({navigation}) {
   return (
     <View style={styles.parentContainer}>
       <View style={styles.headerContainer}>
         <TouchableOpacity
-        style={styles.profileLogo}
-        >
+          style={styles.profileLogo}
+          onPress={() => {
+            navigation.openDrawer();
+          }}>
           <Text style={styles.profileText}>R</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.searchBtn}
-          onPress={() => navigation.navigate('SearchByAadhar')}
-        >
+          onPress={() => navigation.navigate('SearchByAadhar')}>
           <SearchIcon name="search1" size={16} color="#616C6F" />
           <Text style={styles.searchText}>Click to Search Employee</Text>
         </TouchableOpacity>
