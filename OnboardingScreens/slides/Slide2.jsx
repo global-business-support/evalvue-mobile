@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     fontSize: 35,
     fontWeight: '600',
     color: 'white',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   textsmall: {
     fontSize: 14,
@@ -39,5 +39,6 @@ const styles = StyleSheet.create({
     height: '50%',
     width: '120%',
     objectFit: 'contain',
+    opacity:0.9
   },
 });
