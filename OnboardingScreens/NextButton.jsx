@@ -28,10 +28,10 @@ const styles = StyleSheet.create({
     height: 40,
     width: 100,
     borderRadius: 20,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
   },
   nextButton: {
-    color: '#592DA1',
+    color: 'white',
     fontSize: 18,
     fontWeight: '500',
     flexDirection: 'row',
@@ -40,6 +40,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 18,
-    color: '#592DA1',
+    color: 'white',
   },
 });

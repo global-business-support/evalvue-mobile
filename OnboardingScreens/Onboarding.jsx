@@ -15,6 +15,7 @@ import OnboardingItem from './OnboardingItem.jsx';
 import Paginator from './Paginator.jsx';
 import NextButton from './NextButton.jsx';
 import PreviousButton from './PreviousButton.jsx';
+import { primary } from '../Components/Styles/customStyle.js';
 
 const Onboarding = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -47,9 +48,13 @@ const Onboarding = () => {
   };
 
   return (
+    
+    
     <View style={styles.container}>
+      <StatusBar backgroundColor={primary} barStyle={'light-content'} animated={true}/>
       <View style={{flex: 3, width: '100%'}}>
-        <View
+        {currentIndex < slides.length - 1 &&(
+          <View
           style={{
             width: '100%',
             flexDirection: 'row',
@@ -59,6 +64,8 @@ const Onboarding = () => {
             <Text style={styles.skipButton}>Skip</Text>
           </TouchableOpacity>
         </View>
+        )}
+        
         <FlatList
           data={slides}
           renderItem={({item}) => <OnboardingItem item={item} />}
@@ -101,6 +108,7 @@ const Onboarding = () => {
         </View>
       </View>
     </View>
+   
   );
 };
 

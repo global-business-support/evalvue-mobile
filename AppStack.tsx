@@ -13,7 +13,8 @@ const Stack = createNativeStackNavigator();
 export default function AppStack() { 
   return (
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Login" component={Onboarding} 
+        options={{headerShown: false}} />
         <Stack.Screen name="Register" component={Register} />
         {/* <Stack.Screen name="Notifications" component={Notifications} />
         <Stack.Screen name="Profile" component={Profile} />
