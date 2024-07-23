@@ -38,13 +38,10 @@ function AppDrawer() {
       />
       <Drawer.Screen
         name="Terms and Conditions"
-        component={() => (
-          <PdfRender
-            pdfUrl={
-              'http://api.evalvue.com/media/Terms/Terms and Conditions.pdf'
-            }
-          />
-        )}
+        component={PdfRender}
+        initialParams={{
+          pdfUrl: 'http://api.evalvue.com/media/Policy/privacy policy.pdf',
+        }}
         options={{
           drawerIcon: ({size}) => (
             <PolicyIcon name={'shield-alert'} size={size} color={primary} />
@@ -57,11 +54,10 @@ function AppDrawer() {
       />
       <Drawer.Screen
         name="Refund Policies"
-        component={() => (
-          <PdfRender
-            pdfUrl={'http://api.evalvue.com/media/Refund/Refund Policy.pdf'}
-          />
-        )}
+        component={PdfRender}
+        initialParams={{
+          pdfUrl: 'http://api.evalvue.com/media/Policy/privacy policy.pdf',
+        }}
         options={{
           drawerIcon: ({size}) => (
             <PolicyIcon name={'shield-refresh'} size={size} color={primary} />
@@ -74,11 +70,10 @@ function AppDrawer() {
       />
       <Drawer.Screen
         name="Privacy Policies"
-        component={() => (
-          <PdfRender
-            pdfUrl={'http://api.evalvue.com/media/Policy/privacy policy.pdf'}
-          />
-        )}
+        component={PdfRender}
+        initialParams={{
+          pdfUrl: 'http://api.evalvue.com/media/Policy/privacy policy.pdf',
+        }}
         options={{
           drawerIcon: ({size}) => (
             <PolicyIcon name={'shield-lock'} size={size} color={primary} />
