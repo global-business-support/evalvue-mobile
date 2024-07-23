@@ -7,18 +7,19 @@ import Register from './Components/Forms/UserRegistration'
 import Onboarding from './OnboardingScreens/Onboarding.jsx';
 import CustomModal from './Components/CustomModal/CustomModal.jsx';
 import PdfRender from './Components/PdfRender/PdfRender.jsx';
+import AppTabs from './Drawer/AppTabs.jsx';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppStack() { 
   return (
-      <Stack.Navigator>
-        <Stack.Screen name="Login" component={Onboarding} 
+      <Stack.Navigator >
+        <Stack.Screen name="onboarding" component={Onboarding} 
         options={{headerShown: false}} />
-        <Stack.Screen name="Register" component={Register} />
-        {/* <Stack.Screen name="Notifications" component={Notifications} />
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="Settings" component={Settings} /> */}
+        <Stack.Screen name="Login" component={Login} options={{headerShown: false}} />
+        <Stack.Screen name="Dashboard" component={AppTabs} />
+
+        
       </Stack.Navigator>
   );
 }

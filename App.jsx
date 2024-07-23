@@ -27,8 +27,8 @@ export default function App() {
         <Drawer.Screen name="Feed" component={Login} />
         <Drawer.Screen name="Article" component={Register} />
       </Drawer.Navigator> */}
-      {/* <AppStack/> */}
-      <AppDrawer/>
+      <AppStack/>
+      {/* <AppDrawer/> */}
       {/* <AppTabs/> */}
     </NavigationContainer>
     </View>
