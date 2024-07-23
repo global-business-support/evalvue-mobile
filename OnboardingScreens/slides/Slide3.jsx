@@ -3,8 +3,9 @@ import React from 'react';
 import UserRegistration from '../../Components/Forms/UserRegistration';
 import Login from '../../Components/Authentication/Login';
 import slide from '../../assets/slide3.png'
-
+import { useNavigation } from '@react-navigation/native';
 export default function Slide3() {
+  const navigation = useNavigation();
   return (
    
     <View style={styles.container}>
@@ -18,7 +19,7 @@ export default function Slide3() {
           fontWeight: '600',
           color: 'white',
           marginBottom: 10,
-          textAlign:"center",
+          textAlign:"start",
         }}>
         "Optimize Your Operations With Our Employee Solutions{' '}"
 
@@ -28,18 +29,17 @@ export default function Slide3() {
           fontWeight: '400',
           color: 'white',
           marginBottom: 10,
-          textAlign:"center",
+          textAlign:"start",
         }}>
       We offer the best services related to employee work experience. When employees leave a company, we help organizations post reviews about their performance and the reasons for their departure.
       </Text>
           </View>
-          <Image
-        source={slide} // Path to your local image
-        style={styles.image}
-      />
+      
       <View style={styles.innerContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.text}>Login</Text>
+        <TouchableOpacity style={styles.button} onPress={()=>{
+            navigation.navigate('Login'); 
+        }}>
+          <Text style={styles.text}>Get Start</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    fontWeight: '500',
-    color: 'black',
+    fontWeight: '600',
+    color: '#592DA1',
   },
   image: {
     width: 200,
