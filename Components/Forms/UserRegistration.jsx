@@ -19,6 +19,7 @@ import logo from '../../assets/evalvue-logo.jpg';
 import {ValidateEmail, ValidatePassword} from '../../Validation/Validation.js';
 import axios from 'axios';
 import {NATIVE_API_URL} from '@env';
+import CustomModal from '../CustomModal/CustomModal.jsx';
 
 export default function UserRegistration({navigation}) {
   const [checked, setChecked] = useState(false);
@@ -30,11 +31,13 @@ export default function UserRegistration({navigation}) {
     confirmPassword: '',
   });
   const [formErrors, setFormErrors] = useState({});
+  const [error, setError] = useState(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [validEmailIcon, setValidEmailIcon] = useState(false);
   const [validPassowordIcon, setValidPasswordIcon] = useState(false);
+  const [modalVisible, setModalVisible] = useState(true);
 
   function validate() {
     const errors = {};
@@ -64,7 +67,7 @@ export default function UserRegistration({navigation}) {
     // }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const errors = validate();
     setFormErrors(errors);
 
@@ -74,15 +77,27 @@ export default function UserRegistration({navigation}) {
       };
       // const headers = {'Content-Type': 'application/json'};
       console.log(NATIVE_API_URL);
-      axios
-        .post(`${NATIVE_API_URL}/create/user/`, RegisterData, options)
-        .then(res => {
-          console.log(res);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      const res = await axios.post(
+        `${NATIVE_API_URL}/create/user/`,
+        RegisterData,
+        options,
+      );
+      if (res.data) {
+        console.log(res.data);
+        if (res.data.is_user_register_successfull) {
+          navigation.navigate('OtpPassword', {
+            state: {isForget: false, email: RegisterData.email},
+          });
+        }
+      } else if (res.isexception) {
+        setError(res.exceptionmessage.error);
+        setModalVisible(true);
+      }
     }
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
   return (
@@ -210,16 +225,26 @@ export default function UserRegistration({navigation}) {
             <Text style={customStyle.loginText}>Register</Text>
           </TouchableOpacity>
           <View style={styles.footerContainer}>
-            <Text style={styles.text}>Already have a account?</Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Login');
-              }}>
+            <Text style={styles.text}>Already have a account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
               <Text style={styles.regText}>Login Now</Text>
             </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
+
+      {/* Modal to show error message */}
+      <CustomModal
+        visible={modalVisible}
+        onClose={closeModal}
+        obj={{
+          title: error ? 'Failed' : 'Success',
+          error: error ? true : false,
+          description: error || 'Your Account Created Successfully',
+          buttonTitle: 'OK',
+          onPress: closeModal,
+        }}
+      />
     </KeyboardAvoidingView>
   );
 }
