@@ -31,7 +31,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={customStyle.scrollStyle}>
       <View style={styles.mainContainer}>
         <View style={styles.container}>
           <Image

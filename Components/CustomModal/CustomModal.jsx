@@ -1,22 +1,11 @@
-import {Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Text} from 'react-native-elements';
+import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Text } from 'react-native-elements';
 import Check from 'react-native-vector-icons/AntDesign';
-import {primary} from '../Styles/customStyle';
-import { error } from 'console';
+import { primary } from '../Styles/customStyle';
 
-const obj={
-  title: 'Title',
-  description: 'Description',
-  buttonTitle:"OK",
-  err:true,
-  onPress: () => {}
-
-}
-
-const CustomModal = ({visible, onClose ,obj}) => {
+const CustomModal = ({ visible, onClose, obj }) => {
   return (
     <Modal
-      // animationType="slide"
       transparent={true}
       visible={visible}
       onRequestClose={onClose}>
@@ -26,22 +15,18 @@ const CustomModal = ({visible, onClose ,obj}) => {
             <Text style={styles.closeButtonText}>✕</Text>
           </TouchableOpacity>
           <View style={styles.content}>
-            {obj.error?
-            <View style={styles.iconContainer}>
-              <Text style={styles.icon}>
-                <Check name="checkcircle" size={43} />
-              </Text>
-            </View>
-            :
-            <View style={styles.erriconContainer}>
-              <Text style={styles.erricon}>
-                <Check name="closecircle" size={43} />
-              </Text>
-            </View>
+            {!obj.error ?
+              <View style={[styles.iconContainer, styles.primaryBorder]}>
+                <Check name="checkcircle" size={43} color={primary} />
+              </View>
+              :
+              <View style={[styles.iconContainer, styles.redBorder]}>
+                <Check name="closecircle" size={43} color={'red'} />
+              </View>
             }
             <Text style={styles.title}>{obj.title}</Text>
             <Text style={styles.subtitle}>
-             {obj.description}
+              {obj.description}
             </Text>
             <TouchableOpacity style={styles.button} onPress={onClose}>
               <Text style={styles.buttonText}>{obj.buttonTitle}</Text>
@@ -66,37 +51,43 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
   },
-  closeButton: {position: 'absolute', top: 10, right: 10},
-  closeButtonText: {fontSize: 18, color: '#aaa'},
-  content: {alignItems: 'center'},
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10
+  },
+  closeButtonText: {
+    fontSize: 18,
+    color: '#aaa'
+  },
+  content: {
+    alignItems: 'center'
+  },
   iconContainer: {
     width: 50,
     height: 50,
-    borderRadius: 25,
+    borderRadius: 50 / 2,
     borderWidth: 2,
-    borderColor: '#8e44ad',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
   },
-  icon: {fontSize: 24, color: primary},
-  erriconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    borderWidth: 2,
-    borderColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
+  primaryBorder: {
+    borderColor: primary
   },
-  erricon: {fontSize: 24, color: 'red'},
-  title: {fontSize: 20, fontWeight: 'bold', marginBottom: 10},
+  redBorder: {
+    borderColor: 'red'
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10
+  },
   subtitle: {
     fontSize: 14,
     color: '#555',
@@ -109,7 +100,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 70,
     borderRadius: 5,
   },
-  buttonText: {color: 'white', fontSize: 16},
+  buttonText: {
+    color: 'white',
+    fontSize: 16
+  },
 });
 
 export default CustomModal;

@@ -3,10 +3,10 @@
 
 import axios from "axios";
 import apiClient from "./ApiInterceptor";
-export async function ApiLoginRequest(url, request) {
+export async function ApiAxiosRequest(url, request) {
   const responsedata = {
     isexception: false,
-    exceptionmessage: "hello",
+    exceptionmessage: "",
     data: null,
   };
   try {

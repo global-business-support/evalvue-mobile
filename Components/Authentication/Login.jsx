@@ -1,23 +1,33 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ScrollView, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ScrollView, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { customStyle } from '../Styles/customStyle';
+import { customStyle, windowHeight } from '../Styles/customStyle';
 import logo from '../../assets/evalvue-logo.jpg';
-import { ApiLoginRequest } from '../../API-Management/ApiBackendRequest';
+import { ApiAxiosRequest } from '../../API-Management/ApiBackendRequest';
 import { NATIVE_API_URL } from '@env';
 import { storeData } from '../../API-Management/mmkv-Storage';
-import CustomModal from '../CustomModal/CustomModal'; // Import CustomModal component
-import { useNavigation } from '@react-navigation/native';
-export default function Login({navigation}) {
-    // const navigation = useNavigation();
+import CustomModal from '../CustomModal/CustomModal';
+import ValideIcon from 'react-native-vector-icons/Entypo';
+import { ValidateEmail, ValidatePassword } from '../../Validation/Validation';
+
+export default function Login({ navigation }) {
     const [loginData, setLoginData] = useState({ email: '', password: '' });
     const [formErrors, setFormErrors] = useState({});
     const [error, setError] = useState(null);
-    const [showPassword, setShowPassword] = useState(false); // State to track password visibility
-    const [modalVisible, setModalVisible] = useState(false); // State to control modal visibility
-    const [isLoading, setIsLoading] = useState(false); // State to track loading state
+    const [showPassword, setShowPassword] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [validEmailIcon, setValidEmailIcon] = useState(false);
+    const [validPasswordIcon, setValidPasswordIcon] = useState(false);
+    const [isEmailFocused, setIsEmailFocused] = useState(false);
+    const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
     const handleChange = (name, value) => {
+        if (name === "email") {
+            setValidEmailIcon(ValidateEmail(value).isValid);
+        } else if (name === "password") {
+            setValidPasswordIcon(ValidatePassword(value).isValid);
+        }
         setLoginData((prevValues) => ({ ...prevValues, [name]: value }));
         if (value.trim() !== '') {
             setFormErrors((prevErrors) => ({ ...prevErrors, [name]: '' }));
@@ -39,20 +49,19 @@ export default function Login({navigation}) {
         const errors = validate();
         setFormErrors(errors);
         if (Object.keys(errors).length === 0) {
-            setIsLoading(true); // Show loader when starting the API request
-            const res = await ApiLoginRequest(`${NATIVE_API_URL}/login/user/`, loginData);
-            setIsLoading(false); // Hide loader after API request completes
+            setIsLoading(true);
+            const res = await ApiAxiosRequest(`${NATIVE_API_URL}/login/user/`, loginData);
+            setIsLoading(false);
             if (res.data) {
                 storeData("accessToken", res.data.access);
                 storeData("isLogin", res.data.is_login_successfull);
                 if (res.data.is_login_successfull && res.data.is_user_verified) {
-                    // Navigate to next screen upon successful login
-                    navigation.navigate("Dashboard"); // Replace "NextScreen" with your actual screen name
+                    navigation.navigate("Dashboard");
                 }
             } else if (res.isexception) {
                 setError(res.exceptionmessage.error);
                 console.log(res.exceptionmessage)
-                setModalVisible(true); // Show modal on error
+                setModalVisible(true);
             }
         } else {
             setError(null);
@@ -64,82 +73,116 @@ export default function Login({navigation}) {
     };
 
     return (
-        <ScrollView>
-            <View style={customStyle.loginContainer}>
-                <View>
-                    <Image
-                        source={logo}
-                        style={styles.loginLogo}
-                    />
-                </View>
-                <View>
-                    <Text style={customStyle.heading}>Hello Again 👋</Text>
-                    <Text style={styles.text}>welcome back, you've been missed</Text>
-                </View>
-                <View style={styles.inputContainer}>
-                    <View style={customStyle.inputBox}>
-                        <Icon name="email" size={20} color="#592DA1" />
-                        <TextInput
-                            placeholder='Email'
-                            placeholderTextColor="#535C68"
-                            style={customStyle.inputStyle}
-                            value={loginData.email}
-                            onChangeText={(text) => handleChange('email', text)}
-                            keyboardType="email-address"
-                            autoCapitalize="none"
+        <KeyboardAvoidingView>
+            <ScrollView style={customStyle.scrollStyle}>
+                <View style={customStyle.loginContainer}>
+                    <View>
+                        <Image
+                            source={logo}
+                            style={styles.loginLogo}
                         />
                     </View>
-                    {formErrors.email && <Text style={styles.errorText}>{formErrors.email}</Text>}
-                    <View style={customStyle.inputBox}>
-                        <Icon name="key" size={20} color="#592DA1" />
-                        <TextInput
-                            placeholder='Password'
-                            placeholderTextColor="#535C68"
-                            style={customStyle.inputStyle}
-                            value={loginData.password}
-                            onChangeText={(text) => handleChange('password', text)}
-                            secureTextEntry={!showPassword} // Toggle secureTextEntry based on showPassword state
-                        />
-                        <TouchableOpacity onPress={togglePasswordVisibility}>
-                            <Icon name={showPassword ? "eye-off" : "eye"} size={20} color="#592DA1" style={styles.icon} />
-                        </TouchableOpacity>
+                    <View>
+                        <Text style={customStyle.heading}>Hello Again 👋</Text>
+                        <Text style={styles.text}>welcome back, you've been missed</Text>
                     </View>
-                    {formErrors.password && <Text style={styles.errorText}>{formErrors.password}</Text>}
-                    {/* {error && <Text style={styles.errorText}>{error}</Text>} */}
+                    <View style={styles.inputContainer}>
+                        <View
+                            style={customStyle.inputBox}>
+                            <Icon name="email" size={20} color="#592DA1" />
+                            <TextInput
+                                placeholder='Email'
+                                placeholderTextColor="#535C68"
+                                style={customStyle.inputStyle}
+                                value={loginData.email}
+                                onChangeText={(text) => handleChange('email', text)}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                onFocus={() => setIsEmailFocused(true)}
+                                onBlur={() => setIsEmailFocused(false)}
+                            />
+                        </View>
+                        {isEmailFocused && loginData.email.length > 0 && (
+                            <View style={styles.regexContainer}>
+                                <ValideIcon
+                                    name={validEmailIcon ? 'check' : 'cross'}
+                                    color={validEmailIcon ? 'green' : 'red'}
+                                    size={18}
+                                />
+                                {
+                                    !validEmailIcon &&
+                                    <Text style={styles.regexText}>Please include '@' or part following '@' is incomplete.</Text>
+                                }
+                            </View>
+                        )}
+                        {formErrors.email && <Text style={styles.errorText}>{formErrors.email}</Text>}
+                        <View style={customStyle.inputBox} width='84%'>
+                            <Icon name="key" size={20} color="#592DA1" />
+                            <TextInput
+                                placeholder='Password'
+                                placeholderTextColor="#535C68"
+                                style={customStyle.inputStyle}
+                                value={loginData.password}
+                                onChangeText={(text) => handleChange('password', text)}
+                                secureTextEntry={!showPassword}
+                                onFocus={() => setIsPasswordFocused(true)}
+                                onBlur={() => setIsPasswordFocused(false)}
+                            />
+                            <TouchableOpacity onPress={togglePasswordVisibility}>
+                                <Icon name={showPassword ? "eye-off" : "eye"} size={20} color="#592DA1" />
+                            </TouchableOpacity>
+                        </View>
+                        {isPasswordFocused && loginData.password.length > 0 && (
+                            <View style={styles.regexContainer}>
+                                <ValideIcon
+                                    name={validPasswordIcon ? 'check' : 'cross'}
+                                    color={validPasswordIcon ? 'green' : 'red'}
+                                    size={18}
+                                />
+                                {
+                                    !validPasswordIcon &&
+                                    <Text style={styles.regexText}>Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.</Text>
+                                }
+                            </View>
+                        )}
+                        {formErrors.password && <Text style={styles.errorText}>{formErrors.password}</Text>}
+                    </View>
+                    <TouchableOpacity
+                        style={styles.passContainer}
+                        onPress={() => { navigation.navigate("Verify", { isForget: true }) }}
+                    >
+                        <Text style={styles.passText}>Forget Password ?</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={customStyle.loginBtn}
+                        onPress={handleSubmit}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <ActivityIndicator size="small" color="white" />
+                        ) : (
+                            <Text style={customStyle.loginText}>LOGIN</Text>
+                        )}
+                    </TouchableOpacity>
+                    <View style={styles.footerContainer}>
+                        <Text style={styles.text}>Don't have registration yet ? </Text>
+                        <Text onPress={() => { navigation.navigate("Register") }} style={styles.regText}>Register Now</Text>
+                    </View>
                 </View>
-                <View style={styles.passContainer}>
-                    <Text style={styles.passText}>Forget Password?</Text>
-                </View>
-                <TouchableOpacity
-                    style={customStyle.loginBtn}
-                    onPress={handleSubmit}
-                    disabled={isLoading} // Disable button when loading
-                >
-                    {isLoading ? (
-                        <ActivityIndicator size="small" color="white" />
-                    ) : (
-                        <Text style={customStyle.loginText}>LOGIN</Text>
-                    )}
-                </TouchableOpacity>
-                <View style={styles.footerContainer}>
-                    <Text style={styles.text}>Don't have registration yet?</Text>
-                    <Text onPress={() => { navigation.navigate("Register") }} style={styles.regText}>Register Now</Text>
-                </View>
-            </View>
 
-            {/* Modal to show error message */}
-            <CustomModal
-                visible={modalVisible}
-                onClose={closeModal}
-                obj={{
-                    title: 'Error',
-                    error:error?true:false,
-                    description: error || 'Something went wrong.',
-                    buttonTitle: "OK",
-                    onPress: closeModal
-                }}
-            />
-        </ScrollView>
+                <CustomModal
+                    visible={modalVisible}
+                    onClose={closeModal}
+                    obj={{
+                        title: 'Error',
+                        error: error ? true : false,
+                        description: error || 'Something went wrong.',
+                        buttonTitle: "OK",
+                        onPress: closeModal
+                    }}
+                />
+            </ScrollView>
+        </KeyboardAvoidingView>
     )
 };
 
@@ -155,7 +198,7 @@ const styles = StyleSheet.create({
         color: 'gray'
     },
     inputContainer: {
-        marginTop: 70
+        marginTop: 45
     },
     passContainer: {
         width: '85%',
@@ -180,7 +223,6 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
     },
     errorText: {
-        width: '100%',
         color: 'red',
         fontSize: 13,
     },
@@ -189,4 +231,15 @@ const styles = StyleSheet.create({
         right: 10,
         top: -8,
     },
+    regexContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '80%'
+    },
+    regexText: {
+        color: 'gray',
+        fontSize: 8,
+        textAlign: 'justify',
+        marginLeft: 6
+    }
 });
