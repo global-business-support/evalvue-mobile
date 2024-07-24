@@ -4,6 +4,10 @@ export const windowHeight = Dimensions.get('window').height;
 export const primary = '#592DA1';
 
 export const customStyle = StyleSheet.create({
+    scrollStyle: {
+        height: windowHeight,
+        backgroundColor: '#FFF'
+    },
     inputBox: {
         width: '90%',
         flexDirection: 'row',
@@ -32,7 +36,7 @@ export const customStyle = StyleSheet.create({
         padding: 8,
         borderRadius: 6,
         marginTop: 35,
-        marginBottom:6
+        marginBottom: 6
     },
     loginText: {
         color: '#FFF',
@@ -81,5 +85,5 @@ export const customStyle = StyleSheet.create({
     },
 
     // ==================list style=======================
-    
+
 });

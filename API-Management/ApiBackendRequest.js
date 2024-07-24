@@ -1,15 +1,16 @@
 //payload: res.data.exceptionmessage.config.data  error
 //payload: res.data.config.data  notError
 
+import axios from "axios";
 import apiClient from "./ApiInterceptor";
-export async function ApiLoginRequest(url, request) {
+export async function ApiAxiosRequest(url, request) {
   const responsedata = {
     isexception: false,
-    exceptionmessage: "hello",
+    exceptionmessage: "",
     data: null,
   };
   try {
-    const response = await apiClient.post(url, request);
+    const response = await axios.post(url, request);
     responsedata.data = response.data;
   } catch (error) {
     responsedata.isexception = true;
