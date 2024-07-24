@@ -1,6 +1,7 @@
 //payload: res.data.exceptionmessage.config.data  error
 //payload: res.data.config.data  notError
 
+import axios from "axios";
 import apiClient from "./ApiInterceptor";
 export async function ApiLoginRequest(url, request) {
   const responsedata = {
@@ -9,7 +10,7 @@ export async function ApiLoginRequest(url, request) {
     data: null,
   };
   try {
-    const response = await apiClient.post(url, request);
+    const response = await axios.post(url, request);
     responsedata.data = response.data;
   } catch (error) {
     responsedata.isexception = true;
@@ -28,12 +29,12 @@ export default async function ApiBackendRequest(url, request) {
     const response = await apiClient.post(url, request);
     responsedata.data = response.data;
   } catch (error) {
-    if (error.response && error.response.status === 401) {
-      window.location.href = "/login";
-    } else {
+    // if (error.response && error.response.status === 401) {
+    //   window.location.href = "/login";
+    // } else {
       responsedata.isexception = true;
       responsedata.exceptionmessage = error.response.data;
-    }
+    // }
   }
   return responsedata;
 }
