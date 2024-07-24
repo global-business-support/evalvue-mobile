@@ -1,49 +1,86 @@
-import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, View, FlatList, RefreshControl } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import logo from '../../assets/TCS.jpg';
-import {Image} from 'react-native-elements';
+import logo from '../../assets/TCS.jpg'; // Custom logo
+import { Image } from 'react-native-elements';
 import DotIcon from 'react-native-vector-icons/Entypo';
-import {listStyle} from '../Styles/listStyle';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { listStyle } from '../Styles/listStyle';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import AddIcon from 'react-native-vector-icons/MaterialIcons';
 import { NATIVE_API_URL } from '@env';
+import TruncatedText from '../Othercomponent/TruncatedText';
 // import { error } from 'console';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 
-export default function OrgList({navigation}) {
+export default function OrgList({ navigation }) {
   const [Orgdata, setOrgdata] = useState([]);
   const [count, setCount] = useState();
   const [loading, setLoading] = useState(true); // Set initial loading state to true
   const [Isorgmap, setIsorgmap] = useState(false);
   const [error, setError] = useState();
-  useEffect(() => {
-    const fetchdata = async () => {
-      try {
-        const res = await ApiBackendRequest(`${NATIVE_API_URL}/organizations/`, {user_id: 1});
-        console.log(res);
-        setOrgdata(res.data.organization_list);
-        setCount(res.data.organizations_paid_count);
+  const [refreshing, setRefreshing] = useState(false);
 
-        if (res.data.is_organization_mapped) {
-          setIsorgmap(res.data.is_organization_mapped);
-        } else {
-          setAddress(res.data);
-        }
-        if (res.isexception) {
-          setError(res.exceptionmessage.error);
-        }
-     
-      } catch (err) {
-        // console.log(err);
-        setError(err);
+  const fetchdata = async () => {
+    try {
+      const res = await ApiBackendRequest(
+        `${NATIVE_API_URL}/organizations/`,
+        { user_id: 1 },
+      );
+      setOrgdata(res.data.organization_list);
+      setCount(res.data.organizations_paid_count);
+
+      if (res.data.is_organization_mapped) {
+        setIsorgmap(res.data.is_organization_mapped);
       }
-      finally{
-        setLoading(false);
+
+      if (res.isexception) {
+        setError(res.exceptionmessage.error);
       }
-      console.log(print, 'print again');
-    };
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
     fetchdata();
-  },[]);
+  }, [Isorgmap]);
+
+  // useEffect(() => {
+  //   if (Isorgmap) {
+  //     navigation.navigate('AddOrganization');
+  //   }
+  // }, [Isorgmap, navigation]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchdata();
+  };
+
+  const renderItem = ({ item }) => (
+    <View style={listStyle.listContainer}>
+      <View style={listStyle.listSubContainer}>
+        <Image
+          source={ { uri: item.image }}
+          style={listStyle.listLogoImg}
+        />
+        <View>
+          <Text style={listStyle.listTitleText}><TruncatedText text={item.name} maxLength={20} dot={true} /></Text>
+          <Text style={listStyle.listSubTitleText}><TruncatedText text={item.area} maxLength={20} />{item.city_name}</Text>
+        </View>
+      </View>
+      <View style={listStyle.listBtnContainer}>
+        <TouchableOpacity
+          style={listStyle.btnStyle}
+          onPress={() => navigation.navigate('EmployeeList')}>
+          <Text style={listStyle.listBtn}>View</Text>
+        </TouchableOpacity>
+        <DotIcon name="dots-three-vertical" size={18} color="#47535E" />
+      </View>
+    </View>
+  );
+
   return (
     <View style={listStyle.listMainContainer}>
       <View style={listStyle.listHeaderContainer}>
@@ -65,33 +102,19 @@ export default function OrgList({navigation}) {
           placeholderTextColor="#592DA1"
         />
       </View>
-      <ScrollView>
-        <View style={listStyle.listFooterConatiner}>
-          <View style={listStyle.listContainer}>
-            <View style={listStyle.listSubContainer}>
-              <Image source={logo} style={listStyle.listLogoImg} />
-              <View>
-                <Text style={listStyle.listTitleText}>
-                  Tata Counsultancy Services{' '}
-                </Text>
-                <Text style={listStyle.listSubTitleText}>Indore</Text>
-              </View>
-            </View>
-            <View style={listStyle.listBtnContainer}>
-              <TouchableOpacity
-                style={listStyle.btnStyle}
-                onPress={() => navigation.navigate('EmployeeList')}>
-                <Text style={listStyle.listBtn}>View</Text>
-              </TouchableOpacity>
-              <DotIcon name="dots-three-vertical" size={18} color="#47535E" />
-            </View>
-          </View>
-        </View>
-
-        {/* ===================================== */}
-
-        {/* ============================ */}
-      </ScrollView>
+      <FlatList
+        data={Orgdata}
+        keyExtractor={item => item.organization_id.toString()} // Ensure unique keys
+        renderItem={renderItem}
+        contentContainerStyle={listStyle.listFooterContainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#e06c0d', '#1c387a', '#e3c100', '#e30048']} // Set custom colors here
+          />
+        }
+      />
     </View>
   );
 }

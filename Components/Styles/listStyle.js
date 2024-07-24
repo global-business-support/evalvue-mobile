@@ -73,7 +73,9 @@ export const listStyle = StyleSheet.create({
     listLogoImg: {
         width: 48,
         height: 48,
-        borderRadius: 48 / 2
+        borderRadius: 48 / 2,
+        borderWidth:1,
+        borderColor:primary
     },
     listTitleText: {
         color: '#000',
@@ -96,6 +98,7 @@ export const listStyle = StyleSheet.create({
         color: '#535C68',
         fontSize: 10,
         marginLeft: 6,
+    
     },
     btnStyle: {
         backgroundColor: primary,
