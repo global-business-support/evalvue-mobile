@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, ScrollView, Modal, ActivityIndicator } from 'react-native';
 import { customStyle, primary } from '../Styles/customStyle';
 import { ApiAxiosRequest } from '../../API-Management/ApiBackendRequest';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NATIVE_API_URL } from '@env';
+import CustomModal from '../CustomModal/CustomModal';
+import { Image } from 'react-native-elements';
+import emailImg from '../../assets/email.jpg';
 
 const OtpPassword = () => {
     const [otp, setOtp] = useState(new Array(6).fill(""));
@@ -16,16 +19,19 @@ const OtpPassword = () => {
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [userverification, setuserverification] = useState(false);
     const [employeeverification, setemployeeverification] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const timerRef = useRef(null);
     const textInputRefs = useRef([]);
     const route = useRoute();
     const { isForget } = route.params;
+    const { stateEmail } = route.params;
     const navigation = useNavigation();
 
     useEffect(() => {
         if (!isForget) {
-            setEmail(state.email);
+            setEmail(stateEmail);
         }
 
         if (!isEmailSent && email && !isForget) {
@@ -58,7 +64,9 @@ const OtpPassword = () => {
             employee_verification: employeeverification,
         }
         try {
+            setLoading(true);
             const res = await ApiAxiosRequest(`${NATIVE_API_URL}/shoot/otp/`, body);
+            setLoading(false);
             if (res.data.otp_send_successfull) {
                 setIsEmailSent(true);
                 setOtpSent(true);
@@ -72,7 +80,6 @@ const OtpPassword = () => {
             setError("Failed to send email. Please try again.");
         }
     };
-    // console.log('error',error)
     const handleChange = (text, index) => {
         if (isNaN(text)) return;
 
@@ -111,19 +118,21 @@ const OtpPassword = () => {
             user_verification: !userverification,
             employee_verification: employeeverification,
         }
-        console.log('clicked')
         if (otpCode.length < 1) {
             setError("Please enter the OTP");
+
         } else {
             try {
+                setLoading(true);
                 const res = await ApiAxiosRequest(`${NATIVE_API_URL}/verify/otp/`, body);
-                console.log('res', res)
+                setLoading(false)
                 if (res.data.otp_verified_successfull && res.data.is_email_verified_successfull) {
                     setIsOtpVerified(res.data.otp_verified_successfull);
                     setIsEmailVerified(res.data.is_email_verified_successfull);
                     if (isForget) {
                         navigation.navigate("ForgotPassword");
-                    }
+                    };
+                    setModalVisible(true);
                 } else if (res.data.otp_is_expired) {
                     setError("OTP is expired. Please request a new one.");
                 } else if (res.data.incorrect_otp) {
@@ -148,6 +157,10 @@ const OtpPassword = () => {
             maxLength={1}
         />
     );
+    const closeModal = () => {
+        setModalVisible(false);
+        navigation.navigate('Login');
+    };
 
     return (
         !isOtpVerified ? (
@@ -156,7 +169,12 @@ const OtpPassword = () => {
                     <ScrollView style={{ backgroundColor: '#FFF' }}>
                         <View style={styles.centeredView}>
                             <View style={styles.otpBox}>
+                                <Image
+                                    source={emailImg}
+                                    style={styles.emailImgStyle}
+                                />
                                 <Text style={customStyle.heading}>Send Verification Email</Text>
+                                <Text style={styles.otpText}>Please enter your registered email</Text>
                                 <View style={[customStyle.inputBox, styles.otpInputBox]}>
                                     <TextInput
                                         placeholder='Email'
@@ -171,10 +189,11 @@ const OtpPassword = () => {
                                     style={customStyle.loginBtn}
                                     onPress={handleEmailSubmit}
                                 >
-                                    <Text
-                                        style={customStyle.loginText}
-
-                                    >Send OTP</Text>
+                                    {loading ? (
+                                        <ActivityIndicator size="small" color="white" />
+                                    ) : (
+                                        <Text style={customStyle.loginText}>Send OTP</Text>
+                                    )}
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -193,6 +212,7 @@ const OtpPassword = () => {
                                         horizontal
                                         contentContainerStyle={styles.inputContainer}
                                     />
+                                    {error && <Text style={styles.errorText}>{error}</Text>}
                                     {otpSent && timeLeft > 0 && (
                                         <Text style={styles.timeText}>OTP is valid for {timeLeft} seconds</Text>
                                     )}
@@ -203,7 +223,11 @@ const OtpPassword = () => {
                                             <TouchableOpacity
                                                 onPress={handleEmailSubmit}
                                             >
-                                                <Text style={[styles.resendBtn, styles.submitBtn]}>Resend OTP?</Text>
+                                                {loading ? (
+                                                    <ActivityIndicator size="small" color={primary} />
+                                                ) : (
+                                                    <Text style={[styles.resendBtn, styles.submitBtn]}>Resend OTP?</Text>
+                                                )}
                                             </TouchableOpacity>
                                         </View>
                                     }
@@ -211,7 +235,11 @@ const OtpPassword = () => {
                                         style={customStyle.loginBtn}
                                         onPress={handleOtpSubmit}
                                     >
-                                        <Text style={customStyle.loginText}>Submit</Text>
+                                        {loading ? (
+                                            <ActivityIndicator size="small" color="white" />
+                                        ) : (
+                                            <Text style={customStyle.loginText}>Submit</Text>
+                                        )}
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -231,6 +259,7 @@ const OtpPassword = () => {
                                     horizontal
                                     contentContainerStyle={styles.inputContainer}
                                 />
+                                {error && <Text style={styles.errorText}>{error}</Text>}
                                 {otpSent && timeLeft > 0 && (
                                     <Text style={styles.timeText}>OTP is valid for {timeLeft} seconds</Text>
                                 )}
@@ -241,7 +270,12 @@ const OtpPassword = () => {
                                         <TouchableOpacity
                                             onPress={handleEmailSubmit}
                                         >
-                                            <Text style={[styles.resendBtn, styles.submitBtn]}>Resend OTP?</Text>
+                                            {loading ? (
+                                                <ActivityIndicator size="small" color={primary} />
+                                            ) : (
+                                                <Text style={[styles.resendBtn, styles.submitBtn]}>Resend OTP?</Text>
+                                            )}
+
                                         </TouchableOpacity>
                                     </View>
                                 }
@@ -249,7 +283,11 @@ const OtpPassword = () => {
                                     style={customStyle.loginBtn}
                                     onPress={handleOtpSubmit}
                                 >
-                                    <Text style={customStyle.loginText}>Submit</Text>
+                                    {loading ? (
+                                        <ActivityIndicator size="small" color="white" />
+                                    ) : (
+                                        <Text style={customStyle.loginText}>Submit</Text>
+                                    )}
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -257,7 +295,17 @@ const OtpPassword = () => {
                 )
         )
             : (
-                <Text style={{ color: 'red' }}>OTP Verification Successful</Text>
+                <CustomModal
+                    visible={modalVisible}
+                    onClose={closeModal}
+                    obj={{
+                        title: 'OTP Verification',
+                        error: false,
+                        description: 'OTP Verified.',
+                        buttonTitle: "Login",
+                        onPress: closeModal
+                    }}
+                />
             )
     )
 };
@@ -314,6 +362,15 @@ const styles = StyleSheet.create({
     timeText: {
         color: 'black',
         fontSize: 12
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 13,
+        marginBottom: 4
+    },
+    emailImgStyle: {
+        height: 110,
+        width: 110
     }
 });
 

@@ -31,7 +31,7 @@ export const customStyle = StyleSheet.create({
         fontWeight: 'bold',
     },
     loginBtn: {
-        backgroundColor: '#592DA1',
+        backgroundColor: primary,
         width: '90%',
         padding: 8,
         borderRadius: 6,
@@ -82,6 +82,21 @@ export const customStyle = StyleSheet.create({
         fontSize: 12,
         fontWeight: '400',
         marginLeft: 8
+    },
+    regexContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '80%'
+    },
+    regexText: {
+        color: 'gray',
+        fontSize: 8,
+        textAlign: 'justify',
+        marginLeft: 6
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 13,
     },
 
     // ==================list style=======================
