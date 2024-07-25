@@ -52,7 +52,7 @@ export const listStyle = StyleSheet.create({
         color: '#592DA1',
         // paddingHorizontal: 8,
     },
-    listFooterConatiner: {
+    listFooterContainer: {
         padding: 2,
         backgroundColor: '#F0EFEF'
     },

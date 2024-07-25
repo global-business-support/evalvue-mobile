@@ -20,8 +20,9 @@ import {ValidateEmail, ValidatePassword} from '../../Validation/Validation.js';
 import axios from 'axios';
 import {NATIVE_API_URL} from '@env';
 import CustomModal from '../CustomModal/CustomModal.jsx';
+import { useNavigation } from '@react-navigation/native';
 
-export default function UserRegistration({navigation}) {
+export default function UserRegistration() {
   const [checked, setChecked] = useState(false);
   const [RegisterData, setRegisterData] = useState({
     name: '',
@@ -37,8 +38,8 @@ export default function UserRegistration({navigation}) {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [validEmailIcon, setValidEmailIcon] = useState(false);
   const [validPassowordIcon, setValidPasswordIcon] = useState(false);
-  const [modalVisible, setModalVisible] = useState(true);
-
+  const [modalVisible, setModalVisible] = useState(false);
+ const navigation = useNavigation()
   function validate() {
     const errors = {};
     if (!RegisterData.name) errors.name = 'Name is required*';
@@ -85,9 +86,7 @@ export default function UserRegistration({navigation}) {
       if (res.data) {
         console.log(res.data);
         if (res.data.is_user_register_successfull) {
-          navigation.navigate('OtpPassword', {
-            state: {isForget: false, email: RegisterData.email},
-          });
+         setModalVisible(true)
         }
       } else if (res.isexception) {
         setError(res.exceptionmessage.error);
@@ -99,12 +98,17 @@ export default function UserRegistration({navigation}) {
   const closeModal = () => {
     setModalVisible(false);
   };
+  const handleOksubmit = () => {
+    navigation.navigate('Verify', {
+      state: {isForget: false, stateEmail: RegisterData.email},
+    });
+  };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{flex: 1}}>
-      <ScrollView>
+      <ScrollView style={customStyle.scrollStyle}>
         <View style={customStyle.loginContainer}>
           <View>
             <Image source={logo} style={styles.loginLogo} />
@@ -234,17 +238,19 @@ export default function UserRegistration({navigation}) {
       </ScrollView>
 
       {/* Modal to show error message */}
-      <CustomModal
+     
+        <CustomModal
         visible={modalVisible}
         onClose={closeModal}
         obj={{
-          title: error ? 'Failed' : 'Success',
+          title: error ? 'Failed' : 'Verify your email',
           error: error ? true : false,
-          description: error || 'Your Account Created Successfully',
+          description: error || 'Please Verify your email',
           buttonTitle: 'OK',
-          onPress: closeModal,
+          onPress: handleOksubmit,
         }}
-      />
+        />
+      
     </KeyboardAvoidingView>
   );
 }
