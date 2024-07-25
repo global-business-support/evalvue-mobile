@@ -5,7 +5,7 @@ import { customStyle, windowHeight } from '../Styles/customStyle';
 import logo from '../../assets/evalvue-logo.jpg';
 import { ApiAxiosRequest } from '../../API-Management/ApiBackendRequest';
 import { NATIVE_API_URL } from '@env';
-import { storeData } from '../../API-Management/mmkv-Storage';
+import { getBooleanData, getStringData, storeData } from '../../API-Management/mmkv-Storage';
 import CustomModal from '../CustomModal/CustomModal';
 import ValideIcon from 'react-native-vector-icons/Entypo';
 import { ValidateEmail, ValidatePassword } from '../../Validation/Validation';
@@ -53,19 +53,22 @@ export default function Login({ navigation }) {
             const res = await ApiAxiosRequest(`${NATIVE_API_URL}/login/user/`, loginData);
             setIsLoading(false);
             if (res.data) {
-                storeData("accessToken", res.data.access);
-                storeData("isLogin", res.data.is_login_successfull);
                 if (res.data.is_login_successfull && res.data.is_user_verified) {
+                    storeData("accessToken", res.data.access);
+                    storeData("isLogin", res.data.is_login_successfull);
                     navigation.navigate("Dashboard");
                 }
-            } else if (res.isexception) {
-                setError(res.exceptionmessage.error);
-                console.log(res.exceptionmessage)
-                setModalVisible(true);
+                else if (res.data.is_user_verified == false) {
+                    navigation.navigate('Verify', { isForget: false, stateEmail: loginData.email });
+                }
             }
+            else if (res.isexception) {
+                setError(res.exceptionmessage.error);
+                setModalVisible(true);
+            };
         } else {
             setError(null);
-        }
+        };
     };
 
     const closeModal = () => {
@@ -103,7 +106,7 @@ export default function Login({ navigation }) {
                             />
                         </View>
                         {isEmailFocused && loginData.email.length > 0 && (
-                            <View style={styles.regexContainer}>
+                            <View style={customStyle.regexContainer}>
                                 <ValideIcon
                                     name={validEmailIcon ? 'check' : 'cross'}
                                     color={validEmailIcon ? 'green' : 'red'}
@@ -111,11 +114,15 @@ export default function Login({ navigation }) {
                                 />
                                 {
                                     !validEmailIcon &&
-                                    <Text style={styles.regexText}>Please include '@' or part following '@' is incomplete.</Text>
+                                    <Text style={customStyle.regexText}>Please include '@' or part following '@' is incomplete.</Text>
+                                }
+                                {
+                                    validEmailIcon &&
+                                    <Text style={customStyle.regexText}>correct.</Text>
                                 }
                             </View>
                         )}
-                        {formErrors.email && <Text style={styles.errorText}>{formErrors.email}</Text>}
+                        <Text style={customStyle.errorText}>{formErrors.email}</Text>
                         <View style={customStyle.inputBox} width='84%'>
                             <Icon name="key" size={20} color="#592DA1" />
                             <TextInput
@@ -133,7 +140,7 @@ export default function Login({ navigation }) {
                             </TouchableOpacity>
                         </View>
                         {isPasswordFocused && loginData.password.length > 0 && (
-                            <View style={styles.regexContainer}>
+                            <View style={customStyle.regexContainer}>
                                 <ValideIcon
                                     name={validPasswordIcon ? 'check' : 'cross'}
                                     color={validPasswordIcon ? 'green' : 'red'}
@@ -141,11 +148,15 @@ export default function Login({ navigation }) {
                                 />
                                 {
                                     !validPasswordIcon &&
-                                    <Text style={styles.regexText}>Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.</Text>
+                                    <Text style={customStyle.regexText}>Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.</Text>
+                                }
+                                {
+                                    validPasswordIcon &&
+                                    <Text style={customStyle.regexText}>Strong pssword.</Text>
                                 }
                             </View>
                         )}
-                        {formErrors.password && <Text style={styles.errorText}>{formErrors.password}</Text>}
+                        <Text style={customStyle.errorText}>{formErrors.password}</Text>
                     </View>
                     <TouchableOpacity
                         style={styles.passContainer}
@@ -222,24 +233,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textDecorationLine: 'underline',
     },
-    errorText: {
-        color: 'red',
-        fontSize: 13,
-    },
     icon: {
         position: 'absolute',
         right: 10,
         top: -8,
-    },
-    regexContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: '80%'
-    },
-    regexText: {
-        color: 'gray',
-        fontSize: 8,
-        textAlign: 'justify',
-        marginLeft: 6
     }
 });

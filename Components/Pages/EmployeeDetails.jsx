@@ -6,19 +6,75 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReviewCards from '../ReviewCards/ReviewCards';
-import {Image} from 'react-native-elements';
-
+import { Image } from 'react-native-elements';
+import { NATIVE_API_URL } from '@env';
 import kisaan from '../../assets/kisaan.jpg';
+import review from '../../assets/review.jpeg';
 import { primary } from '../Styles/customStyle';
+import { empListStyle } from '../Styles/empListStyle';
+import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
+import { FlatList, RefreshControl } from 'react-native-gesture-handler';
 
 export default function EmployeeDetails() {
+  const [reviewData, setReviewData] = useState([]);
+  const [empData, setEmpData] = useState([]);
+  const handleAPI = async () => {
+    console.log('clicked-once')
+    const res = await ApiBackendRequest(`${NATIVE_API_URL}/reviews/`, {
+      search_by_aa: false,
+      organization_id: 5,
+      employee_id: 332,
+    });
+    console.log('res: ', res.data);
+    setReviewData(res.data.review_list);
+    setReviewData(res.data.employee_list)
+    console.log(reviewData)
+  };
+  // useEffect(() => {
+  //     const res = ApiBackendRequest(`${NATIVE_API_URL}/reviews/`, {
+  //       search_by_aa: false,
+  //         organization_id: 5,
+  //         employee_id: 332,
+  //       });
+  //       console.log('res: ',res);
+  // }, []);
+
+  const renderItem = ({item}) => {
+    return (
+      <View style={empListStyle.mainContainer}>
+        <View style={empListStyle.secondContainer}>
+          <View style={empListStyle.empContainer}>
+            <View style={empListStyle.subContainer}>
+              <Image source={{ uri: empData.employee_image }} style={empListStyle.empImg} />
+              <View>
+                <Text style={empListStyle.empNameStyle}>{empData.employee_name}</Text>
+                <Text style={empListStyle.dsgText}>{empData.designation}</Text>
+              </View>
+            </View>
+            <Text style={empListStyle.timeText}>{item.created_on}</Text>
+          </View>
+          <View style={empListStyle.commentConatiner}>
+            <Text style={empListStyle.commentText}>{item.comment}</Text>
+            {
+              item.image && item.image !== 'null' && (<Image 
+                source={{ uri: item.image }} 
+                style={empListStyle.reviewImg} 
+                />)
+            }
+            
+          </View>
+        </View>
+      </View>
+    )
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
         <View style={styles.headerPartTwo}>
-          <View style={{flexDirection: 'row', gap: 6}}>
+          <View style={{ flexDirection: 'row', gap: 6 }}>
             <View>
               <View style={styles.profileLogo}>
                 <Image source={kisaan} style={styles.profileLogo} />
@@ -34,7 +90,7 @@ export default function EmployeeDetails() {
               <View>
                 <Text style={styles.nameText}>Ritik Sharma</Text>
                 <Text
-                  style={{color: '#ced6e0', fontSize: 12, fontWeight: '500'}}>
+                  style={{ color: '#ced6e0', fontSize: 12, fontWeight: '500' }}>
                   keshavvisshnoi4@gmail.com
                 </Text>
               </View>
@@ -53,7 +109,7 @@ export default function EmployeeDetails() {
                     marginTop: 5,
                   }}
                 />
-                <Text style={{color: '#2ed573', fontWeight: '500'}}>
+                <Text style={{ color: '#2ed573', fontWeight: '500' }}>
                   Active
                 </Text>
                 {/* <View
@@ -83,19 +139,21 @@ export default function EmployeeDetails() {
               <Text style={styles.textsmall}>⭐⭐⭐⭐</Text>
             </View>
             <View>
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity style={styles.button}
+                onPress={handleAPI}
+              >
                 <Text style={styles.buttonText}>Add to Organization</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </View>
-
-      <ScrollView>
-        <ReviewCards />
-        <ReviewCards />
-        <ReviewCards />
-      </ScrollView>
+      <FlatList
+        data={reviewData}
+        keyExtractor={item => item.review_id ? item.review_id.toString() : item.toString()}
+        renderItem={renderItem}
+        
+      />  
     </View>
   );
 }
@@ -158,3 +216,4 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 });
+
