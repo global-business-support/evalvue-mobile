@@ -45,12 +45,12 @@ export const listStyle = StyleSheet.create({
     },
     searchInputStyle: {
         backgroundColor: '#F2EFF8',
-        height: 40,
-        borderRadius: 10,
+        // height: 40,
+        width:"90%",
+        // borderRadius: 10,
         fontSize: 12,
         color: '#592DA1',
-        paddingHorizontal: 8,
-        marginTop: 6
+        // paddingHorizontal: 8,
     },
     listFooterConatiner: {
         padding: 2,
