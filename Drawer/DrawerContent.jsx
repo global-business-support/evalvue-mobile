@@ -3,14 +3,23 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/Entypo';
 import LogIcon from 'react-native-vector-icons/MaterialIcons';
 import kisaan from '../assets/kisaan.jpg';
-import {DrawerActions} from '@react-navigation/native';
+import {DrawerActions, useNavigation} from '@react-navigation/native';
 import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
 import {primary} from '../Components/Styles/customStyle';
+import { removeData } from '../API-Management/mmkv-Storage';
+  
+export default function DrawerContent({props}) {
+const navigation = useNavigation()
 
-export default function DrawerContent(props) {
+  const handleLogout = () => {
+    removeData('accessToken')
+    navigation.navigate("Login")
+  }
+
+
   return (
     <View style={styles.Container}>
       <View style={styles.heading}>
@@ -42,7 +51,7 @@ export default function DrawerContent(props) {
         </DrawerContentScrollView>
       </View>
       <View style={styles.loginView}>
-        <TouchableOpacity style={styles.loginTouchable}>
+        <TouchableOpacity style={styles.loginTouchable} onPress={()=>handleLogout()}>
           <LogIcon name="logout" style={styles.logIcon} />
           <Text style={styles.logText}>Logout</Text>
         </TouchableOpacity>

@@ -28,7 +28,7 @@ const CustomModal = ({ visible, onClose, obj }) => {
             <Text style={styles.subtitle}>
               {obj.description}
             </Text>
-            <TouchableOpacity style={styles.button} onPress={onClose}>
+            <TouchableOpacity style={styles.button} onPress={obj.onPress}>
               <Text style={styles.buttonText}>{obj.buttonTitle}</Text>
             </TouchableOpacity>
           </View>

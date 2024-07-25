@@ -2,34 +2,33 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
 import {Image} from 'react-native-elements';
-import logo from '../../assets/TCS.jpg';
-import kisaan from '../../assets/kisaan.jpg';
-import review from '../../assets/review.jpeg';
 
-const ReviewCards = ({data}) => {
+const ReviewCards = ({item}) => {
   return (
     <View style={styles.Container}>
       <View style={styles.mainContainer}>
         <View style={styles.firstContainer}>
           <View style={styles.subContainer}>
-            <Image source={data.organization_image} style={styles.orgImg} />
+            <Image source={{uri : item.organization_image}} style={styles.orgImg} />
             <View>
-              <Text style={styles.orgName}>{data.organization_name}</Text>
+              <Text style={styles.orgName}>{item.organization_name}</Text>
             </View>
           </View>
-          <Text style={styles.orgName}>{data.created_on}</Text>
+          <Text style={styles.orgName}>{item.created_on}</Text>
         </View>
         <View style={styles.secondContainer}>
           <View style={styles.empContainer}>
-            <Image source={data.employee_image} style={styles.empImg} />
+            <Image source={{uri : item.employee_image}} style={styles.empImg} />
             <View>
-              <Text style={styles.empNameStyle}>{data.employee_name}</Text>
-              <Text style={styles.dsgText}>{data.designation}</Text>
+              <Text style={styles.empNameStyle}>{item.employee_name}</Text>
+              <Text style={styles.dsgText}>{item.designation}</Text>
             </View>
           </View>
           <View style={styles.commentConatiner}>
-            <Text style={styles.commentText}>{data.comment}</Text>
-            <Image source={data.image} style={styles.reviewImg} />
+            <Text style={styles.commentText}>{item.comment}</Text>
+            {item.image && item.image !== 'null' && (
+              <Image source={{ uri: item?.image }} style={styles.reviewImg} />
+            )}
           </View>
         </View>
       </View>

@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  RefreshControl
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import DotIcon from 'react-native-vector-icons/Entypo';
@@ -13,26 +14,41 @@ import SearchIcon from 'react-native-vector-icons/AntDesign';
 import ReviewCards from '../ReviewCards/ReviewCards';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import {NATIVE_API_URL} from '@env';
-import {UserContext} from '../Context/ContextFile';
 
 export default function Feed({navigation}) {
   const [feeds, setFeeds] = useState([]);
   const [error, setError] = useState('');
-  const {userId} = useContext(UserContext);
+  const [refreshing, setRefreshing] = useState(false);
+  const [Isreviewmap, setIsreviewmap] = useState(false);
 
-  useEffect(() => {
-    ApiBackendRequest(`${NATIVE_API_URL}/dashboard/feed/`, {
-      user_id: userId,
-    }).then(res => {
-      if (res.data.dashboard_list) {
-        setFeeds(res.data.dashboard_list);
-        console.log(res.data.dashboard_list);
+  const fetchdata = async () => {
+    try {
+      const res = await ApiBackendRequest(`${NATIVE_API_URL}/dashboard/feed/`, {
+        user_id: 1,
+      });
+
+      setFeeds(res.data.dashboard_list);
+
+      if (res.data.is_review_mapped) {
+        setIsreviewmap(res.data.is_review_mapped);
       }
+
       if (res.isexception) {
         setError(res.exceptionmessage.error);
       }
-    });
-  }, []);
+    } catch (err) {
+      setError(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchdata();
+  }, [Isreviewmap]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchdata();
+  };
 
   return (
     <View style={styles.parentContainer}>
@@ -52,14 +68,18 @@ export default function Feed({navigation}) {
         </TouchableOpacity>
         <DotIcon name="dots-three-vertical" size={22} color="#47535E" />
       </View>
-      {/* <ScrollView> */}
-      {/* <FlatList
+      <FlatList
         data={feeds}
-        renderItem={({item}) => <ReviewCards data={item} />}
-        keyExtractor={item => item.review_id}
-      /> */}
-      {/* <ReviewCards /> */}
-      {/* </ScrollView> */}
+        renderItem={ReviewCards}
+        keyExtractor={item => item?.review_id.toString()}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#e06c0d', '#1c387a', '#e3c100', '#e30048']} // Set custom colors here
+          />
+        }
+      />
     </View>
   );
 }
