@@ -22,8 +22,6 @@ import forgotImg from '../../assets/forgot.png'
 
 const ForgotPassword = () => {
   const [forgotData, setForgotData] = useState({ newPassword: '', confirmPassword: '' });
-  // const [newPassword, setNewPassword] = useState('');
-  // const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);

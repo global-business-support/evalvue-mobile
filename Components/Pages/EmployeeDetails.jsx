@@ -1,83 +1,120 @@
+import React, { useEffect, useState } from 'react';
 import {
-  Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  FlatList,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import ReviewCards from '../ReviewCards/ReviewCards';
-import { Image } from 'react-native-elements';
+import { Image, Rating } from 'react-native-elements';
 import { NATIVE_API_URL } from '@env';
-import kisaan from '../../assets/kisaan.jpg';
-import review from '../../assets/review.jpeg';
 import { primary } from '../Styles/customStyle';
 import { empListStyle } from '../Styles/empListStyle';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
-import { FlatList, RefreshControl } from 'react-native-gesture-handler';
+import ShimmerUI from '../ShimmerUI/ShimmerUI';
 
 export default function EmployeeDetails() {
   const [reviewData, setReviewData] = useState([]);
-  const [empData, setEmpData] = useState([]);
-  const handleAPI = async () => {
-    console.log('clicked-once')
-    const res = await ApiBackendRequest(`${NATIVE_API_URL}/reviews/`, {
-      search_by_aa: false,
-      organization_id: 5,
-      employee_id: 332,
-    });
-    console.log('res: ', res.data);
-    setReviewData(res.data.review_list);
-    setReviewData(res.data.employee_list)
-    console.log(reviewData)
-  };
-  // useEffect(() => {
-  //     const res = ApiBackendRequest(`${NATIVE_API_URL}/reviews/`, {
-  //       search_by_aa: false,
-  //         organization_id: 5,
-  //         employee_id: 332,
-  //       });
-  //       console.log('res: ',res);
-  // }, []);
+  const [empData, setEmpData] = useState(null);
+  const [error, setError] = useState('');
+  const [isReviewMapped, setIsReviewMapped] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const renderItem = ({item}) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await ApiBackendRequest(`${NATIVE_API_URL}/reviews/`, {
+          search_by_aa: false,
+          organization_id: 5,
+          employee_id: 332,
+        });
+
+        if (res.data) {
+          if (res.data.is_review_mapped_to_employee_successfull) {
+            setIsReviewMapped(true);
+            setReviewData(res.data.review_list);
+            setEmpData(res.data.employee_list[0]);
+          }
+        } else if (res.isexception) {
+          setError(res.exceptionmessage.error)
+        }
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const renderItem = ({ item }) => {
     return (
       <View style={empListStyle.mainContainer}>
         <View style={empListStyle.secondContainer}>
           <View style={empListStyle.empContainer}>
             <View style={empListStyle.subContainer}>
-              <Image source={{ uri: empData.employee_image }} style={empListStyle.empImg} />
+              {empData?.employee_image && empData?.employee_image !== 'null' && (
+                <Image source={{ uri: empData?.employee_image }} style={empListStyle.empImg} />
+              )}
               <View>
-                <Text style={empListStyle.empNameStyle}>{empData.employee_name}</Text>
-                <Text style={empListStyle.dsgText}>{empData.designation}</Text>
+                <Text style={empListStyle.empNameStyle}>{empData?.employee_name}</Text>
+                <Text style={empListStyle.dsgText}>{empData?.designation}</Text>
               </View>
             </View>
-            <Text style={empListStyle.timeText}>{item.created_on}</Text>
+            <Text style={empListStyle.timeText}>{item?.created_on}</Text>
           </View>
           <View style={empListStyle.commentConatiner}>
-            <Text style={empListStyle.commentText}>{item.comment}</Text>
-            {
-              item.image && item.image !== 'null' && (<Image 
-                source={{ uri: item.image }} 
-                style={empListStyle.reviewImg} 
-                />)
-            }
-            
+            <Text style={empListStyle.commentText}>{item?.comment}</Text>
+            {item?.image && item?.image !== 'null' && (
+              <Image source={{ uri: item?.image }} style={empListStyle.reviewImg} />
+            )}
+            <View style={styles.ratingContainer}>
+              <Rating
+                type="star"
+                ratingColor="gold"
+                ratingCount={5}
+                startingValue={item?.rating}
+                imageSize={20}
+                readonly
+              />
+            </View>
           </View>
         </View>
       </View>
+    );
+  };
+
+  const noReview = ()=>{
+    return(
+      <View>
+      <Text style={{ color: 'black',fontSize: 14, fontWeight: '500', textAlign: 'center', marginTop: 30 }}>No review given!</Text>
+    </View>
     )
   };
 
-  return (
+  if (loading) {
+    return <ShimmerUI />;
+  };
+  if(error){
+    return (
+      <View>
+      <Text style={{ color: 'red', textAlign: 'center', marginTop: 30 }}>{error}</Text>
+    </View>
+    );
+  };
+
+  return isReviewMapped && (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
         <View style={styles.headerPartTwo}>
           <View style={{ flexDirection: 'row', gap: 6 }}>
             <View>
               <View style={styles.profileLogo}>
-                <Image source={kisaan} style={styles.profileLogo} />
+                {empData?.employee_image && empData?.employee_image !== 'null' && (
+                  <Image source={{ uri: empData?.employee_image }} style={styles.profileLogo} />
+                )}
               </View>
             </View>
             <View
@@ -88,10 +125,10 @@ export default function EmployeeDetails() {
                 justifyContent: 'space-between',
               }}>
               <View>
-                <Text style={styles.nameText}>Ritik Sharma</Text>
+                <Text style={styles.nameText}>{empData?.employee_name}</Text>
                 <Text
                   style={{ color: '#ced6e0', fontSize: 12, fontWeight: '500' }}>
-                  keshavvisshnoi4@gmail.com
+                  {empData?.email}
                 </Text>
               </View>
               <View
@@ -112,18 +149,6 @@ export default function EmployeeDetails() {
                 <Text style={{ color: '#2ed573', fontWeight: '500' }}>
                   Active
                 </Text>
-                {/* <View
-                  style={{
-                    height: 10,
-                    width: 10,
-                    backgroundColor: '#ffdd59',
-                    borderRadius: 10 / 2,
-                    marginTop: 5,
-                  }}
-                />
-                <Text style={{color: '#ffdd59', fontWeight: '500'}}>
-                  in Active
-                </Text> */}
               </View>
             </View>
           </View>
@@ -135,14 +160,22 @@ export default function EmployeeDetails() {
               justifyContent: 'space-between',
             }}>
             <View>
-              <Text style={styles.orgname}>Tata Cunsultansy Services</Text>
-              <Text style={styles.textsmall}>⭐⭐⭐⭐</Text>
+              <Text style={styles.orgname}>Tata Consultancy Services</Text>
+              <View style={styles.empRatingContainer}>
+                <Rating
+                  type="custom"
+                  ratingColor={primary}
+                  ratingCount={5}
+                  startingValue={empData?.avg_rating}
+                  imageSize={20}
+                  readonly
+                  style={styles.ratingStyle}
+                />
+              </View>
             </View>
             <View>
-              <TouchableOpacity style={styles.button}
-                onPress={handleAPI}
-              >
-                <Text style={styles.buttonText}>Add to Organization</Text>
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>Add Review</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -150,13 +183,13 @@ export default function EmployeeDetails() {
       </View>
       <FlatList
         data={reviewData}
-        keyExtractor={item => item.review_id ? item.review_id.toString() : item.toString()}
+        keyExtractor={item => item?.review_id ? item?.review_id.toString() : item.toString()}
         renderItem={renderItem}
-        
-      />  
+        ListEmptyComponent={noReview}
+      />
     </View>
-  );
-}
+  )
+};
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -167,21 +200,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     paddingTop: 10,
   },
-  headerPartOne: {
-    marginBottom: 10,
-  },
-  heading: {
-    fontSize: 28,
-    color: '#000',
-  },
   orgname: {
     fontSize: 12,
     fontWeight: '500',
     color: 'white',
-  },
-  textsmall: {
-    fontSize: 12,
-    fontWeight: '500',
   },
   headerPartTwo: {
     gap: 20,
@@ -196,14 +218,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 45 / 2,
-    // backgroundColor: '#EA7773',
   },
   nameText: {
     color: '#FFF',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
   },
-  button: {},
   buttonText: {
     fontSize: 11,
     color: 'white',
@@ -215,5 +235,18 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderRadius: 5,
   },
+  ratingContainer: {
+    alignItems: 'flex-start',
+    paddingVertical: 6,
+  },
+  empRatingContainer: {
+    alignItems: 'flex-start',
+    marginTop: 4,
+  },
+  ratingStyle: {
+    padding: 1,
+    borderWidth: 1,
+    borderColor: '#FFF',
+    borderRadius: 2
+  }
 });
-
