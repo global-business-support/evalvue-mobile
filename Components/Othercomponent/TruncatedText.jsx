@@ -14,7 +14,7 @@ const TruncatedText = ({ text, maxLength ,dot}) => {
   }
 
   return (
-      <Text numberOfLines={1}>{truncatedText}</Text>
+      <Text  numberOfLines={1}>{truncatedText}</Text>
   );
 };
 

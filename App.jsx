@@ -9,7 +9,7 @@ import Register from './Components/Forms/UserRegistration';
 import Onboarding from './OnboardingScreens/Onboarding.jsx';
 import CustomModal from './Components/CustomModal/CustomModal.jsx';
 import PdfRender from './Components/PdfRender/PdfRender.jsx';
-import {NavigationContainer} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import AppStack from './AppStack.tsx';
 import AppDrawer from './Drawer/AppDrawer.jsx'
 import AppTabs from './Drawer/AppTabs.jsx';

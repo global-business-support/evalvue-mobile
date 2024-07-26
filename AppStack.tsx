@@ -15,6 +15,7 @@ import ForgotPassword from './Components/Authentication/ForgotPassword.jsx';
 const Stack = createNativeStackNavigator();
 
 export default function AppStack() {
+  console.log("app stack run")
   return (
     <Stack.Navigator>
       <Stack.Screen
