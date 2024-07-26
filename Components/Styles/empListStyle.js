@@ -6,13 +6,15 @@ export const empListStyle = StyleSheet.create({
       backgroundColor: '#FFF',
       marginHorizontal: 6,
       marginVertical: 6,
+      borderBottomWidth: 0.5,
+      borderColor: '#333945',
     },
     subContainer: {
       flexDirection: 'row',
       alignItems: 'center',
     },
     secondContainer: {
-      backgroundColor: '#f1f2f6',
+      backgroundColor: '#FFF',
       borderRadius: 10,
       justifyContent: 'center',
     },
@@ -56,8 +58,11 @@ export const empListStyle = StyleSheet.create({
     },
     commentText: {
       color: '#535C68',
-      fontSize: 10,
+      fontSize: 11,
       marginBottom: 6,
+      textAlign: "justify",
+      fontFamily: 'inter',
+      lineHeight: 16
     },
     dsgText: {
       color: '#2C3335',
