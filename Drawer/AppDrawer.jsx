@@ -1,15 +1,14 @@
 import 'react-native-gesture-handler';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {DrawerItem, createDrawerNavigator} from '@react-navigation/drawer';
-import {DrawerActions} from '@react-navigation/native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import PolicyIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Login from '../Components/Authentication/Login';
-import Register from '../Components/Forms/UserRegistration';
-import DrawerContent from './DrawerContent';
-import PdfRender from '../Components/PdfRender/PdfRender';
 import Feed from '../Components/Pages/Feed';
-import {primary} from '../Components/Styles/customStyle';
+import PdfRender from '../Components/PdfRender/PdfRender';
+import DrawerContent from './DrawerContent';
+import { primary } from '../Components/Styles/customStyle';
 
 const Drawer = createDrawerNavigator();
 
@@ -27,13 +26,13 @@ function AppDrawer() {
         name="View all feed"
         component={Feed}
         options={{
-          drawerIcon: ({size}) => (
+          drawerIcon: ({ size }) => (
             <Icon name={'appstore1'} size={size} color={primary} />
           ),
           drawerActiveBackgroundColor: '#DAE0E2',
           drawerActiveTintColor: 'black',
           drawerInactiveBackgroundColor: '#F2F5F7',
-          drawerActiveTintColor: 'black',
+          drawerInactiveTintColor: 'black',
         }}
       />
       <Drawer.Screen
@@ -43,13 +42,13 @@ function AppDrawer() {
           pdfUrl: 'http://api.evalvue.com/media/Policy/privacy policy.pdf',
         }}
         options={{
-          drawerIcon: ({size}) => (
+          drawerIcon: ({ size }) => (
             <PolicyIcon name={'shield-alert'} size={size} color={primary} />
           ),
           drawerActiveBackgroundColor: '#DAE0E2',
           drawerActiveTintColor: 'black',
           drawerInactiveBackgroundColor: '#F2F5F7',
-          drawerActiveTintColor: 'black',
+          drawerInactiveTintColor: 'black',
         }}
       />
       <Drawer.Screen
@@ -59,13 +58,13 @@ function AppDrawer() {
           pdfUrl: 'http://api.evalvue.com/media/Policy/privacy policy.pdf',
         }}
         options={{
-          drawerIcon: ({size}) => (
+          drawerIcon: ({ size }) => (
             <PolicyIcon name={'shield-refresh'} size={size} color={primary} />
           ),
           drawerActiveBackgroundColor: '#DAE0E2',
           drawerActiveTintColor: 'black',
           drawerInactiveBackgroundColor: '#F2F5F7',
-          drawerActiveTintColor: 'black',
+          drawerInactiveTintColor: 'black',
         }}
       />
       <Drawer.Screen
@@ -75,13 +74,13 @@ function AppDrawer() {
           pdfUrl: 'http://api.evalvue.com/media/Policy/privacy policy.pdf',
         }}
         options={{
-          drawerIcon: ({size}) => (
+          drawerIcon: ({ size }) => (
             <PolicyIcon name={'shield-lock'} size={size} color={primary} />
           ),
           drawerActiveBackgroundColor: '#DAE0E2',
           drawerActiveTintColor: 'black',
           drawerInactiveBackgroundColor: '#F2F5F7',
-          drawerActiveTintColor: 'black',
+          drawerInactiveTintColor: 'black',
         }}
       />
     </Drawer.Navigator>
@@ -89,22 +88,3 @@ function AppDrawer() {
 }
 
 export default AppDrawer;
-
-const styles = StyleSheet.create({
-  heading: {
-    width: '100%',
-    // backgroundColor : '#6739B7',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headingText: {
-    fontSize: 20,
-    fontWeight: '500',
-    color: 'black',
-  },
-  icon: {
-    fontSize: 25,
-    color: '#6739B7',
-  },
-});

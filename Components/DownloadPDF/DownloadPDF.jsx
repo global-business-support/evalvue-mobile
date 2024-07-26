@@ -8,13 +8,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
-import RNFS from 'react-native-fs';
+import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/AntDesign';
 
-const DownloadPDF = ({url}) => {
-  // const parsedUrl = new URL(url);
-  const pathname = url;
-  const fileName = pathname.split('/').pop();
+const DownloadPDF = ({ url }) => {
+  if (!url) {
+    console.error('URL is not provided');
+    return null;
+  }
+
+  const fileName = url.split('/').pop();
 
   async function downloadPdf() {
     try {
@@ -29,7 +32,7 @@ const DownloadPDF = ({url}) => {
         }
       }
 
-      const {config, fs} = RNFetchBlob;
+      const { config, fs } = RNFetchBlob;
       const downloads = fs.dirs.DownloadDir;
       const filePath = `${downloads}/${fileName}`;
 
@@ -66,6 +69,10 @@ const DownloadPDF = ({url}) => {
       </TouchableOpacity>
     </View>
   );
+};
+
+DownloadPDF.propTypes = {
+  url: PropTypes.string.isRequired,
 };
 
 export default DownloadPDF;
