@@ -8,10 +8,13 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {customStyle, windowHeight} from '../Styles/customStyle';
+import {customStyle, primary, windowHeight} from '../Styles/customStyle';
 import NameIcon from 'react-native-vector-icons/Ionicons';
 import FileIcon from 'react-native-vector-icons/AntDesign';
 import {Picker} from '@react-native-picker/picker';
+import {Image} from 'react-native-elements';
+import {pickSingle} from 'react-native-document-picker';
+import TruncatedText from '../Othercomponent/TruncatedText';
 
 export default function OrgRegistration() {
   const [selectedValue, setSelectedValue] = useState({
@@ -33,6 +36,10 @@ export default function OrgRegistration() {
   });
   const [formsErrors, setFormErrors] = useState({});
   const [error, setError] = useState(null);
+  const [previewimage, setPreviewImage] = useState({
+    orgLogo: {},
+    documentfile : {},
+  });
 
   function validate() {
     const errors = {};
@@ -63,9 +70,21 @@ export default function OrgRegistration() {
     setOrgdata(prevData => ({...prevData, [name]: value}));
   };
 
+  const selectImage = async (name) => {
+    try {
+      const doc = await pickSingle();
+      console.log(name , doc);
+      setPreviewImage((prev)=> ({...prev, [name] : doc}));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(previewimage.orgLogo.name)
+
   const handleOrgSubmit = () => {
-    const errors = validate();
-    setFormErrors(errors);
+    // const errors = validate();
+    // setFormErrors(errors);
     setOrgdata({...Orgdata, ...selectedValue});
   };
 
@@ -98,17 +117,34 @@ export default function OrgRegistration() {
                 <Text style={styles.errors}>{formsErrors.orgName}</Text>
               )}
             </View>
-            <View>
+
+            <View >
               <View style={customStyle.lableContainer}>
                 <Text style={customStyle.lableHeading}>Organization Logo</Text>
                 <Text style={customStyle.mandatory}>*</Text>
               </View>
-              <TouchableHighlight>
-                <View style={customStyle.fileBtn}>
-                  <FileIcon name="clouduploado" size={20} color="#592DA1" />
-                  <Text style={customStyle.fileBtnText}>UPLOAD FILE</Text>
-                </View>
-              </TouchableHighlight>
+              <View style={{display: 'flex', flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => selectImage('orgLogo')}>
+                  <View style={customStyle.fileBtn}>
+                    <FileIcon name="clouduploado" size={20} color="#592DA1" />
+                    <Text style={customStyle.fileBtnText}>
+                      {Object.keys(previewimage.orgLogo).length == 0? (
+                        'UPLOAD FILE'
+                      ) : (
+                        <TruncatedText
+                          text={previewimage.orgLogo.name}
+                          maxLength={25}
+                          dot={true}
+                        />
+                      )}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                {
+                  Object.keys(previewimage.orgLogo).length !== 0 &&
+                  <Text style={styles.viewbtn}>View</Text>
+                }
+              </View>
             </View>
             <View>
               <View style={customStyle.lableContainer}>
@@ -153,12 +189,28 @@ export default function OrgRegistration() {
                 <Text style={customStyle.lableHeading}>Document File</Text>
                 <Text style={customStyle.mandatory}>*</Text>
               </View>
-              <TouchableHighlight>
-                <View style={customStyle.fileBtn}>
-                  <FileIcon name="clouduploado" size={20} color="#592DA1" />
-                  <Text style={customStyle.fileBtnText}>UPLOAD FILE</Text>
-                </View>
-              </TouchableHighlight>
+              <View style={{display: 'flex', flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => selectImage('documentfile')}>
+                  <View style={customStyle.fileBtn}>
+                    <FileIcon name="clouduploado" size={20} color="#592DA1" />
+                    <Text style={customStyle.fileBtnText}>
+                      {Object.keys(previewimage.documentfile).length == 0 ? (
+                        'UPLOAD FILE'
+                      ) : (
+                        <TruncatedText
+                          text={previewimage.documentfile.name}
+                          maxLength={25}
+                          dot={true}
+                        />
+                      )}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                {
+                  Object.keys(previewimage.documentfile).length !== 0&&
+                  <Text style={styles.viewbtn}>View</Text>
+                }
+              </View>
             </View>
             <View></View>
             <View>
@@ -520,4 +572,9 @@ const styles = StyleSheet.create({
     color: 'red',
     paddingLeft: 5,
   },
+  viewbtn:{
+    color: primary, 
+    textAlignVertical: 'center', 
+    fontWeight: '500', 
+  }
 });
