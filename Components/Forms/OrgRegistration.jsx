@@ -7,25 +7,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {customStyle, primary, windowHeight} from '../Styles/customStyle';
 import NameIcon from 'react-native-vector-icons/Ionicons';
 import FileIcon from 'react-native-vector-icons/AntDesign';
+import CancelImgIcon from 'react-native-vector-icons/Entypo';
 import {Picker} from '@react-native-picker/picker';
 import {Image} from 'react-native-elements';
 import {pickSingle} from 'react-native-document-picker';
 import TruncatedText from '../Othercomponent/TruncatedText';
-
+import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
+import {NATIVE_API_URL} from '@env';
+import { useNavigation } from '@react-navigation/native';
 export default function OrgRegistration() {
-  const [selectedValue, setSelectedValue] = useState({
-    documentType: '',
-    orgSector: '',
-    orgListed: '',
-    empCount: '',
-    country: '',
-    state: '',
-    city: '',
-  });
+
   const [Orgdata, setOrgdata] = useState({
     orgName: '',
     documentNumber: '',
@@ -38,18 +33,33 @@ export default function OrgRegistration() {
   const [error, setError] = useState(null);
   const [previewimage, setPreviewImage] = useState({
     orgLogo: {},
-    documentfile : {},
+    documentfile: {},
   });
+  const [documenttype, setdocumenttype] = useState([]);
+  const [sectortype, setsectortype] = useState([]);
+  const [listedtype, setlistedtype] = useState([]);
+  const [country, setcountry] = useState([]);
+  const [state, setstate] = useState([]);
+  const [city, setcity] = useState([]);
+  const [statedata, setstatedata] = useState([]);
+  const [citydata, setcitydata] = useState([]);
+  const [editOrgEnabled, seteditOrgEnabled] = useState(false)
+  const [iscity, setiscity] = useState(!editOrgEnabled?false:true);
+  const [isstate, setisstate] = useState(!editOrgEnabled?false:true);
+
+  const navigation = useNavigation()
 
   function validate() {
     const errors = {};
     if (!Orgdata.orgName) errors.orgName = 'Name is required*';
-    if (!Orgdata.documentType)
-      errors.documentType = 'Document type is required*';
+    if (!Orgdata.OrgLogo)
+      errors.OrgLogo = 'Organization Logo is required*';
+    if (!Orgdata.documenttype)
+      errors.documenttype = 'Document type is required*';
     if (!Orgdata.orgSector)
       errors.orgSector = 'Organization Sector is required*';
-    if (!Orgdata.orgListed)
-      errors.orgListed = 'Organization listed is required*';
+    if (!Orgdata.listedtype)
+      errors.listedtype = 'Organization listed is required*';
     if (!Orgdata.documentNumber)
       errors.documentNumber = 'Document Number is required*';
     if (!Orgdata.empCount) errors.empCount = 'Number of Employees is required*';
@@ -61,33 +71,146 @@ export default function OrgRegistration() {
     return errors;
   }
 
-  const updateData = (key, itemValue) => {
-    setSelectedValue(prevState =>
-      Object.assign({}, prevState, {[key]: itemValue}),
+  function populateState(id) {
+    var data = statedata;
+    var tempList = [];
+    tempList.push(<Picker.Item
+      label="Select Option"
+      value="placeholder"
+      style={styles.pickerItem}
+      color="#535C68"
+    />);
+    Object.keys(data).forEach(function (key) {
+      if (data[key].CountryId == id) {
+        tempList.push(<Picker.Item
+          key={key}
+          label={data[key].Name} // Accessing the object's property using the key
+          value={key} 
+          style={styles.pickerItem}
+        />);
+      }
+    });
+    setisstate(true);
+    setstate(tempList);
+  }
+
+  function populateCity(id) {
+    var data = citydata;
+    var tempList = [];
+    tempList.push(<Picker.Item
+      label="Select Option"
+      value="placeholder"
+      style={styles.pickerItem}
+      color="#535C68"
+    />);
+    Object.keys(data).forEach(function (key) {
+      if (data[key].StateId == id) {
+        tempList.push(<Picker.Item
+          key={key}
+          label={data[key].Name} // Accessing the object's property using the key
+          value={key} 
+          style={styles.pickerItem}
+        />);
+      }
+    });
+    setiscity(true);
+    setcity(tempList);
+  }
+
+  function populateDropDown(data) {
+    var tempList = [];
+    tempList.push(
+      <Picker.Item
+        label="Select Option"
+        value="placeholder"
+        style={styles.pickerItem}
+        color="#535C68"
+      />
     );
-  };
+    Object.keys(data).forEach(function (key) {
+      tempList.push(
+        <Picker.Item
+          key={key}
+          label={data[key].Name} // Accessing the object's property using the key
+          value={key} 
+          style={styles.pickerItem}
+        />
+      );
+    });
+    return tempList;
+  }
+
+
+  useEffect(async ()=>{
+      try {
+      const res = await ApiBackendRequest(`${NATIVE_API_URL}/add/organization/`)
+      console.log(res)
+      setdocumenttype(populateDropDown(res.data.document_type));
+      setsectortype(populateDropDown(res.data.sector_type));
+      setlistedtype(populateDropDown(res.data.listed_type));
+      setcountry(populateDropDown(res.data.country));
+      setstate(populateDropDown(res.data.state));
+      setstatedata(res.data.state);
+      setcity(populateDropDown(res.data.city));
+      setcitydata(res.data.city);
+      } catch (error) {
+      
+      }
+  },[])
+
   const handleChange = (name, value) => {
     setOrgdata(prevData => ({...prevData, [name]: value}));
+    if (name == "country") {
+      populateState(value);
+    } else if (name == "state") {
+      populateCity(value);
+    }
+    setFormErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
-  const selectImage = async (name) => {
+  const selectImage = async name => {
     try {
       const doc = await pickSingle();
-      console.log(name , doc);
-      setPreviewImage((prev)=> ({...prev, [name] : doc}));
+      console.log(name, doc);
+      setPreviewImage(prev => ({...prev, [name]: doc}));
     } catch (error) {
       console.log(error);
     }
   };
 
-  console.log(previewimage.orgLogo.name)
+  
 
   const handleOrgSubmit = () => {
-    // const errors = validate();
-    // setFormErrors(errors);
-    setOrgdata({...Orgdata, ...selectedValue});
-  };
+    const errors = validate();
+    setFormErrors(errors);
 
+    setOrgdata({...Orgdata,...previewimage});
+
+    const formData=  new FormData();
+    Object.keys(Orgdata).forEach(key => {
+      formData.append(key, Orgdata[key]);
+    });
+
+      ApiBackendRequest(`${NATIVE_API_URL}${editOrgEnabled ? "/organization/edit/" : "/create/organization/"}`, formData)
+        .then((res) => {
+          if(res.data){
+            if (res.data.is_organization_register_successfull || res.data.organization_edit_sucessfull) {
+              // setIsOrganizationCreated(true);
+              // navigate("/dashboard/organization");
+              // setloading(false);
+              console.log("organization created successfully")
+              navigation.navigate("OrganizationList")
+            }
+          } else if(res.isexception){
+                // setloading(false);
+              
+                setError(res.exceptionmessage.error);
+                
+                validate();
+              }
+            })
+  };
+  
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
@@ -118,17 +241,17 @@ export default function OrgRegistration() {
               )}
             </View>
 
-            <View >
+            <View>
               <View style={customStyle.lableContainer}>
                 <Text style={customStyle.lableHeading}>Organization Logo</Text>
                 <Text style={customStyle.mandatory}>*</Text>
               </View>
-              <View style={{display: 'flex', flexDirection: 'row'}}>
+              <View style={{display: 'flex', flexDirection: 'coloum'}}>
                 <TouchableOpacity onPress={() => selectImage('orgLogo')}>
                   <View style={customStyle.fileBtn}>
                     <FileIcon name="clouduploado" size={20} color="#592DA1" />
                     <Text style={customStyle.fileBtnText}>
-                      {Object.keys(previewimage.orgLogo).length == 0? (
+                      {Object.keys(previewimage.orgLogo).length == 0 ? (
                         'UPLOAD FILE'
                       ) : (
                         <TruncatedText
@@ -140,11 +263,27 @@ export default function OrgRegistration() {
                     </Text>
                   </View>
                 </TouchableOpacity>
-                {
-                  Object.keys(previewimage.orgLogo).length !== 0 &&
-                  <Text style={styles.viewbtn}>View</Text>
-                }
+                {Object.keys(previewimage.orgLogo).length !== 0 && (
+                  <View
+                    style={styles.viewContainer}>
+                      <TouchableOpacity>
+                        <Text style={styles.viewText} >View</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() =>
+                          setPreviewImage(previous => ({
+                            ...previous,
+                            orgLogo: {},
+                          }))
+                        }>
+                        <Text style={styles.cancelText}>Cancel</Text>
+                      </TouchableOpacity>
+                  </View>
+                )}
               </View>
+              {formsErrors.onChangeTextrgLogo && (
+                <Text style={styles.errors}>{formsErrors.orgLogo}</Text>
+              )}
             </View>
             <View>
               <View style={customStyle.lableContainer}>
@@ -153,35 +292,15 @@ export default function OrgRegistration() {
               </View>
               <View style={styles.option}>
                 <Picker
-                  selectedValue={selectedValue.documentType}
+                  selectedValue={Orgdata.documenttype}
                   onValueChange={itemValue =>
-                    updateData('documentType', itemValue)
+                    handleChange('documenttype', itemValue)
                   }>
-                  <Picker.Item
-                    label="Select Option"
-                    value="placeholder"
-                    style={styles.pickerItem}
-                    color="#535C68"
-                  />
-                  <Picker.Item
-                    label="Aadhar Card"
-                    value="Aadhar Card"
-                    style={styles.pickerItem}
-                  />
-                  <Picker.Item
-                    label="Pan Card"
-                    value="Pan Card"
-                    style={styles.pickerItem}
-                  />
-                  <Picker.Item
-                    label="Driving Licence"
-                    value="Driving Licence"
-                    style={styles.pickerItem}
-                  />
+                    {documenttype}
                 </Picker>
               </View>
-              {formsErrors.documentType && (
-                <Text style={styles.errors}>{formsErrors.documentType}</Text>
+              {formsErrors.documenttype && (
+                <Text style={styles.errors}>{formsErrors.documenttype}</Text>
               )}
             </View>
             <View>
@@ -189,7 +308,7 @@ export default function OrgRegistration() {
                 <Text style={customStyle.lableHeading}>Document File</Text>
                 <Text style={customStyle.mandatory}>*</Text>
               </View>
-              <View style={{display: 'flex', flexDirection: 'row'}}>
+              <View>
                 <TouchableOpacity onPress={() => selectImage('documentfile')}>
                   <View style={customStyle.fileBtn}>
                     <FileIcon name="clouduploado" size={20} color="#592DA1" />
@@ -206,11 +325,27 @@ export default function OrgRegistration() {
                     </Text>
                   </View>
                 </TouchableOpacity>
-                {
-                  Object.keys(previewimage.documentfile).length !== 0&&
-                  <Text style={styles.viewbtn}>View</Text>
-                }
+                {Object.keys(previewimage.documentfile).length !== 0 && (
+                  <View
+                    style={styles.viewContainer}>
+                      <TouchableOpacity>
+                        <Text style={styles.viewText}>View</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() =>
+                          setPreviewImage(previous => ({
+                            ...previous,
+                            documentfile: {},
+                          }))
+                        }>
+                        <Text style={styles.cancelText}>Cancel</Text>
+                      </TouchableOpacity>
+                  </View>
+                )}
               </View>
+              {formsErrors.documenttype && (
+                <Text style={styles.errors}>{formsErrors.documenttype}</Text>
+              )}
             </View>
             <View></View>
             <View>
@@ -222,35 +357,15 @@ export default function OrgRegistration() {
               </View>
               <View style={styles.option}>
                 <Picker
-                  selectedValue={selectedValue.orgSector}
+                  selectedValue={Orgdata.sectortype}
                   onValueChange={itemValue =>
-                    updateData('orgSector', itemValue)
+                    handleChange('sectortype', itemValue)
                   }>
-                  <Picker.Item
-                    label="Select Option"
-                    value="placeholder"
-                    style={styles.pickerItem}
-                    color="#535C68"
-                  />
-                  <Picker.Item
-                    label="Technology Sector"
-                    value="Technology Sector"
-                    style={styles.pickerItem}
-                  />
-                  <Picker.Item
-                    label="Technology Sector"
-                    value="Technology Sector"
-                    style={styles.pickerItem}
-                  />
-                  <Picker.Item
-                    label="Technology Sector"
-                    value="Technology Sector"
-                    style={styles.pickerItem}
-                  />
+                  {sectortype}
                 </Picker>
               </View>
-              {formsErrors.orgSector && (
-                <Text style={styles.errors}>{formsErrors.orgSector}</Text>
+              {formsErrors.sectortype && (
+                <Text style={styles.errors}>{formsErrors.sectortype}</Text>
               )}
             </View>
             <View>
@@ -262,30 +377,15 @@ export default function OrgRegistration() {
               </View>
               <View style={styles.option}>
                 <Picker
-                  selectedValue={selectedValue.orgListed}
+                  selectedValue={Orgdata.listedtype}
                   onValueChange={itemValue =>
-                    updateData('orgListed', itemValue)
+                    handleChange('listedtype', itemValue)
                   }>
-                  <Picker.Item
-                    label="Select Option"
-                    value="placeholder"
-                    style={styles.pickerItem}
-                    color="#535C68"
-                  />
-                  <Picker.Item
-                    label="Public Sector"
-                    value="Public Sector"
-                    style={styles.pickerItem}
-                  />
-                  <Picker.Item
-                    label="Private Sector"
-                    value="Private Sector"
-                    style={styles.pickerItem}
-                  />
+                  {listedtype}
                 </Picker>
               </View>
-              {formsErrors.orgListed && (
-                <Text style={styles.errors}>{formsErrors.orgListed}</Text>
+              {formsErrors.listedtype && (
+                <Text style={styles.errors}>{formsErrors.listedtype}</Text>
               )}
             </View>
 
@@ -330,9 +430,9 @@ export default function OrgRegistration() {
               </View>
               <View style={styles.option}>
                 <Picker
-                  selectedValue={selectedValue.empCount}
+                  selectedValue={Orgdata.empCount}
                   onValueChange={itemValue =>
-                    updateData('empCount', itemValue)
+                    handleChange('empCount', itemValue)
                   }>
                   <Picker.Item
                     label="Select any one"
@@ -416,19 +516,10 @@ export default function OrgRegistration() {
               </View>
               <View style={styles.option}>
                 <Picker
-                  selectedValue={selectedValue.country}
-                  onValueChange={itemValue => updateData('country', itemValue)}>
-                  <Picker.Item
-                    label="Select Country"
-                    value="placeholder"
-                    style={styles.pickerItem}
-                    color="#535C68"
-                  />
-                  <Picker.Item
-                    label="India"
-                    value="India"
-                    style={styles.pickerItem}
-                  />
+                  selectedValue={Orgdata.country}
+                  onValueChange={itemValue => handleChange('country', itemValue)}
+                  >
+                  {country}
                 </Picker>
               </View>
               {formsErrors.country && (
@@ -442,24 +533,11 @@ export default function OrgRegistration() {
               </View>
               <View style={styles.option}>
                 <Picker
-                  selectedValue={selectedValue.state}
-                  onValueChange={itemValue => updateData('state', itemValue)}>
-                  <Picker.Item
-                    label="Select State"
-                    value="placeholder"
-                    style={styles.pickerItem}
-                    color="#535C68"
-                  />
-                  <Picker.Item
-                    label="Madhya Pradesh"
-                    value="Madhya Pradesh"
-                    style={styles.pickerItem}
-                  />
-                  <Picker.Item
-                    label="Arunachal Pradesh"
-                    value="Arunachal Pradesh"
-                    style={styles.pickerItem}
-                  />
+                  selectedValue={Orgdata.state}
+                  onValueChange={itemValue => handleChange('state', itemValue)}
+                  enabled={isstate}
+                  >
+                  {state}
                 </Picker>
               </View>
               {formsErrors.state && (
@@ -473,24 +551,11 @@ export default function OrgRegistration() {
               </View>
               <View style={styles.option}>
                 <Picker
-                  selectedValue={selectedValue.city}
-                  onValueChange={itemValue => updateData('city', itemValue)}>
-                  <Picker.Item
-                    label="Select City"
-                    value="placeholder"
-                    style={styles.pickerItem}
-                    color="#535C68"
-                  />
-                  <Picker.Item
-                    label="Indore"
-                    value="Indore"
-                    style={styles.pickerItem}
-                  />
-                  <Picker.Item
-                    label="Bhopal"
-                    value="Bhopal"
-                    style={styles.pickerItem}
-                  />
+                  selectedValue={Orgdata.city}
+                  onValueChange={itemValue => handleChange('city', itemValue)}
+                  enabled={iscity}
+                  >
+                  {city}
                 </Picker>
               </View>
               {formsErrors.city && (
@@ -508,6 +573,7 @@ export default function OrgRegistration() {
                   placeholderTextColor="#535C68"
                   style={customStyle.inputStyle}
                   keyboardType="numeric"
+                  maxLength={6}
                   onChangeText={number => handleChange('pinCode', number)}
                 />
               </View>
@@ -552,7 +618,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#DAE0E2',
     borderRadius: 6,
     paddingHorizontal: 8,
-    marginVertical: 4,
+    marginVertical: 2,
     borderWidth: 1,
     borderColor: '#592DA1',
   },
@@ -572,9 +638,20 @@ const styles = StyleSheet.create({
     color: 'red',
     paddingLeft: 5,
   },
-  viewbtn:{
-    color: primary, 
-    textAlignVertical: 'center', 
-    fontWeight: '500', 
-  }
+  viewContainer : {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+  },
+  viewText: {
+    fontSize: 15,
+    color:primary ,
+    textAlignVertical: 'start',
+    fontWeight: '500',
+  },
+  cancelText: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#592DA1',
+  },
 });

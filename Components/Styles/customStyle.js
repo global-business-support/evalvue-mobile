@@ -14,7 +14,7 @@ export const customStyle = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#DAE0E2',
         borderRadius: 6,
-        marginVertical: 8,
+        marginVertical: 2,
         paddingHorizontal: 8
     },
     inputStyle: {
@@ -56,12 +56,12 @@ export const customStyle = StyleSheet.create({
     },
     lableHeading: {
         fontSize: 14,
-        color: '#000',
-        fontWeight: '500',
+        color: '#333',
+        fontWeight: '400',
     },
     mandatory: {
         color: 'red',
-        fontSize: 18,
+        fontSize: 14,
         marginLeft: 4
     },
     fileBtn: {
@@ -71,7 +71,7 @@ export const customStyle = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#DAE0E2',
         borderRadius: 6,
-        marginVertical: 6,
+        marginVertical: 2,
         paddingHorizontal: 8,
         paddingVertical: 8,
         borderWidth: 1,
