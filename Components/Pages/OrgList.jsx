@@ -17,8 +17,9 @@ import TruncatedText from '../Othercomponent/TruncatedText';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import ThreeDotMenu from './ThreeDotMenu ';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
+import { useNavigation } from '@react-navigation/native';
 
-export default function OrgList({ navigation }) {
+export default function OrgList() {
   const [Orgdata, setOrgdata] = useState([]);
   const [filteredOrgData, setFilteredOrgData] = useState([]);
   const [count, setCount] = useState();
@@ -27,6 +28,7 @@ export default function OrgList({ navigation }) {
   const [error, setError] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const navigation = useNavigation();
 
   const fetchdata = async () => {
     try {
@@ -126,7 +128,7 @@ export default function OrgList({ navigation }) {
         <Text style={{ color: 'red', fontSize: 16, fontWeight: '600', textAlign: 'left', padding: 10 }}>{error}</Text>
       </View>
     )
-  }
+  };
 
   return (
     <View style={listStyle.listMainContainer}>
