@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 
-export default function ShimmerUI() {
+export default function ListShimmerUI() {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.container}>
