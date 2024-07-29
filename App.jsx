@@ -14,6 +14,7 @@ import AppStack from './AppStack.tsx';
 import AppDrawer from './Drawer/AppDrawer.jsx'
 import AppTabs from './Drawer/AppTabs.jsx';
 import { windowHeight } from './Components/Styles/customStyle.js';
+import NetworkErrorOverlay from './Components/CustomModal/NetworkErrorOverlay.js';
 export default function App() {
   return (
     <View style={{backgroundColor: '#FFF', height: windowHeight}}>
@@ -30,6 +31,7 @@ export default function App() {
       <AppStack/>
       {/* <AppDrawer/> */}
       {/* <AppTabs/> */}
+      <NetworkErrorOverlay />
     </NavigationContainer>
     </View>
   );

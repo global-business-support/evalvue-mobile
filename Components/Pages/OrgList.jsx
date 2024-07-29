@@ -72,11 +72,18 @@ export default function OrgList() {
   };
 
   // three dot function
-  const handleEdit = organizationId => {
+  const handleEdit = (organizationId) => {
     // Navigate to the edit page
-    // navigate(`/dashboard/organization/addorganization`, {
-    //   state: { organization_id: organizationId, editorg: true },
-    // });
+    navigation.navigate(`AddOrganization`, {
+      state: { organization_id: organizationId, editorg: true },
+    });
+    // navigate(`/dashboard/organization/edit/${organizationId}`)
+  };
+  const handleInfo = (organizationId) => {
+    // Navigate to the edit page
+    navigation.navigate(`infoorganization`, {
+      state: { organization_id: organizationId, editorg: true },
+    });
     // navigate(`/dashboard/organization/edit/${organizationId}`)
   };
 
@@ -109,7 +116,7 @@ export default function OrgList() {
           }>
           <Text style={listStyle.listBtn}>View</Text>
         </TouchableOpacity>
-        <ThreeDotMenu onEdit={() => handleEdit(organization.organization_id)} edit={true} deleted={false} />
+        <ThreeDotMenu onEdit={() => handleEdit(item.organization_id)} edit={true} deleted={false} />
       </View>
     </View>
   );
