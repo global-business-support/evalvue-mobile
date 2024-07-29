@@ -5,15 +5,85 @@ import { Image } from 'react-native-elements/dist/image/Image';
 import { windowHeight } from '../Styles/customStyle';
 import { Rating } from 'react-native-elements';
 import ImgIcon from 'react-native-vector-icons/FontAwesome6';
+import {NATIVE_API_URL} from '@env';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import DocumentPicker from 'react-native-document-picker';
+import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function PostReview() {
+    const [reviewData, setReviewData] = useState({
+        organization_id: null,
+        employee_id: null,
+        comment: '', 
+        rating : 0,
+        image : {}
+    })
     const [rating, setRating] = useState(0);
+    const [formsErrors, setFormErrors] = useState({});
+    const [error, setError] = useState('')
+
+    const navigation = useNavigation()
+
+    function validate() {
+        const errors = {};
+        if (!reviewData.comment) errors.comment = 'Comment is required*';
+        if (!reviewData.rating) errors.rating = 'Rating is required*';
+        return errors;
+      }
 
     const handleRatingFinish = (ratingValue) => {
-        setRating(ratingValue)
+       setReviewData((prev) => ({...prev, rating : ratingValue}))
     };
+
+    console.log(reviewData)
+
+    
+    const handleChange= (name, value)=> {
+        setReviewData((prev) => ({...prev, [name] : value}))
+    }
+
+
+    const selectImage = async name => {
+        try {
+          const doc = await DocumentPicker.pickSingle({
+            type: [DocumentPicker.types.images],
+          });
+          console.log(name, doc);
+          setReviewData(prev => ({...prev, [name]: doc}));
+        } catch (error) {
+          console.log("error selectimage",error);
+        }
+      };
+
+    const handleSubmit = async () => {
+        const errors = validate();
+        setFormErrors(errors)
+
+        const formData = new FormData();
+        Object.keys(reviewData).forEach(key => {
+            formData.append(key, reviewData[key]);
+        });
+        // try {
+        //     const res = await ApiBackendRequest(`${NATIVE_API_URL}/create/review/`, formData)
+        // if(res.data){
+        //     if(res.data.is_review_added_successfull){
+        //         navigation.navigate('EmployeeDetails')
+        //     }
+        // }
+        // } catch (error) {
+        //     setError(error)
+        // }
+        console.log(formData)
+        
+    }
+
+
     return (
-        <KeyboardAvoidingView>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{flex: 1}}>
             <View style={styles.mainContainer}>
                 <View>
                     <View style={styles.headerContainer}>
@@ -28,9 +98,13 @@ export default function PostReview() {
                             <Text style={styles.orgHeading}>Evalvue</Text>
                         </View>
                         <View style={[styles.orgContainer, styles.postBtnContainer]}>
-                            <Text style={styles.btnText}>
-                                Post
-                            </Text>
+                            <TouchableOpacity 
+                            onPress={handleSubmit}                            
+                            >
+                                <Text style={styles.btnText}>
+                                    Post
+                                </Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
 
@@ -38,14 +112,21 @@ export default function PostReview() {
                         <TextInput
                             multiline
                             numberOfLines={14}
+                            maxLength={500}
                             placeholder='Write your review here...'
                             placeholderTextColor="#535C68"
                             style={styles.inputStyle}
+                            onChangeText={(text) => handleChange('comment', text)}
                         >
                         </TextInput>
+                        {formsErrors.comment && (
+                            <Text style={styles.errors}>{formsErrors.comment}</Text>
+                        )}
                     </View>
                 </View>
                 <View style={styles.footerContainer}>
+                    <View>
+
                     <Rating
                         type="custom"
                         ratingColor="gold"
@@ -53,8 +134,33 @@ export default function PostReview() {
                         startingValue={0}
                         imageSize={30}
                         onFinishRating={handleRatingFinish}
-                    />
-                    <ImgIcon name="image" size={30} color="#000" />
+                        />
+                    {formsErrors.rating && (
+                        <Text style={styles.errors}>{formsErrors.rating}</Text>
+                    )}
+                    </View>
+                    {Object.keys(reviewData.image).length == 0 ? 
+                    <TouchableOpacity 
+                    onPress={()=>selectImage('image')}
+                    >
+                        <ImgIcon name="image" size={30} color="#000" />
+                    </TouchableOpacity>
+                    :<View style={styles.PreviewContainer}>
+                        <Image
+                        source={reviewData.image}
+                        style={styles.previewImage}
+                        />
+                         <TouchableOpacity
+                            onPress={() =>
+                            setReviewData(previous => ({
+                                ...previous,
+                                image: {},
+                            }))
+                            }>
+                            <Text style={styles.cancelText}>Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
+                    }
                 </View>
             </View>
         </KeyboardAvoidingView>
@@ -63,7 +169,7 @@ export default function PostReview() {
 
 const styles = StyleSheet.create({
     mainContainer: {
-        height: windowHeight,
+        height: windowHeight-30,
         justifyContent: 'space-between',
         backgroundColor: '#FFF',
     },
@@ -89,7 +195,8 @@ const styles = StyleSheet.create({
     orgHeading: {
         fontSize: 22,
         fontWeight: '500',
-        marginLeft: 10
+        marginLeft: 10,
+        color:'black'
     },
     close: {
         marginHorizontal: 8
@@ -101,18 +208,38 @@ const styles = StyleSheet.create({
         paddingVertical: 6
     },
     btnText: {
-        fontSize: 14
+        fontSize: 14,
+        fontWeight: '500',
+        color: 'white'
     },
     inputStyle: {
         paddingHorizontal: 22,
         fontSize: 16,
         color: '#000',
         fontWeight: '400',
-        textAlignVertical: 'top'
+        textAlignVertical: 'top',
     },
     footerContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
+        justifyContent: 'space-around',
+        alignItems : 'center',
         paddingBottom: 50
+    },
+    errors: {
+        color: 'red',
+        paddingLeft: 5,
+    },
+    previewImage : {
+        height : 100,
+        width : 100
+    },
+    PreviewContainer : {
+        flexDirection : 'column'
+    },
+    cancelText : {
+        color : 'black',
+        fontSize : 15,
+        fontWeight : '500',
+        marginTop : 10
     }
 });

@@ -15,14 +15,15 @@ const CustomModal = ({ visible, onClose, obj }) => {
             <Text style={styles.closeButtonText}>✕</Text>
           </TouchableOpacity>
           <View style={styles.content}>
-            {!obj.error ?
-              <View style={[styles.iconContainer, styles.primaryBorder]}>
-                <Check name="checkcircle" size={43} color={primary} />
-              </View>
-              :
+            {obj.error ?
               <View style={[styles.iconContainer, styles.redBorder]}>
                 <Check name="closecircle" size={43} color={'red'} />
               </View>
+              :
+              <View style={[styles.iconContainer, styles.primaryBorder]}>
+                <Check name="checkcircle" size={43} color={primary} />
+              </View>
+              
             }
             <Text style={styles.title}>{obj.title}</Text>
             <Text style={styles.subtitle}>
