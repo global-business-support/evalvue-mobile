@@ -3,21 +3,23 @@ import { primary } from "./customStyle";
 
 export const listStyle = StyleSheet.create({
     listMainContainer: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#DAE0E2'
     },
     listHeaderContainer: {
-        padding: 10,
-        backgroundColor: '#FFF'
+        paddingVertical: 4,
+        backgroundColor: '#DAE0E2'
     },
     listHeading: {
         textAlign: 'left',
         fontSize: 20,
         color: '#000',
         fontWeight: 'bold',
+        paddingHorizontal: 10
     },
     listTitleDetailsContainer: {
         backgroundColor: primary,
-        borderRadius: 6,
+        // borderRadius: 6,
         paddingHorizontal: 8,
         paddingVertical: 12,
         flexDirection: 'row',
@@ -41,30 +43,26 @@ export const listStyle = StyleSheet.create({
         marginLeft: 6,
     },
     listAddStyle: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        paddingHorizontal: 10
     },
     searchInputStyle: {
         backgroundColor: '#F2EFF8',
-        // height: 40,
         width:"90%",
-        // borderRadius: 10,
         fontSize: 12,
         color: '#592DA1',
-        // paddingHorizontal: 8,
     },
     listFooterContainer: {
-        padding: 2,
-        backgroundColor: '#F0EFEF'
+        paddingVertical: 2,
+        backgroundColor: '#DAE0E2'
     },
     listContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginHorizontal: 6,
         marginVertical: 2,
         backgroundColor: '#FFF',
         padding: 10,
-        borderRadius: 3
     },
     listSubContainer: {
         flexDirection: 'row',
