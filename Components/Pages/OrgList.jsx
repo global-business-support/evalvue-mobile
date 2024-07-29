@@ -19,6 +19,7 @@ import {NATIVE_API_URL} from '@env';
 import TruncatedText from '../Othercomponent/TruncatedText';
 // import { error } from 'console';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
+import ThreeDotMenu from './ThreeDotMenu ';
 
 export default function OrgList({navigation}) {
   const [Orgdata, setOrgdata] = useState([]);
@@ -76,6 +77,15 @@ export default function OrgList({navigation}) {
     }
   };
 
+  // three dot function
+  const handleEdit = organizationId => {
+    // Navigate to the edit page
+    // navigate(`/dashboard/organization/addorganization`, {
+    //   state: { organization_id: organizationId, editorg: true },
+    // });
+    // navigate(`/dashboard/organization/edit/${organizationId}`)
+  };
+
   const renderItem = ({item}) => (
     <View style={listStyle.listContainer}>
       <View style={listStyle.listSubContainer}>
@@ -91,18 +101,21 @@ export default function OrgList({navigation}) {
         </View>
       </View>
       <View style={listStyle.listBtnContainer}>
-        
         <TouchableOpacity
           style={listStyle.btnStyle}
-          
           onPress={() =>
             navigation.navigate('EmployeeList', {
-              orgDetails: {orgName: item.name, orgId: item.organization_id,orgAddress:item.area+" "+item.city_name,orgImage:item.image},
+              orgDetails: {
+                orgName: item.name,
+                orgId: item.organization_id,
+                orgAddress: item.area + ' ' + item.city_name,
+                orgImage: item.image,
+              },
             })
           }>
           <Text style={listStyle.listBtn}>View</Text>
         </TouchableOpacity>
-        <DotIcon name="dots-three-vertical" size={18} color="#47535E" />
+        <ThreeDotMenu onEdit={() => handleEdit(organization.organization_id)} edit={true} deleted={false} />
       </View>
     </View>
   );
