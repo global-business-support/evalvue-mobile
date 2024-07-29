@@ -6,6 +6,7 @@ import {
   View,
   FlatList,
   RefreshControl,
+  Alert, Button,
 } from 'react-native';
 import {Image} from 'react-native-elements';
 import SearchIcon from 'react-native-vector-icons/MaterialIcons';
@@ -27,6 +28,7 @@ export default function EmployeeList() {
   const route = useRoute();
   const {orgDetails} = route.params;
   const navigation = useNavigation(); // Ensure navigation is defined
+  
 
   // Fetch data
   const fetchdata = useCallback(async () => {
@@ -72,12 +74,48 @@ export default function EmployeeList() {
   );
 
   // three dot function
-  const handleEdit = organizationId => {
+
+  const showAlert = (empname) => {
+    Alert.alert(
+      "Terminate Employee",
+      `Are you sure you want to terminate${empname}`,
+      [
+        { text: "Cancel", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
+        { text: "OK", onPress: () => console.log("OK Pressed") }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const handleTerminate = (empId, OrgId, empname) => {
+    const delId = { organization_id: OrgId, employee_id: empId };
+    showAlert(empname)
+    // if (confirmuser) {
+    //   Apibackendrequest(`${apiUrl}/terminate/employee/`, delId)
+    //     .then((res) => {
+    //       if (res) {
+    //         if (res.exceptionmessage.is_employee_terminated_successfull) {
+    //           window.location.reload();
+    //         } else if (res.isexception) {
+    //           setError(res.exceptionmessage.error);
+    //         }
+    //       }
+    //     })
+    //     .finally(() => setLoading(false));
+    // }
+  };
+  const handleEdit = (empId, OrgId) => {
     // Navigate to the edit page
-    // navigate(`/dashboard/organization/addorganization`, {
-    //   state: { organization_id: organizationId, editorg: true },
-    // });
-    // navigate(`/dashboard/organization/edit/${organizationId}`)
+    navigation.navigate(`AddEmployee`, {
+      state: {
+        employee_id: empId,
+        organization_id: OrgId,
+        addEmp: false,
+        orgImage: orgDetails.orgImage,
+        orgName: orgDetails.orgName,
+        orgAddress:orgDetails.orgAddress
+      },
+    });
   };
   const renderItem = useCallback(
     ({item}) => (
@@ -106,10 +144,19 @@ export default function EmployeeList() {
             onPress={() =>
               navigation.navigate('EmployeeDetails', {empDetails: item})
             }>
-            <Text style={listStyle.listBtn}>View</Text>
+            <Text style={listStyle.listBtn}>Reviews</Text>
           </TouchableOpacity>
           <ThreeDotMenu
-            onEdit={() => handleEdit(organization.organization_id)}
+            onEdit={() =>
+              handleEdit(item.employee_id, orgDetails.orgId)
+            }
+            onDelete={() =>
+              handleTerminate(
+                item.employee_id,
+                orgDetails.orgId,
+                item.employee_name
+              )
+            }
             edit={true}
             deleted={true}
           />

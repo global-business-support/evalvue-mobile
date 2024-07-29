@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather'; // For FiEdit
 import InfoIcon from 'react-native-vector-icons/AntDesign'; // For FiEdit
-import IconDelete from 'react-native-vector-icons/MaterialIcons'; // For MdOutlineDelete
+import IconDelete from 'react-native-vector-icons/MaterialCommunityIcons'; // For MdOutlineDelete
 import ThreeDotVertical from 'react-native-vector-icons/Entypo'; // For Entypo's dots-three-vertical
 
 const {width, height} = Dimensions.get('window');
@@ -49,6 +49,10 @@ const ThreeDotMenu = ({
     }
   }, [showMenu]);
 
+
+ 
+
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -83,11 +87,11 @@ const ThreeDotMenu = ({
               :""}
               {deleted?
                <TouchableOpacity
-                onPress={() => { onDelete(); setShowMenu(false); setTerminated(true); }}
+                onPress={() => { onDelete(); setShowMenu(false); }}
                 style={styles.menuItem}
               >
-                <IconDelete name="delete-outline" size={20} style={styles.deleteText} />
-                <Text style={[styles.menuText, styles.deleteText]}>Delete</Text>
+                <IconDelete name="tray-remove" size={20} style={styles.deleteText} />
+                <Text style={[styles.menuText, styles.deleteText]}>Terminate</Text>
               </TouchableOpacity> 
               :""}
               <TouchableOpacity
