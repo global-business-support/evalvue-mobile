@@ -1,14 +1,22 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, Text, TextInput, View, FlatList, RefreshControl } from 'react-native';
-import { Image } from 'react-native-elements';
+import React, {useState, useEffect, useCallback} from 'react';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  FlatList,
+  RefreshControl,
+} from 'react-native';
+import {Image} from 'react-native-elements';
 import SearchIcon from 'react-native-vector-icons/MaterialIcons';
 import DotIcon from 'react-native-vector-icons/Entypo';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { NATIVE_API_URL } from '@env';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {NATIVE_API_URL} from '@env';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import TruncatedText from '../Othercomponent/TruncatedText';
-import { listStyle } from '../Styles/listStyle';
+import {listStyle} from '../Styles/listStyle';
+import ThreeDotMenu from './ThreeDotMenu ';
 
 export default function EmployeeList() {
   const [Empdata, setEmpdata] = useState([]);
@@ -17,16 +25,15 @@ export default function EmployeeList() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const route = useRoute();
-  const { orgDetails } = route.params;
+  const {orgDetails} = route.params;
   const navigation = useNavigation(); // Ensure navigation is defined
 
   // Fetch data
   const fetchdata = useCallback(async () => {
     try {
-      const res = await ApiBackendRequest(
-        `${NATIVE_API_URL}/employees/`,
-        { organization_id: orgDetails.orgId }
-      );
+      const res = await ApiBackendRequest(`${NATIVE_API_URL}/employees/`, {
+        organization_id: orgDetails.orgId,
+      });
       setEmpdata(res.data.employee_list);
       setFilteredEmpData(res.data.employee_list);
       if (res.isexception) {
@@ -49,43 +56,68 @@ export default function EmployeeList() {
     fetchdata();
   }, [fetchdata]);
 
-  const handleSearch = useCallback((query) => {
-    setSearchQuery(query);
-    if (query) {
-      const filteredData = Empdata.filter(item =>
-        item.employee_name.toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredEmpData(filteredData);
-    } else {
-      setFilteredEmpData(Empdata);
-    }
-  }, [Empdata]);
+  const handleSearch = useCallback(
+    query => {
+      setSearchQuery(query);
+      if (query) {
+        const filteredData = Empdata.filter(item =>
+          item.employee_name.toLowerCase().includes(query.toLowerCase()),
+        );
+        setFilteredEmpData(filteredData);
+      } else {
+        setFilteredEmpData(Empdata);
+      }
+    },
+    [Empdata],
+  );
 
-  const renderItem = useCallback(({ item }) => (
-    <View style={listStyle.listContainer}>
-      <View style={listStyle.listSubContainer}>
-        <Image source={{ uri: item.employee_image }} style={listStyle.listLogoImg} />
-        <View>
-          <Text style={listStyle.listTitleText}>
-            <TruncatedText text={item.employee_name} maxLength={20} dot={true} />
-          </Text>
-          <Text style={listStyle.listSubTitleText}>
-            <TruncatedText text={item.designation} maxLength={20} />
-          </Text>
+  // three dot function
+  const handleEdit = organizationId => {
+    // Navigate to the edit page
+    // navigate(`/dashboard/organization/addorganization`, {
+    //   state: { organization_id: organizationId, editorg: true },
+    // });
+    // navigate(`/dashboard/organization/edit/${organizationId}`)
+  };
+  const renderItem = useCallback(
+    ({item}) => (
+      <View style={listStyle.listContainer}>
+        <View style={listStyle.listSubContainer}>
+          <Image
+            source={{uri: item.employee_image}}
+            style={listStyle.listLogoImg}
+          />
+          <View>
+            <Text style={listStyle.listTitleText}>
+              <TruncatedText
+                text={item.employee_name}
+                maxLength={20}
+                dot={true}
+              />
+            </Text>
+            <Text style={listStyle.listSubTitleText}>
+              <TruncatedText text={item.designation} maxLength={20} />
+            </Text>
+          </View>
+        </View>
+        <View style={listStyle.listBtnContainer}>
+          <TouchableOpacity
+            style={listStyle.btnStyle}
+            onPress={() =>
+              navigation.navigate('EmployeeDetails', {empDetails: item})
+            }>
+            <Text style={listStyle.listBtn}>View</Text>
+          </TouchableOpacity>
+          <ThreeDotMenu
+            onEdit={() => handleEdit(organization.organization_id)}
+            edit={true}
+            deleted={true}
+          />
         </View>
       </View>
-      <View style={listStyle.listBtnContainer}>
-        <TouchableOpacity
-          style={listStyle.btnStyle}
-          onPress={() =>
-            navigation.navigate('EmployeeDetails', { empDetails: item })
-          }>
-          <Text style={listStyle.listBtn}>View</Text>
-        </TouchableOpacity>
-        <DotIcon name="dots-three-vertical" size={18} color="#47535E" />
-      </View>
-    </View>
-  ), [navigation]);
+    ),
+    [navigation],
+  );
 
   const renderEmptyList = () => (
     <View style={styles.emptyContainer}>
@@ -100,12 +132,16 @@ export default function EmployeeList() {
         <View style={listStyle.listTitleDetailsContainer}>
           <View style={listStyle.listOrgContainer}>
             <Image
-              source={{ uri: orgDetails.orgImage }}
-              style={[listStyle.listLogoImg, { borderColor: 'white' }]}
+              source={{uri: orgDetails.orgImage}}
+              style={[listStyle.listLogoImg, {borderColor: 'white'}]}
             />
             <View>
               <Text style={listStyle.listText}>
-              <TruncatedText text={orgDetails.orgName} maxLength={17} dot={true} />
+                <TruncatedText
+                  text={orgDetails.orgName}
+                  maxLength={17}
+                  dot={true}
+                />
               </Text>
               <Text style={listStyle.listSubText}>{orgDetails.orgAddress}</Text>
             </View>
@@ -115,7 +151,12 @@ export default function EmployeeList() {
           </TouchableOpacity>
         </View>
         <View style={styles.searchContainer}>
-          <SearchIcon name="search" size={20} color="#592DA1" style={styles.searchIcon} />
+          <SearchIcon
+            name="search"
+            size={20}
+            color="#592DA1"
+            style={styles.searchIcon}
+          />
           <TextInput
             style={listStyle.searchInputStyle}
             placeholder="Search Employee..."
