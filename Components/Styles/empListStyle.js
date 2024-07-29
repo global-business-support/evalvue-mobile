@@ -4,10 +4,7 @@ export const empListStyle = StyleSheet.create({
     mainContainer: {
       flex: 1,
       backgroundColor: '#FFF',
-      marginHorizontal: 6,
-      marginVertical: 6,
-      borderBottomWidth: 0.5,
-      borderColor: '#333945',
+      marginVertical: 2,
     },
     subContainer: {
       flexDirection: 'row',

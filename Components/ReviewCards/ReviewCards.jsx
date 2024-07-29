@@ -1,6 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-
 import {Image} from 'react-native-elements';
 
 const ReviewCards = ({item}) => {
@@ -41,39 +40,35 @@ export default ReviewCards;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#DAE0E2',
   },
   mainContainer: {
     flex: 1,
     backgroundColor: '#FFF',
-    marginHorizontal: 6,
-    marginVertical: 6,
+    marginTop: 4,
   },
   firstContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#f1f2f6',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
     borderBottomWidth: 1,
     borderColor: '#d2dae2',
   },
   subContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 6
   },
   orgImg: {
     width: 25,
     height: 25,
     borderRadius: 25 / 2,
+    borderWidth: 0.3,
+    borderColor: '#d2dae2'
   },
   secondContainer: {
-    backgroundColor: '#f1f2f6',
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
     justifyContent: 'center',
   },
   empContainer: {
@@ -85,6 +80,8 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     borderRadius: 35 / 2,
+    borderWidth: 0.3,
+    borderColor: '#d2dae2'
   },
   commentConatiner: {
     paddingVertical: 5,
@@ -114,10 +111,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginLeft: 4,
   },
+  // commentText: {
+  //   color: '#535C68',
+  //   fontSize: 10,
+  //   marginBottom: 6,
+  // },
   commentText: {
     color: '#535C68',
-    fontSize: 10,
+    fontSize: 11,
     marginBottom: 6,
+    textAlign: "justify",
+    fontFamily: 'inter',
+    lineHeight: 16
   },
   dsgText: {
     color: '#2C3335',

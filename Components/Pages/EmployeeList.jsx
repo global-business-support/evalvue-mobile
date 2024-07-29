@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,16 +7,17 @@ import {
   FlatList,
   RefreshControl,
 } from 'react-native';
-import {Image} from 'react-native-elements';
+import { Image } from 'react-native-elements';
 import SearchIcon from 'react-native-vector-icons/MaterialIcons';
 import DotIcon from 'react-native-vector-icons/Entypo';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {NATIVE_API_URL} from '@env';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { NATIVE_API_URL } from '@env';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import TruncatedText from '../Othercomponent/TruncatedText';
-import {listStyle} from '../Styles/listStyle';
+import { listStyle } from '../Styles/listStyle';
 import ThreeDotMenu from './ThreeDotMenu ';
+import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
 
 export default function EmployeeList() {
   const [Empdata, setEmpdata] = useState([]);
@@ -24,11 +25,11 @@ export default function EmployeeList() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [error, setError] = useState('');
   const route = useRoute();
-  const {orgDetails} = route.params;
-  const navigation = useNavigation(); // Ensure navigation is defined
+  const { orgDetails } = route.params;
+  const navigation = useNavigation();
 
-  // Fetch data
   const fetchdata = useCallback(async () => {
     try {
       const res = await ApiBackendRequest(`${NATIVE_API_URL}/employees/`, {
@@ -37,10 +38,10 @@ export default function EmployeeList() {
       setEmpdata(res.data.employee_list);
       setFilteredEmpData(res.data.employee_list);
       if (res.isexception) {
-        console.error(res.exceptionmessage.error);
+        setError(res.exceptionmessage.error);
       }
     } catch (err) {
-      console.error(err);
+      setError(err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -71,7 +72,6 @@ export default function EmployeeList() {
     [Empdata],
   );
 
-  // three dot function
   const handleEdit = organizationId => {
     // Navigate to the edit page
     // navigate(`/dashboard/organization/addorganization`, {
@@ -80,11 +80,11 @@ export default function EmployeeList() {
     // navigate(`/dashboard/organization/edit/${organizationId}`)
   };
   const renderItem = useCallback(
-    ({item}) => (
+    ({ item }) => (
       <View style={listStyle.listContainer}>
         <View style={listStyle.listSubContainer}>
           <Image
-            source={{uri: item.employee_image}}
+            source={{ uri: item.employee_image }}
             style={listStyle.listLogoImg}
           />
           <View>
@@ -104,7 +104,12 @@ export default function EmployeeList() {
           <TouchableOpacity
             style={listStyle.btnStyle}
             onPress={() =>
-              navigation.navigate('EmployeeDetails', {empDetails: item})
+              navigation.navigate('EmployeeDetails', {
+                empDetails: item,
+                orgName: orgDetails.orgName,
+                orgId: orgDetails.orgId,
+                empId: item.employee_id
+              })
             }>
             <Text style={listStyle.listBtn}>View</Text>
           </TouchableOpacity>
@@ -121,9 +126,20 @@ export default function EmployeeList() {
 
   const renderEmptyList = () => (
     <View style={styles.emptyContainer}>
-      <Text style={styles.emptyMessage}>Please add employees</Text>
+      <Text style={styles.emptyMessage}>Please add employees.</Text>
     </View>
   );
+
+  if (loading) {
+    return <ListShimmerUI />
+  };
+  if (error) {
+    return (
+      <View>
+        <Text style={{ color: 'red', fontSize: 16, fontWeight: '600', textAlign: 'left', padding: 10 }}>{error}</Text>
+      </View>
+    );
+  };
 
   return (
     <View style={listStyle.listMainContainer}>
@@ -132,8 +148,8 @@ export default function EmployeeList() {
         <View style={listStyle.listTitleDetailsContainer}>
           <View style={listStyle.listOrgContainer}>
             <Image
-              source={{uri: orgDetails.orgImage}}
-              style={[listStyle.listLogoImg, {borderColor: 'white'}]}
+              source={{ uri: orgDetails.orgImage }}
+              style={[listStyle.listLogoImg, { borderColor: 'white' }]}
             />
             <View>
               <Text style={listStyle.listText}>
@@ -146,7 +162,15 @@ export default function EmployeeList() {
               <Text style={listStyle.listSubText}>{orgDetails.orgAddress}</Text>
             </View>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('AddEmployee')}>
+          <TouchableOpacity onPress={() => navigation.navigate('AddEmployee', {
+            orgDetails: {
+              orgId: orgDetails.orgId,
+              orgName: orgDetails.orgName,
+              orgAddress: orgDetails.orgAddress,
+              orgImage: orgDetails.orgImage,
+              addEmp: true
+            },
+          })}>
             <Text style={styles.buttonText}>Add Employee</Text>
           </TouchableOpacity>
         </View>
@@ -168,7 +192,7 @@ export default function EmployeeList() {
       </View>
       <FlatList
         data={filteredEmpData}
-        keyExtractor={item => item.employee_id.toString()}
+        keyExtractor={item => item?.employee_id.toString()}
         renderItem={renderItem}
         ListEmptyComponent={renderEmptyList}
         contentContainerStyle={listStyle.listFooterContainer}
@@ -206,6 +230,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingLeft: 8,
     marginTop: 8,
+    marginHorizontal: 10
   },
   searchIcon: {
     marginRight: 5,
@@ -223,5 +248,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#592DA1',
     fontWeight: 'bold',
+    paddingHorizontal: 8
   },
 });

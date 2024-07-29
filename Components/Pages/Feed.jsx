@@ -7,39 +7,40 @@ import {
   View,
   RefreshControl
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import DotIcon from 'react-native-vector-icons/Entypo';
-import {Image} from 'react-native-elements';
+import { Image } from 'react-native-elements';
 import SearchIcon from 'react-native-vector-icons/AntDesign';
 import ReviewCards from '../ReviewCards/ReviewCards';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
-import {NATIVE_API_URL} from '@env';
+import { NATIVE_API_URL } from '@env';
+import ReviewShimmerUI from '../ShimmerUI/ReviewShimmerUI';
 
-export default function Feed({navigation}) {
+export default function Feed({ navigation }) {
   const [feeds, setFeeds] = useState([]);
   const [error, setError] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [Isreviewmap, setIsreviewmap] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const fetchdata = async () => {
     try {
-      const res = await ApiBackendRequest(`${NATIVE_API_URL}/dashboard/feed/`, {
-        user_id: 1,
-      });
-
+      setLoading(true);
+      const res = await ApiBackendRequest(`${NATIVE_API_URL}/dashboard/feed/`);
       setFeeds(res.data.dashboard_list);
-
       if (res.data.is_review_mapped) {
         setIsreviewmap(res.data.is_review_mapped);
       }
-
       if (res.isexception) {
         setError(res.exceptionmessage.error);
       }
     } catch (err) {
       setError(err);
+    } finally {
+      setLoading(false);
     }
   };
+
 
   useEffect(() => {
     fetchdata();
@@ -48,6 +49,17 @@ export default function Feed({navigation}) {
   const onRefresh = () => {
     setRefreshing(true);
     fetchdata();
+  };
+
+  if (loading) {
+    return <ReviewShimmerUI />
+  };
+  if (error) {
+    return (
+      <View>
+        <Text style={{ color: 'red', fontSize: 16, fontWeight: '600', textAlign: 'left', padding: 10 }}>{error}</Text>
+      </View>
+    );
   };
 
   return (
@@ -66,7 +78,9 @@ export default function Feed({navigation}) {
           <SearchIcon name="search1" size={16} color="#616C6F" />
           <Text style={styles.searchText}>Click to Search Employee</Text>
         </TouchableOpacity>
-        <DotIcon name="dots-three-vertical" size={22} color="#47535E" />
+        <TouchableOpacity>
+          <DotIcon name="dots-three-vertical" size={22} color="#47535E" />
+        </TouchableOpacity>
       </View>
       <FlatList
         data={feeds}

@@ -11,14 +11,22 @@ import { NATIVE_API_URL } from '@env';
 import { primary } from '../Styles/customStyle';
 import { empListStyle } from '../Styles/empListStyle';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
-import ShimmerUI from '../ShimmerUI/ShimmerUI';
+import ReviewShimmerUI from '../ShimmerUI/ReviewShimmerUI';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 export default function EmployeeDetails() {
   const [reviewData, setReviewData] = useState([]);
   const [empData, setEmpData] = useState(null);
   const [error, setError] = useState('');
   const [isReviewMapped, setIsReviewMapped] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const route = useRoute();
+  const { empDetails } = route.params;
+  const { orgName } = route.params;
+  const { orgId } = route.params;
+  const { empId } = route.params;
+  const navigation = useNavigation();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,10 +34,9 @@ export default function EmployeeDetails() {
       try {
         const res = await ApiBackendRequest(`${NATIVE_API_URL}/reviews/`, {
           search_by_aa: false,
-          organization_id: 5,
-          employee_id: 332,
+          organization_id: orgId,
+          employee_id: empId,
         });
-
         if (res.data) {
           if (res.data.is_review_mapped_to_employee_successfull) {
             setIsReviewMapped(true);
@@ -45,10 +52,8 @@ export default function EmployeeDetails() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
-
   const renderItem = ({ item }) => {
     return (
       <View style={empListStyle.mainContainer}>
@@ -86,36 +91,34 @@ export default function EmployeeDetails() {
     );
   };
 
-  const noReview = ()=>{
-    return(
+  const noReview = () => {
+    return (
       <View>
-      <Text style={{ color: 'black',fontSize: 14, fontWeight: '500', textAlign: 'center', marginTop: 30 }}>No review given!</Text>
-    </View>
+        <Text style={{ color: primary, fontSize: 16, fontWeight: '600', textAlign: 'left', padding: 10 }}>No review given.</Text>
+      </View>
     )
   };
 
   if (loading) {
-    return <ShimmerUI />;
+    return <ReviewShimmerUI />;
   };
-  if(error){
+  if (error) {
     return (
       <View>
-      <Text style={{ color: 'red', textAlign: 'center', marginTop: 30 }}>{error}</Text>
-    </View>
+        <Text style={{ color: 'red', fontSize: 16, fontWeight: '600', textAlign: 'left', padding: 10 }}>{error}</Text>
+      </View>
     );
   };
 
-  return isReviewMapped && (
+  return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
         <View style={styles.headerPartTwo}>
           <View style={{ flexDirection: 'row', gap: 6 }}>
             <View>
-              <View style={styles.profileLogo}>
-                {empData?.employee_image && empData?.employee_image !== 'null' && (
-                  <Image source={{ uri: empData?.employee_image }} style={styles.profileLogo} />
-                )}
-              </View>
+              {empDetails?.employee_image && empDetails?.employee_image !== 'null' && (
+                <Image source={{ uri: empDetails?.employee_image }} style={styles.profileLogo} />
+              )}
             </View>
             <View
               style={{
@@ -125,10 +128,10 @@ export default function EmployeeDetails() {
                 justifyContent: 'space-between',
               }}>
               <View>
-                <Text style={styles.nameText}>{empData?.employee_name}</Text>
+                <Text style={styles.nameText}>{empDetails?.employee_name}</Text>
                 <Text
-                  style={{ color: '#ced6e0', fontSize: 12, fontWeight: '500' }}>
-                  {empData?.email}
+                  style={{ color: '#ced6e0', fontSize: 10, fontWeight: '500' }}>
+                  {empDetails?.designation}
                 </Text>
               </View>
               <View
@@ -160,7 +163,7 @@ export default function EmployeeDetails() {
               justifyContent: 'space-between',
             }}>
             <View>
-              <Text style={styles.orgname}>Tata Consultancy Services</Text>
+              <Text style={styles.orgname}>{orgName}</Text>
               <View style={styles.empRatingContainer}>
                 <Rating
                   type="custom"
@@ -174,7 +177,10 @@ export default function EmployeeDetails() {
               </View>
             </View>
             <View>
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate('AddReview')}
+              >
                 <Text style={styles.buttonText}>Add Review</Text>
               </TouchableOpacity>
             </View>
@@ -194,11 +200,11 @@ export default function EmployeeDetails() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#DAE0E2',
   },
   headerContainer: {
-    paddingHorizontal: 4,
-    paddingTop: 10,
+    paddingTop: 1,
+    marginBottom: 2
   },
   orgname: {
     fontSize: 12,
@@ -208,7 +214,6 @@ const styles = StyleSheet.create({
   headerPartTwo: {
     gap: 20,
     backgroundColor: primary,
-    borderRadius: 5,
     paddingHorizontal: 8,
     paddingVertical: 15,
   },
@@ -218,6 +223,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 45 / 2,
+    borderWidth: 1,
+    borderColor: '#FFF'
   },
   nameText: {
     color: '#FFF',
