@@ -21,10 +21,7 @@ export default function EmployeeDetails() {
   const [isReviewMapped, setIsReviewMapped] = useState(false);
   const [loading, setLoading] = useState(false);
   const route = useRoute();
-  const { empDetails } = route.params;
-  const { orgName } = route.params;
-  const { orgId } = route.params;
-  const { empId } = route.params;
+  const { empDetails, orgDetails, orgName, orgId, empId } = route.params;
   const navigation = useNavigation();
 
 
@@ -179,7 +176,14 @@ export default function EmployeeDetails() {
             <View>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.navigate('AddReview')}
+                onPress={() => navigation.navigate('AddReview',{
+                  empDetails: empDetails,
+                  orgDetails : orgDetails,
+                    id: {
+                      orgId: orgId,
+                      empId: empId,
+                    },}
+                 )}
               >
                 <Text style={styles.buttonText}>Add Review</Text>
               </TouchableOpacity>

@@ -8,14 +8,17 @@ import {
 import React from 'react';
 import Pdf from 'react-native-pdf';
 import DownloadPDF from '../DownloadPDF/DownloadPDF';
+import { useRoute } from '@react-navigation/native';
 
-export default function PdfRender({pdfUrl}) {
+export default function PdfRender() {
+  const route = useRoute()
+  const {pdfUrl} = route.params
   const url = pdfUrl;
   const source = {
     uri: url,
     cache: true,
   };
-
+  
   const {width, height} = useWindowDimensions();
 
   return (
