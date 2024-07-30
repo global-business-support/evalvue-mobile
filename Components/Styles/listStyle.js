@@ -8,7 +8,8 @@ export const listStyle = StyleSheet.create({
     },
     listHeaderContainer: {
         paddingVertical: 4,
-        backgroundColor: '#DAE0E2'
+        marginBottom : 2,
+        backgroundColor: 'white'
     },
     listHeading: {
         textAlign: 'left',
@@ -24,7 +25,6 @@ export const listStyle = StyleSheet.create({
         paddingVertical: 12,
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 6,
         justifyContent: 'space-between'
     },
     listOrgContainer: {
@@ -53,20 +53,19 @@ export const listStyle = StyleSheet.create({
         color: '#592DA1',
     },
     listFooterContainer: {
-        paddingVertical: 2,
+        paddingVertical: 0,
         backgroundColor: '#DAE0E2'
     },
     listContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginVertical: 2,
+        marginBottom: 2,
         backgroundColor: '#FFF',
         padding: 10,
     },
     listSubContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
     },
     listLogoImg: {
         width: 48,

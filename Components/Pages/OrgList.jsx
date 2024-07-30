@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingLeft: 8,
     marginTop: 8,
+    marginBottom: 6,
     marginHorizontal: 10
   },
   searchInputStyle: {

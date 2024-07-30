@@ -146,6 +146,7 @@ export default function EmployeeList() {
             onPress={() =>
               navigation.navigate('EmployeeDetails', {
                 empDetails: item,
+                orgDetails ,
                 orgName: orgDetails.orgName,
                 orgId: orgDetails.orgId,
                 empId: item.employee_id
@@ -194,6 +195,21 @@ export default function EmployeeList() {
     <View style={listStyle.listMainContainer}>
       <View style={listStyle.listHeaderContainer}>
         <Text style={listStyle.listHeading}>Employees</Text>
+        <View style={styles.searchContainer}>
+          <SearchIcon
+            name="search"
+            size={20}
+            color="#592DA1"
+            style={styles.searchIcon}
+          />
+          <TextInput
+            style={listStyle.searchInputStyle}
+            placeholder="Search Employee..."
+            placeholderTextColor="#592DA1"
+            value={searchQuery}
+            onChangeText={handleSearch}
+          />
+        </View>
         <View style={listStyle.listTitleDetailsContainer}>
           <View style={listStyle.listOrgContainer}>
             <Image
@@ -223,22 +239,8 @@ export default function EmployeeList() {
             <Text style={styles.buttonText}>Add Employee</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.searchContainer}>
-          <SearchIcon
-            name="search"
-            size={20}
-            color="#592DA1"
-            style={styles.searchIcon}
-          />
-          <TextInput
-            style={listStyle.searchInputStyle}
-            placeholder="Search Employee..."
-            placeholderTextColor="#592DA1"
-            value={searchQuery}
-            onChangeText={handleSearch}
-          />
-        </View>
       </View>
+        
       <FlatList
         data={filteredEmpData}
         keyExtractor={item => item?.employee_id.toString()}
@@ -279,6 +281,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingLeft: 8,
     marginTop: 8,
+    marginBottom: 6,
     marginHorizontal: 10
   },
   searchIcon: {
