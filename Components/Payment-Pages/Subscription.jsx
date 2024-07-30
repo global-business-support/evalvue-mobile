@@ -9,6 +9,7 @@ import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import TruncatedText from '../Othercomponent/TruncatedText';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
 import { primary } from '../Styles/customStyle';
+import PayIcon from 'react-native-vector-icons/MaterialIcons';
 
 export default function Subscription() {
     const [list, setList] = useState([])
@@ -33,30 +34,29 @@ export default function Subscription() {
     }, []);
     const renderItem = ({ item }) => {
         return (
-            <View style={{marginBottom: 4}}>
+            <View style={{ marginBottom: 4 }}>
                 <View style={paymentStyles.listContainer}>
                     <View style={listStyle.listSubContainer}>
-                        <Image
-                            source={logo}
-                            style={listStyle.listLogoImg}
-                        />
+                        <PayIcon name='payments' size={30} color='black' style={{ marginRight: 4 }} />
                         <View>
                             <Text style={listStyle.listTitleText}>
-                            <TruncatedText text={item?.organization_name} maxLength={20} dot={true} />
+                                <TruncatedText text={item?.organization_name} maxLength={20} dot={true} />
                             </Text>
-                            <Text style={[listStyle.listSubTitleText, {color: primary, fontWeight: '600', fontSize: 12}]}>
+                            <Text style={[listStyle.listSubTitleText, { color: primary, fontWeight: '600', fontSize: 12 }]}>
                                 ₹{item.amount}
                             </Text>
                         </View>
                     </View>
                     <View style={listStyle.listBtnContainer}>
-                        <Text style={[listStyle.listBtn, {color: primary, fontWeight: '600'}]}>monthly</Text>
+                        <Text style={[listStyle.listBtn, { color: item?.status === 'active' ? 'green' : primary, fontWeight: '600' }]}>
+                            {item?.status}
+                        </Text>
                     </View>
                 </View>
                 <View style={paymentStyles.payMainContainer}>
                     <View style={paymentStyles.payConatiner}>
                         <Text style={paymentStyles.idText}>Billing Cycle: </Text>
-                        <Text style={[paymentStyles.idText, {color: 'green'}]}>{item?.status}</Text>
+                        <Text style={[paymentStyles.idText]}>monthly</Text>
                     </View>
                     <View style={paymentStyles.payConatiner}>
                         <Text style={paymentStyles.idText}>Start Date : </Text>
@@ -79,27 +79,27 @@ export default function Subscription() {
         )
     };
 
-    if(loading){
+    if (loading) {
         return <ListShimmerUI />
     };
-    if(error){
+    if (error) {
         return (
             <View>
                 <Text style={{ color: 'red', fontSize: 16, fontWeight: '600', textAlign: 'left', padding: 10 }}>{error}</Text>
             </View>
         )
-    }
+    };
 
     return (
         <View style={listStyle.listMainContainer}>
-            <View style={[listStyle.listHeaderContainer, {marginBottom: 4}]}>
+            <View style={[listStyle.listHeaderContainer, { marginBottom: 4 }]}>
                 <Text style={listStyle.listHeading}>Subscription Details</Text>
             </View>
             <FlatList
                 data={list}
                 keyExtractor={(item, index) => `${item.amount}-${index}`}
                 renderItem={renderItem}
-            ListEmptyComponent={noDetails}
+                ListEmptyComponent={noDetails}
             />
         </View>
     );

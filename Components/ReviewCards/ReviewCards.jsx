@@ -1,14 +1,14 @@
-import {StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import {Image} from 'react-native-elements';
+import { Image, Rating } from 'react-native-elements';
 
-const ReviewCards = ({item}) => {
+const ReviewCards = ({ item }) => {
   return (
     <View style={styles.Container}>
       <View style={styles.mainContainer}>
         <View style={styles.firstContainer}>
           <View style={styles.subContainer}>
-            <Image source={{uri : item.organization_image}} style={styles.orgImg} />
+            <Image source={{ uri: item.organization_image }} style={styles.orgImg} />
             <View>
               <Text style={styles.orgName}>{item.organization_name}</Text>
             </View>
@@ -17,7 +17,7 @@ const ReviewCards = ({item}) => {
         </View>
         <View style={styles.secondContainer}>
           <View style={styles.empContainer}>
-            <Image source={{uri : item.employee_image}} style={styles.empImg} />
+            <Image source={{ uri: item.employee_image }} style={styles.empImg} />
             <View>
               <Text style={styles.empNameStyle}>{item.employee_name}</Text>
               <Text style={styles.dsgText}>{item.designation}</Text>
@@ -28,6 +28,16 @@ const ReviewCards = ({item}) => {
             {item.image && item.image !== 'null' && (
               <Image source={{ uri: item?.image }} style={styles.reviewImg} />
             )}
+            <View style={styles.ratingContainer}>
+              <Rating
+                type="star"
+                ratingColor="gold"
+                ratingCount={5}
+                startingValue={item?.rating}
+                imageSize={20}
+                readonly
+              />
+            </View>
           </View>
         </View>
       </View>
@@ -111,11 +121,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginLeft: 4,
   },
-  // commentText: {
-  //   color: '#535C68',
-  //   fontSize: 10,
-  //   marginBottom: 6,
-  // },
   commentText: {
     color: '#535C68',
     fontSize: 11,
@@ -129,4 +134,8 @@ const styles = StyleSheet.create({
     fontSize: 8,
     marginLeft: 4,
   },
+  ratingContainer: {
+    alignItems: 'flex-start',
+    paddingTop: 6,
+  }
 });

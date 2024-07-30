@@ -7,9 +7,6 @@ export const paymentStyles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#FFF',
         padding: 10,
-        borderTopLeftRadius: 3,
-        borderTopRightRadius: 3
-
     },
     payMainContainer: {},
     payConatiner: {
@@ -24,8 +21,6 @@ export const paymentStyles = StyleSheet.create({
         fontSize: 12
     },
     lastContainer: {
-        borderBottomLeftRadius: 3,
-        borderBottomRightRadius: 3,
         paddingBottom: 6
     }
 });
