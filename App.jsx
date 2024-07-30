@@ -24,15 +24,49 @@ export default function App() {
         backgroundColor="white"
         barStyle='dark-content'
         />
-      {/* <Drawer.Navigator>
-        <Drawer.Screen name="Feed" component={Login} />
-        <Drawer.Screen name="Article" component={Register} />
-      </Drawer.Navigator> */}
+ 
       <AppStack/>
-      {/* <AppDrawer/> */}
-      {/* <AppTabs/> */}
+   
       <NetworkErrorOverlay />
     </NavigationContainer>
     </View>
   );
 }
+// App.js
+// App.js
+// import React, { useState, useEffect } from 'react';
+// import { View, StyleSheet } from 'react-native';
+// import OfferPoster from './Components/Othercomponent/OfferPosters'; // Import the OfferPoster component
+
+// const App = () => {
+//   const [showPoster, setShowPoster] = useState(true); // Initially set to true to show poster
+
+//   // Function to close the poster
+//   const closePoster = () => setShowPoster(true);
+
+//   useEffect(() => {
+   
+//   }, []);
+
+//   return (
+//     <View style={styles.container}>
+//       <OfferPoster
+//         mediaUri={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0K2zhP2SXRepTZrgtqUpTYcFotdUuUIulKQ&s'} // Local video file
+//         type="image" // Specify the type as 'video'
+//         visible={showPoster}
+//         onClose={closePoster}
+//       />
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+// });
+
+// export default App;
+
