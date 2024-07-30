@@ -5,8 +5,8 @@ const storage = new MMKV();
 
 export const getOnboardingStatus = () => {
   try {
-    const value = storage.getString('@hasViewedOnboarding');
-    return value === 'true';
+    const value = storage.getString('hasViewedOnboarding');
+    return value == true;
   } catch (e) {
     console.error('Failed to fetch onboarding status', e);
     return false;
@@ -15,7 +15,7 @@ export const getOnboardingStatus = () => {
 
 export const setOnboardingStatus = (status) => {
   try {
-    storage.set('@hasViewedOnboarding', status ? 'true' : 'false');
+    storage.set('hasViewedOnboarding', status ? true : false);
   } catch (e) {
     console.error('Failed to save onboarding status', e);
   }

@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import DotIcon from 'react-native-vector-icons/Entypo';
+import NotificationIcon from 'react-native-vector-icons/MaterialIcons';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Rating } from 'react-native-elements';
 
 export default function ReviewShimmerUI() {
     return (
@@ -9,7 +10,7 @@ export default function ReviewShimmerUI() {
             <View style={styles.headerContainer}>
                 <View style={styles.profile}></View>
                 <View style={styles.searchBar}></View>
-                <DotIcon name="dots-three-vertical" size={22} color="#616C6F" />
+                <NotificationIcon name="notification-important" size={28} color="#47535E" />
             </View>
             <ScrollView style={styles.scrollStyle}>
                 <View style={styles.reviewContainer}>
@@ -22,7 +23,18 @@ export default function ReviewShimmerUI() {
                         <View style={styles.text}></View>
                     </View>
                     <View style={styles.comment}></View>
+                    <View style={{ alignItems: 'flex-start', padding: 8 }}>
+                        <Rating
+                            type="custom"
+                            ratingColor="gray"
+                            ratingCount={5}
+                            startingValue={3}
+                            imageSize={22}
+                            readonly
+                        />
+                    </View>
                 </View>
+
                 <View style={styles.reviewContainer}>
                     <View style={styles.footerOneContainer}>
                         <View style={styles.imgLogo}></View>
@@ -33,7 +45,18 @@ export default function ReviewShimmerUI() {
                         <View style={styles.text}></View>
                     </View>
                     <View style={styles.comment}></View>
+                    <View style={{ alignItems: 'flex-start', padding: 8 }}>
+                        <Rating
+                            type="custom"
+                            ratingColor="gray"
+                            ratingCount={5}
+                            startingValue={3}
+                            imageSize={22}
+                            readonly
+                        />
+                    </View>
                 </View>
+
                 <View style={styles.reviewContainer}>
                     <View style={styles.footerOneContainer}>
                         <View style={styles.imgLogo}></View>
@@ -44,6 +67,16 @@ export default function ReviewShimmerUI() {
                         <View style={styles.text}></View>
                     </View>
                     <View style={styles.comment}></View>
+                    <View style={{ alignItems: 'flex-start', padding: 8 }}>
+                        <Rating
+                            type="custom"
+                            ratingColor="gray"
+                            ratingCount={5}
+                            startingValue={3}
+                            imageSize={22}
+                            readonly
+                        />
+                    </View>
                 </View>
             </ScrollView>
         </View>
@@ -65,11 +98,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 40 / 2,
-        backgroundColor: '#616C6F',
+        backgroundColor: '#47535E',
     },
     searchBar: {
         width: '70%',
-        backgroundColor: '#616C6F',
+        backgroundColor: '#DAE0E2',
         height: 25,
         borderRadius: 10
     },
@@ -88,8 +121,8 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     reviewContainer: {
-       backgroundColor: '#FFF',
-       marginTop: 6
+        backgroundColor: '#FFF',
+        marginTop: 6
     },
     footerOneContainer: {
         flexDirection: 'row',

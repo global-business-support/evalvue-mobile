@@ -1,15 +1,13 @@
 import {
   FlatList,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   RefreshControl
 } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
-import DotIcon from 'react-native-vector-icons/Entypo';
-import { Image } from 'react-native-elements';
+import React, { useEffect, useState } from 'react';
+import NotificationIcon from 'react-native-vector-icons/MaterialIcons';
 import SearchIcon from 'react-native-vector-icons/AntDesign';
 import ReviewCards from '../ReviewCards/ReviewCards';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
@@ -40,7 +38,6 @@ export default function Feed({ navigation }) {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchdata();
@@ -78,8 +75,10 @@ export default function Feed({ navigation }) {
           <SearchIcon name="search1" size={16} color="#616C6F" />
           <Text style={styles.searchText}>Click to Search Employee</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <DotIcon name="dots-three-vertical" size={22} color="#47535E" />
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Notifications')}
+        >
+          <NotificationIcon name="notification-important" size={30} color="#47535E" />
         </TouchableOpacity>
       </View>
       <FlatList
@@ -117,7 +116,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 40 / 2,
-    backgroundColor: 'gray',
+    backgroundColor: '#47535E',
   },
   profileText: {
     fontSize: 22,
