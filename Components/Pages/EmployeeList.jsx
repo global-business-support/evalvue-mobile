@@ -19,6 +19,7 @@ import TruncatedText from '../Othercomponent/TruncatedText';
 import { listStyle } from '../Styles/listStyle';
 import ThreeDotMenu from './ThreeDotMenu ';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
+import SearchByAadhar from './SearchByAadhar';
 
 export default function EmployeeList() {
   const [Empdata, setEmpdata] = useState([]);
@@ -75,34 +76,72 @@ export default function EmployeeList() {
 
   // three dot function
 
-  const showAlert = (empname) => {
+  // const showAlert = (empname) => {
+  //   Alert.alert(
+  //     "Terminate Employee",
+  //     `Are you sure you want to terminate ${empname}`,
+  //     [
+  //       { text: "Cancel", onPress: () =>  oncon, style: "cancel" },
+  //       { text: "OK", onPress: () =>  {return true} }
+  //     ],
+  //     { cancelable: false }
+  //   );
+  // };
+
+  // const handleTerminate = (empId, OrgId, empname) => {
+  //   const delId = { organization_id: OrgId, employee_id: empId };
+  //   const confirmuser = showAlert(empname)
+  //   console.log(confirmuser)
+  //   // if (confirmuser) {
+
+  //   //   const res = ApiBackendRequest(`${apiUrl}/terminate/employee/`, delId)
+  //   //   console.log(res)
+  //   //       if (res.data) {
+  //   //         if (res.data.is_employee_terminated_successfull) {
+  //   //           fetchdata()
+  //   //         } else if (res.isexception) {
+  //   //           setError(res.exceptionmessage.error);
+  //   //         }
+  //   //       }
+  //   // }
+  // };
+
+  const showAlert = (empname, onConfirm) => {
     Alert.alert(
       "Terminate Employee",
-      `Are you sure you want to terminate${empname}`,
+      `Are you sure you want to terminate ${empname}?`,
       [
-        { text: "Cancel", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
-        { text: "OK", onPress: () => console.log("OK Pressed") }
+        {
+          text: "Cancel",
+          onPress: () => onConfirm(false),
+          style: "cancel"
+        },
+        {
+          text: "OK",
+          onPress: () => onConfirm(true)
+        }
       ],
       { cancelable: false }
     );
   };
-
+  
   const handleTerminate = (empId, OrgId, empname) => {
     const delId = { organization_id: OrgId, employee_id: empId };
-    showAlert(empname)
-    // if (confirmuser) {
-    //   Apibackendrequest(`${apiUrl}/terminate/employee/`, delId)
-    //     .then((res) => {
-    //       if (res) {
-    //         if (res.exceptionmessage.is_employee_terminated_successfull) {
-    //           window.location.reload();
-    //         } else if (res.isexception) {
-    //           setError(res.exceptionmessage.error);
-    //         }
-    //       }
-    //     })
-    //     .finally(() => setLoading(false));
-    // }
+    showAlert(empname, (confirmuser) => {
+      if (confirmuser) {
+        ApiBackendRequest(`${NATIVE_API_URL}/terminate/employee/`, delId)
+          .then((res) => {
+            if (res.data) {
+              if (res.data.is_employee_terminated_successfull) {
+                navigation.reload()
+              } else if (res.isexception) {
+                setError(res.exceptionmessage.error);
+              }
+            }
+          })
+          .finally(() => setLoading(false));
+      }
+    });
   };
   // change function
   const handleEdit = (empId, OrgId) => {
@@ -146,6 +185,7 @@ export default function EmployeeList() {
             onPress={() =>
               navigation.navigate('EmployeeDetails', {
                 empDetails: item,
+                SearchByAadhar : false,
                 orgDetails ,
                 orgName: orgDetails.orgName,
                 orgId: orgDetails.orgId,
@@ -167,6 +207,9 @@ export default function EmployeeList() {
             }
             edit={true}
             deleted={true}
+            path="EmpInfo"
+            params={item}
+            orgDetails={orgDetails}
           />
         </View>
       </View>
