@@ -19,7 +19,12 @@ import EmpForm from '../Components/Forms/EmpForm';
 import AppDrawer from './AppDrawer';
 import PostReview from '../Components/Forms/PostReview';
 import AddToOrganization from '../Components/Pages/AddToOrganization';
+
 import { primary } from '../Components/Styles/customStyle';
+
+import EmpInfo from '../Components/Pages/EmpInfo';
+const Tab = createBottomTabNavigator();
+
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -30,7 +35,13 @@ function HomeStackScreen() {
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="Home" component={AppDrawer} />
       <HomeStack.Screen name="SearchByAadhar" component={SearchByAadhar} />
+      <HomeStack.Screen name="EmployeeDetails" component={EmployeeDetails} />
+      <HomeStack.Screen name="AddToOrganization" component={AddToOrganization} />
+      <HomeStack.Screen name="EmployeeList" component={EmployeeList} />
+      <HomeStack.Screen name="AddReview" component={PostReview} />
       <HomeStack.Screen name="Notifications" component={Notifications} />
+      <HomeStack.Screen name="EmpInfo" component={EmpInfo} />
+      <HomeStack.Screen name="OrganizationList" component={OrgList} />
     </HomeStack.Navigator>
   );
 }
