@@ -75,7 +75,7 @@ export default function OrgList() {
   const handleEdit = (organizationId) => {
     // Navigate to the edit page
     navigation.navigate(`AddOrganization`, {
-      state: { organization_id: organizationId, editorg: true },
+      editOrgData: { organization_id: organizationId, editorg: true },
     });
     // navigate(`/dashboard/organization/edit/${organizationId}`)
   };

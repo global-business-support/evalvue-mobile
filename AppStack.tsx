@@ -8,84 +8,139 @@ import AppTabs from './Drawer/AppTabs';
 import OtpPassword from './Components/Authentication/OtpPassword';
 import ForgotPassword from './Components/Authentication/ForgotPassword';
 import { getOnboardingStatus, setOnboardingStatus } from './Utils/Storage';
+import { getStringData, getBooleanData, removeData } from './API-Management/mmkv-Storage';
+
 
 const Stack = createNativeStackNavigator();
-
 export default function AppStack() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState(false);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
 
+  // useEffect(() => {
+  //   const initializeApp = async () => {
+  //     try {
+  //       const hasViewedOnboarding = await getOnboardingStatus();
+  //       if (hasViewedOnboarding === null) {
+  //         await setOnboardingStatus(false);
+  //         setIsFirstLaunch(true);
+  //       } else {
+  //         setIsFirstLaunch(!hasViewedOnboarding);
+  //       }
+
+  //       const token = await getStringData('accessToken');
+  //       const tokenExpiry = await getStringData('accessTokenExpiry');
+  //       const now = new Date().getTime();
+
+  //       if (token && tokenExpiry && now < parseInt(tokenExpiry, 10)) {
+  //         setIsAuthenticated(true);
+  //       } else if (token) {
+  //         setSessionExpired(true);
+  //         removeData('accessToken');
+  //         removeData('accessTokenExpiry');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error initializing app', error);
+  //     }
+  //   };
+  //   initializeApp();
+  // }, []);
   useEffect(() => {
-    const checkOnboardingStatus = async () => {
-      const hasViewedOnboarding = getOnboardingStatus();
-      if (hasViewedOnboarding === false) {
-        // If there is no value, assume it's the first launch
-        setOnboardingStatus(false); // Initialize with false
-        setIsFirstLaunch(true);
-      } else {
-        setIsFirstLaunch(!hasViewedOnboarding);
+    const initializeApp = async () => {
+      try {
+        const hasViewedOnboarding = getStringData('hasViewedOnboarding');
+        if (hasViewedOnboarding === null) {
+          storeData('hasViewedOnboarding', 'false');
+          setIsFirstLaunch(true);
+        } else {
+          setIsFirstLaunch(hasViewedOnboarding !== 'true');
+        }
+  
+        const token = getStringData('accessToken');
+        const tokenExpiry = getStringData('accessTokenExpiry');
+  
+        if (token ) {
+          setIsAuthenticated(true);
+        } else if (tokenExpiry) {
+          setSessionExpired(true);
+          removeData('accessToken');
+          removeData('accessTokenExpiry');
+        }
+      } catch (error) {
+        console.error('Error initializing app', error);
       }
     };
-    checkOnboardingStatus();
+    initializeApp();
   }, []);
+  
 
-  if (isFirstLaunch === false) {
-    // Optionally render a splash screen or loading indicator while checking
-    return false;
-  };
+  if (isFirstLaunch === null) {
+    return null; // Optionally render a loading component
+  }
 
   return (
-    <Stack.Navigator>
-      {isFirstLaunch ? (
-        <>
-          <Stack.Screen
-            name="Onboarding"
-            component={Onboarding}
-            options={{ headerShown: false }}
-            listeners={{
-              // Set onboarding status to true when Onboarding screen is done
-              blur: async () => await setOnboardingStatus(true),
-            }}
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Dashboard"
-            component={AppTabs}
-            options={{ headerShown: false }}
-          />
-        </>
-      ) : (
-        <>
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Dashboard"
-            component={AppTabs}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Register"
-            component={UserRegistration}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Verify"
-            component={OtpPassword}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="ForgotPassword"
-            component={ForgotPassword}
-            options={{ headerShown: false }}
-          />
-        </>
-      )}
-    </Stack.Navigator>
+      <Stack.Navigator>
+        {isFirstLaunch ? (
+          <>
+            <Stack.Screen
+              name="Onboarding"
+              component={Onboarding}
+              options={{ headerShown: false }}
+              listeners={{
+                blur: async () => await setOnboardingStatus(true),
+              }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Dashboard"
+              component={AppTabs} // Ensure this is correct
+              options={{ headerShown: false }}
+            />
+          </>
+        ) : (
+          <>
+            {isAuthenticated ? (
+              <Stack.Screen
+                name="Dashboard"
+                component={AppTabs} // Ensure this is correct
+                options={{ headerShown: false }}
+              />
+            ) : (
+              <>
+                <Stack.Screen
+                  name="Login"
+                  component={Login}
+                  options={{ headerShown: false }}
+                  initialParams={{ sessionExpired }}
+                />
+                <Stack.Screen
+                  name="Register"
+                  component={UserRegistration}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Verify"
+                  component={OtpPassword}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="ForgotPassword"
+                  component={ForgotPassword}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Dashboard"
+                  component={AppTabs} // Ensure this is correct
+                  options={{ headerShown: false }}
+                />
+              </>
+            )}
+          </>
+        )}
+      </Stack.Navigator>
   );
 }
