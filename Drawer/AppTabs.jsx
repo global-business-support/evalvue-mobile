@@ -17,10 +17,9 @@ import EmpForm from '../Components/Forms/EmpForm';
 import AppDrawer from './AppDrawer';
 import PostReview from '../Components/Forms/PostReview';
 import AddToOrganization from '../Components/Pages/AddToOrganization';
+import { primary } from '../Components/Styles/customStyle';
 import EmpInfo from '../Components/Pages/EmpInfo';
 const Tab = createBottomTabNavigator();
-
-const Stack = createStackNavigator();
 const HomeStack = createStackNavigator();
 const OrgStack = createStackNavigator();
 
