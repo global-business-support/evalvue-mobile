@@ -1,10 +1,10 @@
+import { NATIVE_API_URL } from '@env';
 import axios from 'axios';
 import { getStringData } from './mmkv-Storage';
-import { NATIVE_API_URL } from '@env';
 const apiClient = axios.create({
   baseURL: NATIVE_API_URL,
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json', 
   },
 });
 

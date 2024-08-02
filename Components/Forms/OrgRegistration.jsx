@@ -24,7 +24,7 @@ import CustomModal from '../CustomModal/CustomModal';
 
 
 
-export default function OrgRegistration({route}) {
+export default function OrgRegistration() {
   const [Orgdata, setOrgdata] = useState({
     organization_name: '',
     document_type_id: '',
@@ -51,14 +51,13 @@ export default function OrgRegistration({route}) {
   const [city, setcity] = useState([]);
   const [statedata, setstatedata] = useState([]);
   const [citydata, setcitydata] = useState([]);
+  const [editOrgEnabled, seteditOrgEnabled] = useState(false);
   const [iscity, setiscity] = useState(!editOrgEnabled ? false : true);
   const [isstate, setisstate] = useState(!editOrgEnabled ? false : true);
   const [modalVisible, setModalVisible] = useState(false);
-  const { editOrgData } = route.params || {};
-  console.log(editOrgData)
+
   const navigation = useNavigation();
-  
-  console.log(editOrgEnabled)
+
   function validate() {
     const errors = {};
     if (!Orgdata.organization_name) errors.organization_name = 'Name is required*';
@@ -82,24 +81,23 @@ export default function OrgRegistration({route}) {
     return errors;
   }
 
-  const populateState = useCallback((id) => {
+  function populateState(id) {
     var data = statedata;
     var tempList = [];
     tempList.push(
       <Picker.Item
-        key="placeholder" // Ensure the key for the placeholder is unique
         label="Select Option"
         value="placeholder"
         style={styles.pickerItem}
         color="#535C68"
       />,
     );
-    Object.keys(data).forEach(function (key, index) {
+    Object.keys(data).forEach(function (key) {
       if (data[key].CountryId == id) {
         tempList.push(
           <Picker.Item
-            key={key} // Use a unique value from data as the key
-            label={data[key].Name}
+            key={key}
+            label={data[key].Name} // Accessing the object's property using the key
             value={key}
             style={styles.pickerItem}
           />,
@@ -108,26 +106,25 @@ export default function OrgRegistration({route}) {
     });
     setisstate(true);
     setstate(tempList);
-  }, [statedata]); // Add statedata as dependency
-  
-  const populateCity = useCallback((id) => {
+  }
+
+  function populateCity(id) {
     var data = citydata;
     var tempList = [];
     tempList.push(
       <Picker.Item
-        key="placeholder" // Ensure the key for the placeholder is unique
         label="Select Option"
         value="placeholder"
         style={styles.pickerItem}
         color="#535C68"
       />,
     );
-    Object.keys(data).forEach(function (key, index) {
+    Object.keys(data).forEach(function (key) {
       if (data[key].StateId == id) {
         tempList.push(
           <Picker.Item
-            key={key} // Use a unique value from data as the key
-            label={data[key].Name}
+            key={key}
+            label={data[key].Name} // Accessing the object's property using the key
             value={key}
             style={styles.pickerItem}
           />,
@@ -136,65 +133,53 @@ export default function OrgRegistration({route}) {
     });
     setiscity(true);
     setcity(tempList);
-  }, [citydata]); // Add citydata as dependency
-  
-  const populateDropDown = useCallback((data) => {
+  }
+
+  function populateDropDown(data) {
     var tempList = [];
     tempList.push(
       <Picker.Item
-        key="placeholder" // Ensure the key for the placeholder is unique
         label="Select Option"
         value="placeholder"
         style={styles.pickerItem}
         color="#535C68"
       />,
     );
-    Object.keys(data).forEach(function (key, index) {
+    Object.keys(data).forEach(function (key) {
       tempList.push(
         <Picker.Item
-          key={key} // Use a unique value from data as the key
-          label={data[key].Name}
+          key={key}
+          label={data[key].Name} // Accessing the object's property using the key
           value={key}
           style={styles.pickerItem}
         />,
       );
     });
     return tempList;
-  }, []);
-  
-// edit functionallty 
+  }
 
-   
-  
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await ApiBackendRequest(`${NATIVE_API_URL}/add/organization/`);
-        if (res.data) {
-          setdocumenttype(populateDropDown(res.data.document_type || {}));
-          setsectortype(populateDropDown(res.data.sector_type || {}));
-          setlistedtype(populateDropDown(res.data.listed_type || {}));
-          setcountry(populateDropDown(res.data.country || {}));
-          setstate(populateDropDown(res.data.state || {}));
-          setstatedata(res.data.state || []);
-          setcity(populateDropDown(res.data.city || {}));
-          setcitydata(res.data.city || []);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  
-    fetchData();
+  useEffect(async () => {
+    try {
+      const res = await ApiBackendRequest(
+        `${NATIVE_API_URL}/add/organization/`,
+      );
+      setdocumenttype(populateDropDown(res.data.document_type));
+      setsectortype(populateDropDown(res.data.sector_type));
+      setlistedtype(populateDropDown(res.data.listed_type));
+      setcountry(populateDropDown(res.data.country));
+      setstate(populateDropDown(res.data.state));
+      setstatedata(res.data.state);
+      setcity(populateDropDown(res.data.city));
+      setcitydata(res.data.city);
+    } catch (error) {}
   }, []);
+
   const handleChange = (name, value) => {
     setOrgdata(prevData => ({...prevData, [name]: value}));
     if (name == 'country_id') {
       populateState(value);
-      console.log("country id",value)
     } else if (name == 'state_id') {
       populateCity(value);
-      console.log("state id",value)
     }
     
     setFormErrors(prevErrors => ({...prevErrors, [name]: ''}));
@@ -205,7 +190,7 @@ export default function OrgRegistration({route}) {
       const doc = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.images],
       });
-      // console.log(name, doc);
+      console.log(name, doc);
       setOrgdata(prev => ({...prev, [name]: doc}));
     } catch (error) {
       console.log("error selectimage",error);
@@ -225,21 +210,21 @@ export default function OrgRegistration({route}) {
     });
 
     try{
-      // console.log('before api')
+      console.log('before api')
       const res = await ApiBackendRequest(
         `${NATIVE_API_URL}${'/create/organization/'}`,formData,
       );
       if (res.data) {
-        // console.log('after api')
+        console.log('after api')
         if (
           res.data.is_organization_register_successfull ||
           res.data.organization_edit_sucessfull
         ) {
-          // console.log('organization created successfully');
+          console.log('organization created successfully');
           navigation.navigate('OrganizationList');
         }
       } else if (res.isexception) {
-        // console.log(res.exceptionmessage.error)
+        console.log(res.exceptionmessage.error)
         setError(res.exceptionmessage.error);
         setModalVisible(true);
         validate();

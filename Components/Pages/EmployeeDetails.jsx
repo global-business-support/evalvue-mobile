@@ -13,7 +13,6 @@ import { empListStyle } from '../Styles/empListStyle';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import ReviewShimmerUI from '../ShimmerUI/ReviewShimmerUI';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import TruncatedText from '../Othercomponent/TruncatedText';
 
 export default function EmployeeDetails() {
   const [reviewData, setReviewData] = useState([]);
@@ -22,17 +21,16 @@ export default function EmployeeDetails() {
   const [isReviewMapped, setIsReviewMapped] = useState(false);
   const [loading, setLoading] = useState(false);
   const route = useRoute();
-  const { empDetails, orgDetails, orgName, orgId, empId, SearchByAadhar } = route.params;
+  const { empDetails, orgDetails, orgName, orgId, empId } = route.params;
   const navigation = useNavigation();
 
 
   useEffect(() => {
-    console.log(empDetails.status_id)
     const fetchData = async () => {
       setLoading(true);
       try {
         const res = await ApiBackendRequest(`${NATIVE_API_URL}/reviews/`, {
-          search_by_aa: SearchByAadhar,
+          search_by_aa: false,
           organization_id: orgId,
           employee_id: empId,
         });
@@ -63,13 +61,7 @@ export default function EmployeeDetails() {
                 <Image source={{ uri: empData?.employee_image }} style={empListStyle.empImg} />
               )}
               <View>
-                <Text style={empListStyle.empNameStyle}>
-                  <TruncatedText
-                      text={empData?.employee_name}
-                      maxLength={15}
-                      dot={true}
-                  />
-                </Text>
+                <Text style={empListStyle.empNameStyle}>{empData?.employee_name}</Text>
                 <Text style={empListStyle.dsgText}>{empData?.designation}</Text>
               </View>
             </View>
@@ -139,12 +131,24 @@ export default function EmployeeDetails() {
                   {empDetails?.designation}
                 </Text>
               </View>
-              <View style={styles.activeInactive}>
-                    <View style={[styles.dot, { backgroundColor : (SearchByAadhar)?(empDetails.status_id == 1 )? '#00e600' : '#ff8566' : '#00e600'}]}/>
-                    <Text style={[styles.activeInactiveText,{ color: (SearchByAadhar)?(empDetails.status_id == 1 )? '#00e600' : '#ff8566' : '#00e600', paddingRight : (empDetails.status_id == 1)? 15 : '#ff8566' }]}>
-                      {(SearchByAadhar) ?  (empDetails.status_id == 1)? 'Active' : 'In Active' : 'Active'}
-                     
-                    </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'flex-start',
+                  gap: 3,
+                }}>
+                <View
+                  style={{
+                    height: 10,
+                    width: 10,
+                    backgroundColor: '#2ed573',
+                    borderRadius: 10 / 2,
+                    marginTop: 5,
+                  }}
+                />
+                <Text style={{ color: '#2ed573', fontWeight: '500' }}>
+                  Active
+                </Text>
               </View>
             </View>
           </View>
@@ -156,7 +160,7 @@ export default function EmployeeDetails() {
               justifyContent: 'space-between',
             }}>
             <View>
-            {(SearchByAadhar)? (empDetails.status_id == 1)?<Text style={styles.orgname}>{orgName}</Text> : '' : <Text style={styles.orgname}>{orgName}</Text>}
+              <Text style={styles.orgname}>{orgName}</Text>
               <View style={styles.empRatingContainer}>
                 <Rating
                   type="custom"
@@ -169,10 +173,8 @@ export default function EmployeeDetails() {
                 />
               </View>
             </View>
-            
-            <View style={{gap : 5}}>
-              {(SearchByAadhar) ? empDetails.status_id == 1 ? (
-                <TouchableOpacity
+            <View>
+              <TouchableOpacity
                 style={styles.button}
                 onPress={() => navigation.navigate('AddReview',{
                   empDetails: empDetails,
@@ -185,37 +187,6 @@ export default function EmployeeDetails() {
               >
                 <Text style={styles.buttonText}>Add Review</Text>
               </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate('AddToOrganization',{
-                  empDetails: empDetails,
-                  orgDetails : orgDetails
-                }
-                 )}
-              >
-                <Text style={styles.buttonText}>Add Employee</Text>
-              </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate('AddReview',{
-                  empDetails: empDetails,
-                  orgDetails : orgDetails,
-                    id: {
-                      orgId: orgId,
-                      empId: empId,
-                    },}
-                 )}
-              >
-                <Text style={styles.buttonText}>Add Review</Text>
-              </TouchableOpacity>
-              )
-              
-              }
-              
-
-              <Text style={styles.totalReviews}>Total Reviews : {reviewData.length}</Text>
             </View>
           </View>
         </View>
@@ -288,24 +259,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FFF',
     borderRadius: 2
-  },
-  activeInactive : {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 3,
-  },
-  dot :{
-    height: 8,
-    width: 8,
-    borderRadius: 8 / 2, 
-    marginTop: 5,
-  },
-  activeInactiveText : {
-    fontWeight: '500', 
-    fontSize : 12
-  },
-  totalReviews : {
-    color : 'white',
-    fontWeight : '500'
   }
 });

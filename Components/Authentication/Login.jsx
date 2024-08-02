@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ScrollView, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { customStyle, windowHeight } from '../Styles/customStyle';
@@ -10,8 +10,7 @@ import CustomModal from '../CustomModal/CustomModal';
 import ValideIcon from 'react-native-vector-icons/Entypo';
 import { ValidateEmail, ValidatePassword } from '../../Validation/Validation';
 
-export default function Login({ navigation, route }) {
-    const { sessionExpired } = route.params || {}; // Get the sessionExpired param from the route
+export default function Login({ navigation }) {
     const [loginData, setLoginData] = useState({ email: '', password: '' });
     const [formErrors, setFormErrors] = useState({});
     const [error, setError] = useState(null);
@@ -23,13 +22,6 @@ export default function Login({ navigation, route }) {
     const [isEmailFocused, setIsEmailFocused] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
-    useEffect(() => {
-        if (sessionExpired) {
-            setError("Please login again. Your session has timed out.");
-            setModalVisible(true);
-        }
-    }, [sessionExpired]);
-
     const handleChange = (name, value) => {
         if (name === "email") {
             setValidEmailIcon(ValidateEmail(value).isValid);
@@ -39,7 +31,7 @@ export default function Login({ navigation, route }) {
         setLoginData((prevValues) => ({ ...prevValues, [name]: value }));
         if (value.trim() !== '') {
             setFormErrors((prevErrors) => ({ ...prevErrors, [name]: '' }));
-        }
+        };
     };
 
     const togglePasswordVisibility = () => {
@@ -53,57 +45,31 @@ export default function Login({ navigation, route }) {
         return errors;
     };
 
-    // const handleSubmit = async () => {
-    //     const errors = validate();
-    //     setFormErrors(errors);
-    //     if (Object.keys(errors).length === 0) {
-    //         setIsLoading(true);
-    //         const res = await ApiAxiosRequest(`${NATIVE_API_URL}/login/user/`, loginData);
-    //         setIsLoading(false);
-    //         if (res.data) {
-    //             if (res.data.is_login_successfull && res.data.is_user_verified) {
-    //                 storeData("accessToken", res.data.access);
-    //                 storeData("accessTokenExpiry", res.data.accessTokenExpiry);
-    //                 storeData("isLogin", res.data.is_login_successfull);
-    //                 navigation.navigate("Dashboard");
-    //             }
-    //             else if (res.data.is_user_verified === false) {
-    //                 navigation.navigate('Verify', { isForget: false, stateEmail: loginData.email });
-    //             }
-    //         }
-    //         else if (res.isexception) {
-    //             setError(res.exceptionmessage.error);
-    //             setModalVisible(true);
-    //         }
-    //     } else {
-    //         setError(null);
-    //     }
-    // };
     const handleSubmit = async () => {
         const errors = validate();
         setFormErrors(errors);
         if (Object.keys(errors).length === 0) {
-          setIsLoading(true);
-          const res = await ApiAxiosRequest(`${NATIVE_API_URL}/login/user/`, loginData);
-          setIsLoading(false);
-          if (res.data) {
-            if (res.data.is_login_successfull && res.data.is_user_verified) {
-              storeData("accessToken", res.data.access);
-            //   storeData("accessTokenExpiry", res.data.accessTokenExpiry.toString()); // Ensure it's stored as a string
-              storeData("isLogin", res.data.is_login_successfull);
-              navigation.navigate("Dashboard");
-            } else if (res.data.is_user_verified === false) {
-              navigation.navigate('Verify', { isForget: false, stateEmail: loginData.email });
+            setIsLoading(true);
+            const res = await ApiAxiosRequest(`${NATIVE_API_URL}/login/user/`, loginData);
+            setIsLoading(false);
+            if (res.data) {
+                if (res.data.is_login_successfull && res.data.is_user_verified) {
+                    storeData("accessToken", res.data.access);
+                    storeData("isLogin", res.data.is_login_successfull);
+                    navigation.navigate("Dashboard");
+                }
+                else if (res.data.is_user_verified == false) {
+                    navigation.navigate('Verify', { isForget: false, stateEmail: loginData.email });
+                }
             }
-          } else if (res.isexception) {
-            setError(res.exceptionmessage.error);
-            setModalVisible(true);
-          }
+            else if (res.isexception) {
+                setError(res.exceptionmessage.error);
+                setModalVisible(true);
+            };
         } else {
-          setError(null);
-        }
-      };
-      
+            setError(null);
+        };
+    };
 
     const closeModal = () => {
         setModalVisible(false);
@@ -121,10 +87,11 @@ export default function Login({ navigation, route }) {
                     </View>
                     <View>
                         <Text style={customStyle.heading}>Hello Again 👋</Text>
-                        <Text style={styles.text}>Welcome back, you've been missed</Text>
+                        <Text style={styles.text}>welcome back, you've been missed</Text>
                     </View>
                     <View style={styles.inputContainer}>
-                        <View style={customStyle.inputBox}>
+                        <View
+                            style={customStyle.inputBox}>
                             <Icon name="email" size={20} color="#592DA1" />
                             <TextInput
                                 placeholder='Email'
@@ -145,12 +112,14 @@ export default function Login({ navigation, route }) {
                                     color={validEmailIcon ? 'green' : 'red'}
                                     size={18}
                                 />
-                                {!validEmailIcon && (
-                                    <Text style={customStyle.regexText}>
-                                        Please include '@' or part following '@' is incomplete.
-                                    </Text>
-                                )}
-                                {validEmailIcon && <Text style={customStyle.regexText}>Correct.</Text>}
+                                {
+                                    !validEmailIcon &&
+                                    <Text style={customStyle.regexText}>Please include '@' or part following '@' is incomplete.</Text>
+                                }
+                                {
+                                    validEmailIcon &&
+                                    <Text style={customStyle.regexText}>correct.</Text>
+                                }
                             </View>
                         )}
                         <Text style={customStyle.errorText}>{formErrors.email}</Text>
@@ -177,12 +146,14 @@ export default function Login({ navigation, route }) {
                                     color={validPasswordIcon ? 'green' : 'red'}
                                     size={18}
                                 />
-                                {!validPasswordIcon && (
-                                    <Text style={customStyle.regexText}>
-                                        Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.
-                                    </Text>
-                                )}
-                                {validPasswordIcon && <Text style={customStyle.regexText}>Strong password.</Text>}
+                                {
+                                    !validPasswordIcon &&
+                                    <Text style={customStyle.regexText}>Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.</Text>
+                                }
+                                {
+                                    validPasswordIcon &&
+                                    <Text style={customStyle.regexText}>Strong pssword.</Text>
+                                }
                             </View>
                         )}
                         <Text style={customStyle.errorText}>{formErrors.password}</Text>
@@ -205,7 +176,7 @@ export default function Login({ navigation, route }) {
                         )}
                     </TouchableOpacity>
                     <View style={styles.footerContainer}>
-                        <Text style={styles.text}>Don't have registration yet? </Text>
+                        <Text style={styles.text}>Don't have registration yet ? </Text>
                         <Text onPress={() => { navigation.navigate("Register") }} style={styles.regText}>Register Now</Text>
                     </View>
                 </View>

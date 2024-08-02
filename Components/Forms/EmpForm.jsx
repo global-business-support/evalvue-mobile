@@ -167,7 +167,7 @@ export default function EmpForm() {
                                 <NameIcon name="person-sharp" size={20} color="#592DA1" />
                                 <TextInput
                                     placeholder='Last Name'
-                                    placeholderTextColor="#999"
+                                    placeholderTextColor="#535C68"
                                     style={customStyle.inputStyle}
                                     onChangeText={(text)=>{handleChange('last_name', text)}}
                                 />
@@ -199,7 +199,7 @@ export default function EmpForm() {
                                 <Icon name="email" size={20} color="#592DA1" />
                                 <TextInput
                                     placeholder="Email"
-                                    placeholderTextColor="#999"
+                                    placeholderTextColor="#535C68"
                                     onFocus={() => setIsEmailFocused(true)}
                                     onBlur={() => setIsEmailFocused(false)}
                                     style={customStyle.inputStyle}
@@ -228,7 +228,7 @@ export default function EmpForm() {
                                 <PhoneIcon name="phone" size={20} color="#592DA1" />
                                 <TextInput
                                     placeholder='9826755464'
-                                    placeholderTextColor="#999"
+                                    placeholderTextColor="#535C68"
                                     style={customStyle.inputStyle}
                                     keyboardType="numeric"
                                     maxLength={10}
@@ -248,7 +248,7 @@ export default function EmpForm() {
                                 <AadharIcon name="idcard" size={20} color="#592DA1" />
                                 <TextInput
                                     placeholder='982675546424'
-                                    placeholderTextColor="#999"
+                                    placeholderTextColor="#535C68"
                                     style={customStyle.inputStyle}
                                     keyboardType="numeric"
                                     maxLength={12}
@@ -268,7 +268,7 @@ export default function EmpForm() {
                                 <AadharIcon name="idcard" size={20} color="#592DA1" />
                                 <TextInput
                                     placeholder='982675546424'
-                                    placeholderTextColor="#999"
+                                    placeholderTextColor="#535C68"
                                     style={customStyle.inputStyle}
                                     keyboardType="numeric"
                                     maxLength={12}
@@ -288,7 +288,7 @@ export default function EmpForm() {
                                 <NameIcon name="person-sharp" size={20} color="#592DA1" />
                                 <TextInput
                                     placeholder='Backend Developer'
-                                    placeholderTextColor="#999"
+                                    placeholderTextColor="#535C68"
                                     style={customStyle.inputStyle}
                                     onChangeText={(text)=>{handleChange('designation', text)}}
                                 />

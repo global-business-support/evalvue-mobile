@@ -33,7 +33,7 @@ export default function Feed({ navigation }) {
         setError(res.exceptionmessage.error);
       }
     } catch (err) {
-      setError(err.message); // Convert the error to a string
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -46,7 +46,6 @@ export default function Feed({ navigation }) {
   const onRefresh = () => {
     setRefreshing(true);
     fetchdata();
-    setRefreshing(false);
   };
 
   if (loading) {

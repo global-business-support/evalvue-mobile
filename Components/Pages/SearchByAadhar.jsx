@@ -8,7 +8,6 @@ import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
 import SearchIcon from 'react-native-vector-icons/MaterialIcons';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import TruncatedText from '../Othercomponent/TruncatedText';
-import { useNavigation } from '@react-navigation/native';
 
 export default function SearchByAadhar() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,11 +17,8 @@ export default function SearchByAadhar() {
   const [error, setError] = useState();
   const [empmappedbyaadhar, setempmappedbyaadhar] = useState(false);
 
-  const navigation = useNavigation();
-
   let value = '';
   const handleSearchChange = async (number) => {
-
     value = number.replace(/[^0-9]/g, '');
     setSearchTerm(value);
     // console.log(value)
@@ -50,61 +46,36 @@ export default function SearchByAadhar() {
 
   const renderItem = useCallback(
     ({ item }) => (
-      <TouchableOpacity
-      onPress={()=>{navigation.navigate("EmployeeDetails",{
-        empDetails: item,
-        orgId : item.organization_id,
-        empId: item.employee_id,
-        orgName : item.organization_name,
-        }
-      )}}
-       >
-        <View style={listStyle.listContainer}>
-          <View style={listStyle.listSubContainer}>
-            <Image
-              source={{ uri: item.employee_image }}
-              style={listStyle.listLogoImg}
-            />
-            <View>
-              <Text style={listStyle.listTitleText}>
-                <TruncatedText
-                  text={item.employee_name}
-                  maxLength={20}
-                  dot={true}
-                />
-              </Text>
-              <Text style={listStyle.listSubTitleText}>
-                <TruncatedText text={item.designation} maxLength={20} dot={true}/>
-              </Text>
-              <Text style={styles.aadharnum}>Aadhaar : {item.aadhar_number}</Text>
-            </View>
-          </View>
-        
-          <View style={styles.buttons}>
-          <View style={styles.activeInactive}>
-                  <View style={[styles.dot, { backgroundColor : (item.status_id == 1)? '#00e600' : '#ff8566'}]}
-                  />
-                  <Text style={[styles.activeInactiveText,{ color: (item.status_id == 1)? '#00e600' : '#ff8566', paddingRight : (item.status_id == 1)? 15 : '#ff8566' }]}>
-                    {(item.status_id == 1)? 'Active' : 'In Active'}
-                  </Text>
-          </View>
-            <TouchableOpacity
-              style={listStyle.btnStyle}
-              onPress={()=>{navigation.navigate("EmployeeDetails",{
-                empDetails: item,
-                SearchByAadhar : true,
-                orgId : item.organization_id,
-                empId: item.employee_id,
-                orgName : item.organization_name,
-                }
-              )}}
-              >
-              <Text style={listStyle.listBtn}>View</Text>
-            </TouchableOpacity>
-            
+      <View style={listStyle.listContainer}>
+        <View style={listStyle.listSubContainer}>
+          <Image
+            source={{ uri: item.employee_image }}
+            style={listStyle.listLogoImg}
+          />
+          <View>
+            <Text style={listStyle.listTitleText}>
+              <TruncatedText
+                text={item.employee_name}
+                maxLength={20}
+                dot={true}
+              />
+            </Text>
+            <Text style={listStyle.listSubTitleText}>
+              <TruncatedText text={item.designation} maxLength={20} dot={true}/>
+            </Text>
+            <Text style={styles.aadharnum}>Aadhaar : {item.aadhar_number}</Text>
           </View>
         </View>
-      </TouchableOpacity>
+       
+        <View style={listStyle.listBtnContainer}>
+          <TouchableOpacity
+            style={listStyle.btnStyle}
+            >
+            <Text style={listStyle.listBtn}>View</Text>
+          </TouchableOpacity>
+          
+        </View>
+      </View>
     ),
     [],
   );
@@ -211,24 +182,4 @@ const styles = StyleSheet.create({
     flex: 1,
     color: '#592DA1',
   },
-  buttons: {
-    alignItems: 'flex-start',
-    gap : 10,
-    paddingRight : 5,
-  },
-  activeInactive : {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 3,
-  },
-  dot :{
-    height: 8,
-    width: 8,
-    borderRadius: 8 / 2, 
-    marginTop: 5,
-  },
-  activeInactiveText : {
-    fontWeight: '500', 
-    fontSize : 12
-  }
 });

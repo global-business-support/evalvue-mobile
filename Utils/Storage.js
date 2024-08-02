@@ -1,22 +1,22 @@
+// utils/storage.js
 import { MMKV } from 'react-native-mmkv';
 
 const storage = new MMKV();
 
-export const getOnboardingStatus = async () => {
+export const getOnboardingStatus = () => {
   try {
     const value = storage.getString('hasViewedOnboarding');
-    return value === 'true';
+    return value == true;
   } catch (e) {
     console.error('Failed to fetch onboarding status', e);
-    return null;
+    return false;
   }
 };
 
-export const setOnboardingStatus = async (status) => {
+export const setOnboardingStatus = (status) => {
   try {
-    storage.set('hasViewedOnboarding', status ? 'true' : 'false');
+    storage.set('hasViewedOnboarding', status ? true : false);
   } catch (e) {
     console.error('Failed to save onboarding status', e);
   }
 };
-

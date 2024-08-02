@@ -1,4 +1,3 @@
-import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import OrgList from '../Components/Pages/OrgList';
 import OrgRegistration from '../Components/Forms/OrgRegistration';
@@ -6,7 +5,6 @@ import Subscription from '../Components/Payment-Pages/Subscription';
 import PaymentHistory from '../Components/Payment-Pages/PaymentHistory';
 import Notifications from '../Components/Pages/Notifications';
 import Feed from '../Components/Pages/Feed';
-import { StyleSheet } from 'react-native';
 import HomeIcon from 'react-native-vector-icons/Ionicons';
 import SubIcon from 'react-native-vector-icons/MaterialIcons';
 import OrgIcon from 'react-native-vector-icons/Octicons';
@@ -19,13 +17,8 @@ import EmpForm from '../Components/Forms/EmpForm';
 import AppDrawer from './AppDrawer';
 import PostReview from '../Components/Forms/PostReview';
 import AddToOrganization from '../Components/Pages/AddToOrganization';
-
 import { primary } from '../Components/Styles/customStyle';
-
 import EmpInfo from '../Components/Pages/EmpInfo';
-const Tab = createBottomTabNavigator();
-
-
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
 const OrgStack = createStackNavigator();
@@ -45,7 +38,6 @@ function HomeStackScreen() {
     </HomeStack.Navigator>
   );
 }
-
 function OrgStackScreen() {
   return (
     <OrgStack.Navigator screenOptions={{ headerShown: false }}>
@@ -69,23 +61,21 @@ function AppTabs() {
           tabBarIcon: ({ focused }) => (
             <HomeIcon
               name="home"
-              size={23}
-              color={focused ? primary : 'gray'}
-              style={focused ? styles.activeIcon : styles.icon}
+              size={26}
+              color={focused ? 'black' : 'gray'}
             />
           ),
         }}
       />
       <Tab.Screen
-        name="Organization"
+        name="Oganization"
         component={OrgStackScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <OrgIcon
               name="organization"
-              size={23}
-              color={focused ? primary : '#b2b2b2'}
-              style={focused ? styles.activeIcon : styles.icon}
+              size={26}
+              color={focused ? 'black' : 'gray'}
             />
           ),
         }}
@@ -97,9 +87,8 @@ function AppTabs() {
           tabBarIcon: ({ focused }) => (
             <OrgIcon
               name="diff-added"
-              size={23}
-              color={focused ? primary : '#b2b2b2'}
-              style={focused ? styles.activeIcon : styles.icon}
+              size={26}
+              color={focused ? 'black' : 'gray'}
             />
           ),
         }}
@@ -111,9 +100,8 @@ function AppTabs() {
           tabBarIcon: ({ focused }) => (
             <SubIcon
               name="subscriptions"
-              size={23}
-              color={focused ? primary : '#b2b2b2'}
-              style={focused ? styles.activeIcon : styles.icon}
+              size={26}
+              color={focused ? 'black' : 'gray'}
             />
           ),
         }}
@@ -125,33 +113,14 @@ function AppTabs() {
           tabBarIcon: ({ focused }) => (
             <HistoryIcon
               name="history"
-              size={23}
-              color={focused ? primary : '#b2b2b2'}
-              style={focused ? styles.activeIcon : styles.icon}
+              size={26}
+              color={focused ? 'black' : 'gray'}
             />
           ),
         }}
       />
     </Tab.Navigator>
   );
-}
-
-const styles = StyleSheet.create({
-  icon: {
-    backgroundColor: 'transparent',
-    padding: 0,
-    borderRadius: 0,
-  },
-  activeIcon: {
-    backgroundColor: '#C0C0E7', // Change this to the color you want for the active state
-    padding: 6,
-    textAlign:'center',
-    verticalAlign:'middle',
-    height:40,
-    width:40,
-    borderRadius: 50,
-    transform: [{ scale: 1.08}], // Optional: scale up the icon for the active state
-  },
-});
+};
 
 export default AppTabs;

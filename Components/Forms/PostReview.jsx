@@ -10,11 +10,12 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import DocumentPicker from 'react-native-document-picker';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import axios from 'axios';
 
 
 export default function PostReview() {
     const route = useRoute();
-    const { id, empDetails, orgDetails } = route.params;
+    const { id, empDetails,orgDetails } = route.params;
     const [reviewData, setReviewData] = useState({
         organization_id: id.orgId,
         employee_id: id.empId,
@@ -36,15 +37,13 @@ export default function PostReview() {
         return errors;
       }
 
-    const handleRatingFinish = (name, ratingValue) => {
+    const handleRatingFinish = (ratingValue) => {
        setReviewData((prev) => ({...prev, rating : ratingValue}))
-       setFormErrors((prev) => ({...prev, [name] : ''}))
     };
 
     
     const handleChange= (name, value)=> {
         setReviewData((prev) => ({...prev, [name] : value}))
-        setFormErrors((prev) => ({...prev, [name] : ''}))
     }
 
 
@@ -72,8 +71,11 @@ export default function PostReview() {
         console.log(formData)
 
        try {
+        console.log('api')
         const res = await ApiBackendRequest(`${NATIVE_API_URL}/create/review/`, formData)
+        console.log('after api')
         
+            console.log(res)
         if(res.data){
             if(res.data.is_review_added_successfull){
                 navigation.navigate('EmployeeDetails',{
@@ -110,7 +112,7 @@ export default function PostReview() {
                                 }}
                                 style={styles.loginLogo}
                             />
-                            <Text style={styles.orgHeading}>{orgDetails?.orgName}</Text>
+                            <Text style={styles.orgHeading}>{orgDetails.orgName}</Text>
                         </View>
                         
                     </View>
@@ -124,7 +126,7 @@ export default function PostReview() {
                                 ratingCount={5}
                                 startingValue={0}
                                 imageSize={30}
-                                onFinishRating={(value) => handleRatingFinish('rating',value)}
+                                onFinishRating={handleRatingFinish}
                                 />
                             {formsErrors.rating && (
                                 <Text style={styles.errors}>{formsErrors.rating}</Text>
@@ -167,7 +169,6 @@ export default function PostReview() {
                             onChangeText={(text) => handleChange('comment', text)}
                         >
                         </TextInput>
-                        <Text style={styles.charLength}>Minimum Characters 250/{reviewData.comment.length}</Text>
                         {formsErrors.comment && (
                             <Text style={styles.errors}>{formsErrors.comment}</Text>
                         )}
@@ -209,12 +210,6 @@ const styles = StyleSheet.create({
         flex : 1,
         gap: 15,
         backgroundColor: '#FFF',
-    },
-    charLength: {
-        color: '#999',
-        fontSize : 15,
-        marginTop : 8,
-        marginLeft : 12
     },
     headerContainer: {
         paddingVertical: 20,

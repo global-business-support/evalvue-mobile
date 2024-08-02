@@ -12,7 +12,6 @@ import Icon from 'react-native-vector-icons/Feather'; // For FiEdit
 import InfoIcon from 'react-native-vector-icons/AntDesign'; // For FiEdit
 import IconDelete from 'react-native-vector-icons/MaterialCommunityIcons'; // For MdOutlineDelete
 import ThreeDotVertical from 'react-native-vector-icons/Entypo'; // For Entypo's dots-three-vertical
-import { useNavigation } from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('window');
 
@@ -21,16 +20,15 @@ const ThreeDotMenu = ({
   onDelete,
   edit,
   deleted,
-  path,
-  params,
-  orgDetails,
+  organizationId,
   setTerminated,
+  navigation,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({top: 0, left: 0});
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
-  const navigation = useNavigation();
+
   // Calculate menu position after the component mounts or updates
   useLayoutEffect(() => {
     if (showMenu && buttonRef.current) {
@@ -98,10 +96,7 @@ const ThreeDotMenu = ({
               :""}
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate(path,{
-                    params,
-                    orgDetails
-                  })
+                  /* Additional Action */
                 }}
                 style={[styles.menuItem, {borderBottomWidth: 0}]}>
                 <InfoIcon
