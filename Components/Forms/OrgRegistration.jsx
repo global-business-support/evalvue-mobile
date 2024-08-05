@@ -24,7 +24,7 @@ import CustomModal from '../CustomModal/CustomModal';
 
 
 
-export default function OrgRegistration() {
+export default function OrgRegistration({route}) {
   const [Orgdata, setOrgdata] = useState({
     organization_name: '',
     document_type_id: '',
@@ -51,13 +51,14 @@ export default function OrgRegistration() {
   const [city, setcity] = useState([]);
   const [statedata, setstatedata] = useState([]);
   const [citydata, setcitydata] = useState([]);
-  const [editOrgEnabled, seteditOrgEnabled] = useState(false);
-  const [iscity, setiscity] = useState(!editOrgEnabled ? false : true);
-  const [isstate, setisstate] = useState(!editOrgEnabled ? false : true);
+  const { editOrgData } = route.params || {};
+  const [iscity, setiscity] = useState(!editOrgData.editorg ? false : true);
+  const [isstate, setisstate] = useState(!editOrgData.editorg ? false : true);
   const [modalVisible, setModalVisible] = useState(false);
-
+  console.log(editOrgData)
   const navigation = useNavigation();
-
+  
+  console.log(editOrgData.editorg)
   function validate() {
     const errors = {};
     if (!Orgdata.organization_name) errors.organization_name = 'Name is required*';
@@ -81,23 +82,24 @@ export default function OrgRegistration() {
     return errors;
   }
 
-  function populateState(id) {
+  const populateState = useCallback((id) => {
     var data = statedata;
     var tempList = [];
     tempList.push(
       <Picker.Item
+        key="placeholder" // Ensure the key for the placeholder is unique
         label="Select Option"
         value="placeholder"
         style={styles.pickerItem}
         color="#535C68"
       />,
     );
-    Object.keys(data).forEach(function (key) {
+    Object.keys(data).forEach(function (key, index) {
       if (data[key].CountryId == id) {
         tempList.push(
           <Picker.Item
-            key={key}
-            label={data[key].Name} // Accessing the object's property using the key
+            key={key} // Use a unique value from data as the key
+            label={data[key].Name}
             value={key}
             style={styles.pickerItem}
           />,
@@ -106,25 +108,26 @@ export default function OrgRegistration() {
     });
     setisstate(true);
     setstate(tempList);
-  }
-
-  function populateCity(id) {
+  }, [statedata]); // Add statedata as dependency
+  
+  const populateCity = useCallback((id) => {
     var data = citydata;
     var tempList = [];
     tempList.push(
       <Picker.Item
+        key="placeholder" // Ensure the key for the placeholder is unique
         label="Select Option"
         value="placeholder"
         style={styles.pickerItem}
         color="#535C68"
       />,
     );
-    Object.keys(data).forEach(function (key) {
+    Object.keys(data).forEach(function (key, index) {
       if (data[key].StateId == id) {
         tempList.push(
           <Picker.Item
-            key={key}
-            label={data[key].Name} // Accessing the object's property using the key
+            key={key} // Use a unique value from data as the key
+            label={data[key].Name}
             value={key}
             style={styles.pickerItem}
           />,
@@ -133,53 +136,65 @@ export default function OrgRegistration() {
     });
     setiscity(true);
     setcity(tempList);
-  }
-
-  function populateDropDown(data) {
+  }, [citydata]); // Add citydata as dependency
+  
+  const populateDropDown = useCallback((data) => {
     var tempList = [];
     tempList.push(
       <Picker.Item
+        key="placeholder" // Ensure the key for the placeholder is unique
         label="Select Option"
         value="placeholder"
         style={styles.pickerItem}
         color="#535C68"
       />,
     );
-    Object.keys(data).forEach(function (key) {
+    Object.keys(data).forEach(function (key, index) {
       tempList.push(
         <Picker.Item
-          key={key}
-          label={data[key].Name} // Accessing the object's property using the key
+          key={key} // Use a unique value from data as the key
+          label={data[key].Name}
           value={key}
           style={styles.pickerItem}
         />,
       );
     });
     return tempList;
-  }
-
-  useEffect(async () => {
-    try {
-      const res = await ApiBackendRequest(
-        `${NATIVE_API_URL}/add/organization/`,
-      );
-      setdocumenttype(populateDropDown(res.data.document_type));
-      setsectortype(populateDropDown(res.data.sector_type));
-      setlistedtype(populateDropDown(res.data.listed_type));
-      setcountry(populateDropDown(res.data.country));
-      setstate(populateDropDown(res.data.state));
-      setstatedata(res.data.state);
-      setcity(populateDropDown(res.data.city));
-      setcitydata(res.data.city);
-    } catch (error) {}
   }, []);
+  
+// edit functionallty 
 
+   
+  
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await ApiBackendRequest(`${NATIVE_API_URL}/add/organization/`);
+        if (res.data) {
+          setdocumenttype(populateDropDown(res.data.document_type || {}));
+          setsectortype(populateDropDown(res.data.sector_type || {}));
+          setlistedtype(populateDropDown(res.data.listed_type || {}));
+          setcountry(populateDropDown(res.data.country || {}));
+          setstate(populateDropDown(res.data.state || {}));
+          setstatedata(res.data.state || []);
+          setcity(populateDropDown(res.data.city || {}));
+          setcitydata(res.data.city || []);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  
+    fetchData();
+  }, []);
   const handleChange = (name, value) => {
     setOrgdata(prevData => ({...prevData, [name]: value}));
     if (name == 'country_id') {
       populateState(value);
+      console.log("country id",value)
     } else if (name == 'state_id') {
       populateCity(value);
+      console.log("state id",value)
     }
     
     setFormErrors(prevErrors => ({...prevErrors, [name]: ''}));
@@ -190,7 +205,7 @@ export default function OrgRegistration() {
       const doc = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.images],
       });
-      console.log(name, doc);
+      // console.log(name, doc);
       setOrgdata(prev => ({...prev, [name]: doc}));
     } catch (error) {
       console.log("error selectimage",error);
@@ -210,21 +225,21 @@ export default function OrgRegistration() {
     });
 
     try{
-      console.log('before api')
+      // console.log('before api')
       const res = await ApiBackendRequest(
         `${NATIVE_API_URL}${'/create/organization/'}`,formData,
       );
       if (res.data) {
-        console.log('after api')
+        // console.log('after api')
         if (
           res.data.is_organization_register_successfull ||
           res.data.organization_edit_sucessfull
         ) {
-          console.log('organization created successfully');
+          // console.log('organization created successfully');
           navigation.navigate('OrganizationList');
         }
       } else if (res.isexception) {
-        console.log(res.exceptionmessage.error)
+        // console.log(res.exceptionmessage.error)
         setError(res.exceptionmessage.error);
         setModalVisible(true);
         validate();
