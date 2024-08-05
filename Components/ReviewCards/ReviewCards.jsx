@@ -1,8 +1,18 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, Rating } from 'react-native-elements';
 
 const ReviewCards = ({ item }) => {
+  const [name, setName] = useState('');
+
+  useEffect(() => {
+    // Set name only if item and item.name are available
+    if (item && item.name) {
+      setName(item.name);
+    }
+  }, [item]); // Dependency array ensures effect runs when `item` changes
+
+  console.log(name);
   return (
     <View style={styles.Container}>
       <View style={styles.mainContainer}>
