@@ -1,10 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Image, Rating } from 'react-native-elements';
+import TruncatedText from '../Othercomponent/TruncatedText';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const ReviewCards = ({ item }) => {
   const [name, setName] = useState('');
+  const [readMore, setReadMore] = useState(false)
 
+  const handleReadMore = () =>{
+    setReadMore(!readMore)
+  }
   useEffect(() => {
     // Set name only if item and item.name are available
     if (item && item.name) {
@@ -34,7 +40,12 @@ const ReviewCards = ({ item }) => {
             </View>
           </View>
           <View style={styles.commentConatiner}>
-            <Text style={styles.commentText}>{item.comment}</Text>
+            
+                <Text style={styles.commentText}>
+                  <TruncatedText text={item.comment} maxLength={(item.image)? (readMore)? item.comment.length : 150 : item.comment.length} dot={true} />
+                  {item.image&& <Text style={{color : '#777', fontSize : 12,}} onPress={()=>{handleReadMore()}}>{" "}{readMore ? "Less." : "Read More."}</Text>}
+              </Text>
+            
             {item.image && item.image !== 'null' && (
               <Image source={{ uri: item?.image }} style={styles.reviewImg} />
             )}
@@ -132,7 +143,7 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   commentText: {
-    color: '#535C68',
+    color: '#333',
     fontSize: 11,
     marginBottom: 6,
     textAlign: "justify",
