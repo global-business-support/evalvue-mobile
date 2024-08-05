@@ -18,46 +18,49 @@ export default function Feed({ navigation }) {
   const [feeds, setFeeds] = useState([]);
   const [error, setError] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  const [Isreviewmap, setIsreviewmap] = useState(false);
+  const [isReviewMapped, setIsReviewMapped] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const fetchdata = async () => {
+  const fetchData = async () => {
     try {
       setLoading(true);
       const res = await ApiBackendRequest(`${NATIVE_API_URL}/dashboard/feed/`);
       setFeeds(res.data.dashboard_list);
       if (res.data.is_review_mapped) {
-        setIsreviewmap(res.data.is_review_mapped);
+        setIsReviewMapped(res.data.is_review_mapped);
       }
       if (res.isexception) {
         setError(res.exceptionmessage.error);
       }
     } catch (err) {
-      setError(err);
+      setError(err.message || 'An error occurred');
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
   useEffect(() => {
-    fetchdata();
-  }, [Isreviewmap]);
+    fetchData();
+  }, [isReviewMapped]);
 
   const onRefresh = () => {
     setRefreshing(true);
-    fetchdata();
+    fetchData();
   };
 
   if (loading) {
-    return <ReviewShimmerUI />
-  };
+    return <ReviewShimmerUI />;
+  }
   if (error) {
     return (
       <View>
-        <Text style={{ color: 'red', fontSize: 16, fontWeight: '600', textAlign: 'left', padding: 10 }}>{error}</Text>
+        <Text style={{ color: 'red', fontSize: 16, fontWeight: '600', textAlign: 'left', padding: 10 }}>
+          {error}
+        </Text>
       </View>
     );
-  };
+  }
 
   return (
     <View style={styles.parentContainer}>
@@ -83,7 +86,7 @@ export default function Feed({ navigation }) {
       </View>
       <FlatList
         data={feeds}
-        renderItem={ReviewCards}
+        renderItem={({ item }) => <ReviewCards item={item} />}
         keyExtractor={item => item?.review_id.toString()}
         refreshControl={
           <RefreshControl
