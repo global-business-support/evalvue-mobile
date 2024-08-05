@@ -1,83 +1,36 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import NotificationIcon from 'react-native-vector-icons/MaterialIcons';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Rating } from 'react-native-elements';
 
+export const reviewCard = () => {
+    return (
+        <View style={styles.reviewContainer}>
+            <View style={styles.footerOneContainer}>
+                <View style={styles.imgLogo}></View>
+                <View style={[styles.text, { width: '60%' }]}></View>
+            </View>
+            <View style={styles.footerTwoContainer}>
+                <View style={styles.imgLogo}></View>
+                <View style={[styles.text, { width: '50%' }]}></View>
+            </View>
+            <View style={styles.comment}></View>
+        </View>
+    )
+};
 export default function ReviewShimmerUI() {
     return (
         <View style={styles.mainContainer}>
             <View style={styles.headerContainer}>
                 <View style={styles.profile}></View>
                 <View style={styles.searchBar}></View>
-                <NotificationIcon name="notification-important" size={28} color="#47535E" />
+                <NotificationIcon name="notification-important" size={28} color="#DAE0E2" />
             </View>
             <ScrollView style={styles.scrollStyle}>
-                <View style={styles.reviewContainer}>
-                    <View style={styles.footerOneContainer}>
-                        <View style={styles.imgLogo}></View>
-                        <View style={styles.text}></View>
-                    </View>
-                    <View style={styles.footerTwoContainer}>
-                        <View style={styles.imgLogo}></View>
-                        <View style={styles.text}></View>
-                    </View>
-                    <View style={styles.comment}></View>
-                    <View style={{ alignItems: 'flex-start', padding: 8 }}>
-                        <Rating
-                            type="custom"
-                            ratingColor="gray"
-                            ratingCount={5}
-                            startingValue={3}
-                            imageSize={22}
-                            readonly
-                        />
-                    </View>
-                </View>
-
-                <View style={styles.reviewContainer}>
-                    <View style={styles.footerOneContainer}>
-                        <View style={styles.imgLogo}></View>
-                        <View style={styles.text}></View>
-                    </View>
-                    <View style={styles.footerTwoContainer}>
-                        <View style={styles.imgLogo}></View>
-                        <View style={styles.text}></View>
-                    </View>
-                    <View style={styles.comment}></View>
-                    <View style={{ alignItems: 'flex-start', padding: 8 }}>
-                        <Rating
-                            type="custom"
-                            ratingColor="gray"
-                            ratingCount={5}
-                            startingValue={3}
-                            imageSize={22}
-                            readonly
-                        />
-                    </View>
-                </View>
-
-                <View style={styles.reviewContainer}>
-                    <View style={styles.footerOneContainer}>
-                        <View style={styles.imgLogo}></View>
-                        <View style={styles.text}></View>
-                    </View>
-                    <View style={styles.footerTwoContainer}>
-                        <View style={styles.imgLogo}></View>
-                        <View style={styles.text}></View>
-                    </View>
-                    <View style={styles.comment}></View>
-                    <View style={{ alignItems: 'flex-start', padding: 8 }}>
-                        <Rating
-                            type="custom"
-                            ratingColor="gray"
-                            ratingCount={5}
-                            startingValue={3}
-                            imageSize={22}
-                            readonly
-                        />
-                    </View>
-                </View>
+                {reviewCard()}
+                {reviewCard()}
+                {reviewCard()}
+                {reviewCard()}
             </ScrollView>
         </View>
     )
@@ -98,7 +51,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 40 / 2,
-        backgroundColor: '#47535E',
+        backgroundColor: '#DAE0E2',
     },
     searchBar: {
         width: '70%',
@@ -113,12 +66,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 30 / 2,
         backgroundColor: '#DAE0E2',
-    },
-    text: {
-        width: '80%',
-        height: 15,
-        backgroundColor: '#DAE0E2',
-        borderRadius: 10
     },
     reviewContainer: {
         backgroundColor: '#FFF',
@@ -142,9 +89,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#DAE0E2'
     },
     text: {
-        width: '60%',
         height: 10,
-        backgroundColor: '#616C6F',
+        backgroundColor: '#DAE0E2',
         borderRadius: 10,
         marginLeft: 10
     },
