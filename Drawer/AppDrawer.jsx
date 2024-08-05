@@ -39,7 +39,7 @@ function AppDrawer() {
         name="Terms and Conditions"
         component={PdfRender}
         initialParams={{
-          pdfUrl: 'http://api.evalvue.com/media/Policy/Terms and Conditions.pdf',
+          pdfUrl: 'https://api.evalvue.com/media/Terms/Terms and Conditions.pdf',
         }}
         options={{
           drawerIcon: ({ size }) => (
@@ -55,7 +55,7 @@ function AppDrawer() {
         name="Refund Policies"
         component={PdfRender}
         initialParams={{
-          pdfUrl: 'http://api.evalvue.com/media/Policy/Refund Policy.pdf',
+          pdfUrl: 'https://api.evalvue.com/media/Refund/Refund Policy.pdf',
         }}
         options={{
           drawerIcon: ({ size }) => (
@@ -71,7 +71,7 @@ function AppDrawer() {
         name="Privacy Policies"
         component={PdfRender}
         initialParams={{
-          pdfUrl: 'http://api.evalvue.com/media/Policy/privacy policy.pdf',
+          pdfUrl: 'https://api.evalvue.com/media/Policy/privacy policy.pdf',
         }}
         options={{
           drawerIcon: ({ size }) => (
