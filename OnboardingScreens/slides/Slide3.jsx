@@ -1,43 +1,43 @@
-import {StyleSheet, Text, TouchableOpacity, View ,Image} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import React from 'react';
 import UserRegistration from '../../Components/Forms/UserRegistration';
 import Login from '../../Components/Authentication/Login';
-import slide from '../../assets/slide3.png'
+import slide from '../../assets/slide3.png';
+import Slide2Image from '../../assets/slide2Image.png';
 import { useNavigation } from '@react-navigation/native';
 export default function Slide3() {
   const navigation = useNavigation();
   return (
-   
+
     <View style={styles.container}>
       <View style={{
-        width:"90%"
+        width: "90%"
       }}>
-
-      <Text
-        style={{
-          fontSize: 25,
-          fontWeight: '600',
-          color: 'white',
-          marginBottom: 10,
-          textAlign:"start",
-        }}>
-        "Optimize Your Operations With Our Employee Solutions{' '}"
-
-      </Text>
-      <Text   style={{
-          fontSize: 18,
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: '600',
+            color: 'white',
+            marginBottom: 10,
+            textAlign: "start",
+          }}>
+          Optimize Your Operations With Our Employee Solutions
+        </Text>
+        <Text style={{
+          fontSize: 14,
           fontWeight: '400',
           color: 'white',
           marginBottom: 10,
-          textAlign:"start",
+          textAlign: "start",
         }}>
-      We offer the best services related to employee work experience. When employees leave a company, we help organizations post reviews about their performance and the reasons for their departure.
-      </Text>
-          </View>
-      
+          We offer the best services related to employee work experience. When employees leave a company, we help organizations post reviews about their performance and the reasons for their departure.
+        </Text>
+        <Image source={Slide2Image} style={styles.image} />
+      </View>
+
       <View style={styles.innerContainer}>
-        <TouchableOpacity style={styles.button} onPress={()=>{
-            navigation.navigate('Login'); 
+        <TouchableOpacity style={styles.button} onPress={() => {
+          navigation.navigate('Login');
         }}>
           <Text style={styles.text}>Get Start</Text>
         </TouchableOpacity>
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     flex: 1,
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   innerContainer: {
@@ -75,8 +75,9 @@ const styles = StyleSheet.create({
     color: '#592DA1',
   },
   image: {
-    width: 200,
-    height: 200,
-    resizeMode: 'contain', // or 'cover', 'stretch' etc.
+    height: '40%',
+    width: '100%',
+    objectFit: 'contain',
+    opacity: 0.9
   },
 });

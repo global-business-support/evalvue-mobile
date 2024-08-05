@@ -11,11 +11,10 @@ export default function Slide2() {
         employees leave a company, we help organizations post reviews about
         their performance and the reasons for their departure.
       </Text>
-
       <Image source={Slide2Image} style={styles.image} />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -24,7 +23,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textlarge: {
-    fontSize: 35,
+    fontSize: 25,
     fontWeight: '600',
     color: 'white',
     marginBottom: 15,
