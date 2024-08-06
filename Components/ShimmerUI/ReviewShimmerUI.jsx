@@ -2,19 +2,20 @@ import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import NotificationIcon from 'react-native-vector-icons/MaterialIcons';
 import { ScrollView } from 'react-native-gesture-handler';
+import ShimmerText from './ShimmerText';
 
 export const reviewCard = () => {
     return (
         <View style={styles.reviewContainer}>
             <View style={styles.footerOneContainer}>
-                <View style={styles.imgLogo}></View>
-                <View style={[styles.text, { width: '60%' }]}></View>
+                <ShimmerText style={styles.imgLogo}></ShimmerText>
+                <ShimmerText style={[styles.text, { width: '60%' }]}></ShimmerText>
             </View>
             <View style={styles.footerTwoContainer}>
-                <View style={styles.imgLogo}></View>
-                <View style={[styles.text, { width: '50%' }]}></View>
+                <ShimmerText style={styles.imgLogo}></ShimmerText>
+                <ShimmerText style={[styles.text, { width: '50%' }]}></ShimmerText>
             </View>
-            <View style={styles.comment}></View>
+            <ShimmerText style={styles.comment}></ShimmerText>
         </View>
     )
 };
@@ -22,15 +23,14 @@ export default function ReviewShimmerUI() {
     return (
         <View style={styles.mainContainer}>
             <View style={styles.headerContainer}>
-                <View style={styles.profile}></View>
-                <View style={styles.searchBar}></View>
+                <ShimmerText style={styles.profile}></ShimmerText>
+                <ShimmerText style={styles.searchBar}></ShimmerText>
                 <NotificationIcon name="notification-important" size={28} color="#DAE0E2" />
             </View>
             <ScrollView style={styles.scrollStyle}>
-                {reviewCard()}
-                {reviewCard()}
-                {reviewCard()}
-                {reviewCard()}
+                {Array.from({ length: 3 }).map((_, index) => (
+                    <React.Fragment key={index}>{reviewCard()}</React.Fragment>
+                ))}
             </ScrollView>
         </View>
     )
@@ -51,11 +51,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 40 / 2,
-        backgroundColor: '#DAE0E2',
     },
     searchBar: {
         width: '70%',
-        backgroundColor: '#DAE0E2',
         height: 25,
         borderRadius: 10
     },
@@ -65,7 +63,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 30 / 2,
-        backgroundColor: '#DAE0E2',
     },
     reviewContainer: {
         backgroundColor: '#FFF',
@@ -90,14 +87,12 @@ const styles = StyleSheet.create({
     },
     text: {
         height: 10,
-        backgroundColor: '#DAE0E2',
         borderRadius: 10,
         marginLeft: 10
     },
     comment: {
         width: '97%',
         height: 150,
-        backgroundColor: '#EAF0F1',
         margin: 6,
         borderRadius: 8
     }
