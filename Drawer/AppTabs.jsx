@@ -1,17 +1,17 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import OrgList from '../Components/Pages/OrgList';
-import OrgRegistration from '../Components/Forms/OrgRegistration';
-import Subscription from '../Components/Payment-Pages/Subscription';
-import PaymentHistory from '../Components/Payment-Pages/PaymentHistory';
-import Notifications from '../Components/Pages/Notifications';
-import Feed from '../Components/Pages/Feed';
+import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet } from 'react-native';
 import HomeIcon from 'react-native-vector-icons/Ionicons';
 import SubIcon from 'react-native-vector-icons/MaterialIcons';
 import OrgIcon from 'react-native-vector-icons/Octicons';
 import HistoryIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { createStackNavigator } from '@react-navigation/stack';
+
+import OrgList from '../Components/Pages/OrgList';
+import OrgRegistration from '../Components/Forms/OrgRegistration';
+import Subscription from '../Components/Payment-Pages/Subscription';
+import PaymentHistory from '../Components/Payment-Pages/PaymentHistory';
+import Notifications from '../Components/Pages/Notifications';
 import SearchByAadhar from '../Components/Pages/SearchByAadhar';
 import EmployeeList from '../Components/Pages/EmployeeList';
 import EmployeeDetails from '../Components/Pages/EmployeeDetails';
@@ -19,10 +19,10 @@ import EmpForm from '../Components/Forms/EmpForm';
 import AppDrawer from './AppDrawer';
 import PostReview from '../Components/Forms/PostReview';
 import AddToOrganization from '../Components/Pages/AddToOrganization';
-
+import EmpInfo from '../Components/Pages/EmpInfo';
 import { primary } from '../Components/Styles/customStyle';
 
-import EmpInfo from '../Components/Pages/EmpInfo';
+// Create navigators
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
 const OrgStack = createStackNavigator();
@@ -89,7 +89,7 @@ function AppTabs() {
       />
       <Tab.Screen
         name="Add"
-        component={OrgRegistration}
+        component={OrgRegistration} // Ensure this is the correct component
         options={{
           tabBarIcon: ({ focused }) => (
             <OrgIcon
@@ -142,12 +142,12 @@ const styles = StyleSheet.create({
   activeIcon: {
     backgroundColor: '#C0C0E7', // Change this to the color you want for the active state
     padding: 6,
-    textAlign:'center',
-    verticalAlign:'middle',
-    height:40,
-    width:40,
+    textAlign: 'center',
+    verticalAlign: 'middle',
+    height: 40,
+    width: 40,
     borderRadius: 50,
-    transform: [{ scale: 1.08}], // Optional: scale up the icon for the active state
+    transform: [{ scale: 1.08 }], // Optional: scale up the icon for the active state
   },
 });
 

@@ -1,8 +1,6 @@
-//payload: res.data.exceptionmessage.config.data  error
-//payload: res.data.config.data  notError
+import axios from 'axios';
+import apiClient from './ApiInterceptor';
 
-import axios from "axios";
-import apiClient from "./ApiInterceptor";
 export async function ApiAxiosRequest(url, request) {
   const responsedata = {
     isexception: false,
@@ -14,7 +12,15 @@ export async function ApiAxiosRequest(url, request) {
     responsedata.data = response.data;
   } catch (error) {
     responsedata.isexception = true;
-    responsedata.exceptionmessage = error.response.data;
+    if (error.response) {
+      responsedata.exceptionmessage = error.response.data || error.message;
+      if (error.response.status === 401) {
+        // Handle token errors specifically
+        console.error('Unauthorized access:', error.response.data);
+      }
+    } else {
+      responsedata.exceptionmessage = error.message;
+    }
   }
   return responsedata;
 }
@@ -29,12 +35,16 @@ export default async function ApiBackendRequest(url, request) {
     const response = await apiClient.post(url, request);
     responsedata.data = response.data;
   } catch (error) {
-    // if (error.response && error.response.status === 401) {
-    //   window.location.href = "/login";
-    // } else {
-      responsedata.isexception = true;
-      responsedata.exceptionmessage = error.response.data;
-    // }
+    responsedata.isexception = true;
+    if (error.response) {
+      responsedata.exceptionmessage = error.response.data || error.message;
+      if (error.response.status === 401) {
+        // Handle token errors specifically
+        console.error('Unauthorized access:', error.response.data);
+      }
+    } else {
+      responsedata.exceptionmessage = error.message;
+    }
   }
   return responsedata;
 }
