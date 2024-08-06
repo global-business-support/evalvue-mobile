@@ -19,13 +19,15 @@ import DocumentPicker from 'react-native-document-picker';
 import TruncatedText from '../Othercomponent/TruncatedText';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import {NATIVE_API_URL} from '@env';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import CustomModal from '../CustomModal/CustomModal';
+import ImagePreview from '../ImagePreview/ImagePreview';
 
 
 
-export default function OrgRegistration({route}) {
+export default function OrgRegistration() {
   const [Orgdata, setOrgdata] = useState({
+    // organization_id : editOrgData.organization_id || "",
     organization_name: '',
     document_type_id: '',
     sector_id: '',
@@ -51,14 +53,19 @@ export default function OrgRegistration({route}) {
   const [city, setcity] = useState([]);
   const [statedata, setstatedata] = useState([]);
   const [citydata, setcitydata] = useState([]);
-  const { editOrgData } = route.params || {};
-  const [iscity, setiscity] = useState(!editOrgData.editorg ? false : true);
-  const [isstate, setisstate] = useState(!editOrgData.editorg ? false : true);
+  const [iscity, setiscity] = useState(editOrgData?.editorg ? true : false);
+  const [isstate, setisstate] = useState(editOrgData?.editorg ? true : false);
   const [modalVisible, setModalVisible] = useState(false);
-  console.log(editOrgData)
+  const route = useRoute();
+  const { editOrgData } = route.params || {};
+  const [editOrgEnabled, seteditOrgEnabled] = useState(editOrgData?.editorg);
+  const [fileLogoName, setFileLogoName] = useState("");
+  const [fileUrl, setFileUrl] = useState("");
+  const [showImage,setShowImage] = useState(false)
+  const [url, setUrl] = useState('')
   const navigation = useNavigation();
   
-  console.log(editOrgData.editorg)
+  
   function validate() {
     const errors = {};
     if (!Orgdata.organization_name) errors.organization_name = 'Name is required*';
@@ -81,6 +88,28 @@ export default function OrgRegistration({route}) {
     if (!Orgdata.pincode) errors.pincode = 'Pin Code is required*';
     return errors;
   }
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await ApiBackendRequest(`${NATIVE_API_URL}/add/organization/`);
+        if (res.data) {
+          setdocumenttype(populateDropDown(res.data.document_type || {}));
+          setsectortype(populateDropDown(res.data.sector_type || {}));
+          setlistedtype(populateDropDown(res.data.listed_type || {}));
+          setcountry(populateDropDown(res.data.country || {}));
+          setstate(populateDropDown(res.data.state || {}));
+          setstatedata(res.data.state || []);
+          setcity(populateDropDown(res.data.city || {}));
+          setcitydata(res.data.city || []);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  
+    fetchData();
+  }, []);
 
   const populateState = useCallback((id) => {
     var data = statedata;
@@ -153,7 +182,7 @@ export default function OrgRegistration({route}) {
       tempList.push(
         <Picker.Item
           key={key} // Use a unique value from data as the key
-          label={data[key].Name}
+          label={data[key].Name }
           value={key}
           style={styles.pickerItem}
         />,
@@ -166,27 +195,8 @@ export default function OrgRegistration({route}) {
 
    
   
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await ApiBackendRequest(`${NATIVE_API_URL}/add/organization/`);
-        if (res.data) {
-          setdocumenttype(populateDropDown(res.data.document_type || {}));
-          setsectortype(populateDropDown(res.data.sector_type || {}));
-          setlistedtype(populateDropDown(res.data.listed_type || {}));
-          setcountry(populateDropDown(res.data.country || {}));
-          setstate(populateDropDown(res.data.state || {}));
-          setstatedata(res.data.state || []);
-          setcity(populateDropDown(res.data.city || {}));
-          setcitydata(res.data.city || []);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
   
-    fetchData();
-  }, []);
+
   const handleChange = (name, value) => {
     setOrgdata(prevData => ({...prevData, [name]: value}));
     if (name == 'country_id') {
@@ -212,8 +222,45 @@ export default function OrgRegistration({route}) {
     }
   };
 
+
+  if (editOrgEnabled) {
+    const editdata = {
+      organization_id: editOrgData.organization_id || "",
+    };
+  useEffect(() => {
+    
+    const fetchData = async() =>{
+      try {
+      const res = await ApiBackendRequest(`${NATIVE_API_URL}/organization/editable/data/`, editdata)
+      if(res){
+            setOrgdata((pre)=>({
+              ...pre,
+              ...res.data.organization_list[0]
+            }));
+            setFileUrl(res.data.organization_list[0].organization_image)
+            setFileLogoName(getFileNameFromUrl(res.data.organization_list[0].organization_image))
   
-  
+            seteditOrgEnabled(
+              res.data.organization_editable_data_send_succesfull
+            );
+            if(res.isexception){
+              setError(res.exceptionmessage.error)
+            }
+          }
+      } catch (error) {
+        console.log(error)
+      }
+      
+    }
+    
+        fetchData()
+        }, [editdata.organization_id]);
+}
+
+const getFileNameFromUrl = (url) => {
+  return url.substring(url.lastIndexOf('/') + 1);
+};
+
   const handleOrgSubmit = async () => {
     
     const errors = validate();
@@ -254,6 +301,11 @@ export default function OrgRegistration({route}) {
     setModalVisible(false);
   };
 
+  const handleImagePreview = (url) =>{
+    setUrl(url)
+    setShowImage(true)
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -281,6 +333,7 @@ export default function OrgRegistration({route}) {
                     placeholder="Name"
                     placeholderTextColor="#535C68"
                     style={customStyle.inputStyle}
+                    value={Orgdata.organization_name} /* editable data*/ 
                     onChangeText={text => handleChange('organization_name', text)}
                   />
                 </View>
@@ -305,7 +358,7 @@ export default function OrgRegistration({route}) {
                           'UPLOAD FILE'
                         ) : (
                           <TruncatedText
-                            text={Orgdata.organization_image.name}
+                            text={fileLogoName == "" ? Orgdata.organization_image.name : fileLogoName}
                             maxLength={25}
                             dot={true}
                           />
@@ -315,7 +368,7 @@ export default function OrgRegistration({route}) {
                   </TouchableOpacity>
                   {Object.keys(Orgdata.organization_image).length !== 0 && (
                     <View style={styles.viewContainer}>
-                      <TouchableOpacity>
+                      <TouchableOpacity onPress={()=>handleImagePreview(Orgdata.organization_image.uri || fileUrl)}>
                         <Text style={styles.viewText}>View</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
@@ -334,7 +387,7 @@ export default function OrgRegistration({route}) {
                   <Text style={styles.errors}>{formsErrors.organization_image}</Text>
                 )}
               </View>
-              <View>
+              {!editOrgEnabled&&<View>
                 <View style={customStyle.lableContainer}>
                   <Text style={customStyle.lableHeading}>Document Type</Text>
                   <Text style={customStyle.mandatory}>*</Text>
@@ -344,21 +397,22 @@ export default function OrgRegistration({route}) {
                     selectedValue={Orgdata.document_type_id}
                     onValueChange={itemValue =>
                       handleChange('document_type_id', itemValue)
-                    }>
+                    }
+                    >
                     {documenttype}
                   </Picker>
                 </View>
                 {formsErrors.document_type_id && (
                   <Text style={styles.errors}>{formsErrors.document_type_id}</Text>
                 )}
-              </View>
-              <View>
+              </View>}
+              {!editOrgEnabled&&<View>
                 <View style={customStyle.lableContainer}>
                   <Text style={customStyle.lableHeading}>Document File</Text>
                   <Text style={customStyle.mandatory}>*</Text>
                 </View>
                 <View>
-                  <TouchableOpacity onPress={() => selectImage('document_file')}>
+                  <TouchableOpacity onPress={() => selectImage('document_file')} >
                     <View style={customStyle.fileBtn}>
                       <FileIcon name="clouduploado" size={20} color="#592DA1" />
                       <Text style={customStyle.fileBtnText}>
@@ -376,7 +430,7 @@ export default function OrgRegistration({route}) {
                   </TouchableOpacity>
                   {Object.keys(Orgdata.document_file).length !== 0 && (
                     <View style={styles.viewContainer}>
-                      <TouchableOpacity>
+                      <TouchableOpacity onPress={()=>handleImagePreview(Orgdata.document_file.uri)}>
                         <Text style={styles.viewText}>View</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
@@ -394,7 +448,7 @@ export default function OrgRegistration({route}) {
                 {formsErrors.document_file && (
                   <Text style={styles.errors}>{formsErrors.document_file}</Text>
                 )}
-              </View>
+              </View>}
               <View></View>
               <View>
                 <View style={customStyle.lableContainer}>
@@ -408,7 +462,8 @@ export default function OrgRegistration({route}) {
                     selectedValue={Orgdata.sector_id}
                     onValueChange={itemValue =>
                       handleChange('sector_id', itemValue)
-                    }>
+                    }
+                    >
                     {sectortype}
                   </Picker>
                 </View>
@@ -428,7 +483,8 @@ export default function OrgRegistration({route}) {
                     selectedValue={Orgdata.listed_id}
                     onValueChange={itemValue =>
                       handleChange('listed_id', itemValue)
-                    }>
+                    }
+                    >
                     {listedtype}
                   </Picker>
                 </View>
@@ -437,7 +493,7 @@ export default function OrgRegistration({route}) {
                 )}
               </View>
 
-              <View>
+              {!editOrgEnabled&&<View>
                 <View style={customStyle.lableContainer}>
                   <Text style={customStyle.lableHeading}>Document Number</Text>
                   <Text style={customStyle.mandatory}>*</Text>
@@ -447,6 +503,7 @@ export default function OrgRegistration({route}) {
                     placeholder="CA947318A"
                     placeholderTextColor="#535C68"
                     style={customStyle.inputStyle}
+                    editable={!editOrgEnabled}
                     onChangeText={text => handleChange('document_number', text)}
                   />
                 </View>
@@ -455,7 +512,7 @@ export default function OrgRegistration({route}) {
                     {formsErrors.document_number}
                   </Text>
                 )}
-              </View>
+              </View>}
               <View>
                 <View style={customStyle.lableContainer}>
                   <Text style={customStyle.lableHeading}>
@@ -552,6 +609,7 @@ export default function OrgRegistration({route}) {
                     placeholder="Area Ex-148, Nehru Nagar"
                     placeholderTextColor="#535C68"
                     style={customStyle.inputStyle}
+                    value={Orgdata.area}
                     onChangeText={text => handleChange('area', text)}
                   />
                 </View>
@@ -623,6 +681,7 @@ export default function OrgRegistration({route}) {
                     placeholder="Pin Number"
                     placeholderTextColor="#535C68"
                     style={customStyle.inputStyle}
+                    value={Orgdata.pincode} /* editable data*/
                     keyboardType="numeric"
                     maxLength={6}
                     onChangeText={number => handleChange('pincode', number)}
@@ -653,6 +712,7 @@ export default function OrgRegistration({route}) {
             onPress: closeModal,
           }}
         />
+        <ImagePreview imageUrl={url} visible={showImage} onClose={() => setShowImage(false)}/>
       </ScrollView>
     </KeyboardAvoidingView>
   );

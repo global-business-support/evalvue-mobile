@@ -23,6 +23,7 @@ import AddToOrganization from '../Components/Pages/AddToOrganization';
 import { primary } from '../Components/Styles/customStyle';
 
 import EmpInfo from '../Components/Pages/EmpInfo';
+import OrgInfo from '../Components/Pages/OrgInfo';
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
 const OrgStack = createStackNavigator();
@@ -38,6 +39,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="AddReview" component={PostReview} />
       <HomeStack.Screen name="Notifications" component={Notifications} />
       <HomeStack.Screen name="EmpInfo" component={EmpInfo} />
+      <HomeStack.Screen name="OrgInfo" component={OrgInfo} />
       <HomeStack.Screen name="OrganizationList" component={OrgList} />
     </HomeStack.Navigator>
   );
@@ -99,6 +101,7 @@ function AppTabs() {
               style={focused ? styles.activeIcon : styles.icon}
             />
           ),
+          initialParams: { editOrgData: {editorg: false }, }
         }}
       />
       <Tab.Screen
