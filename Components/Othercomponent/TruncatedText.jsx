@@ -3,12 +3,12 @@ import { View, Text, StyleSheet } from 'react-native';
 import { listStyle } from '../Styles/listStyle';
 const TruncatedText = ({ text, maxLength ,dot}) => {
   // text=text.toString();
-  if (text.length <= maxLength) {
+  if (text?.length <= maxLength) {
     return <Text>{text}</Text>;
   }
   
   // truncate text and add ellipsis
-  var truncatedText = `${text.substring(0, maxLength)}`;
+  var truncatedText = `${text?.substring(0, maxLength)}`;
   if(dot)
   {
      truncatedText+=`...`;

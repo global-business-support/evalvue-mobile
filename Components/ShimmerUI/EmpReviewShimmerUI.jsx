@@ -2,23 +2,23 @@ import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
 import { reviewCard } from './ReviewShimmerUI';
+import ShimmerText from './ShimmerText';
 
 export default function EmpReviewShimmerUI() {
     return (
         <View style={styles.mainContainer}>
             <View style={styles.firstContainer}>
                 <View style={styles.headerContainer}>
-                    <View style={styles.profile}></View>
-                    <View style={[styles.text, { width: '60%' }]}></View>
+                    <ShimmerText style={styles.profile}></ShimmerText>
+                    <ShimmerText style={[styles.text, { width: '60%' }]}></ShimmerText>
                 </View>
-                <View style={[styles.text, { width: '50%' }]}></View>
-                <View style={[styles.text, { width: '40%' }]}></View>
+                <ShimmerText style={[styles.text, { width: '50%' }]}></ShimmerText>
+                <ShimmerText style={[styles.text, { width: '40%' }]}></ShimmerText>
             </View>
             <ScrollView style={styles.scrollStyle}>
-                {reviewCard()}
-                {reviewCard()}
-                {reviewCard()}
-                {reviewCard()}
+                {Array.from({ length: 3 }).map((_, index) => (
+                    <React.Fragment key={index}>{reviewCard()}</React.Fragment>
+                ))}
             </ScrollView>
         </View>
     )
@@ -39,14 +39,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 40 / 2,
-        backgroundColor: '#DAE0E2',
     },
     scrollStyle: {
         backgroundColor: '#DAE0E2'
     },
     text: {
         height: 10,
-        backgroundColor: '#DAE0E2',
         borderRadius: 10,
         marginLeft: 10,
         marginVertical: 5

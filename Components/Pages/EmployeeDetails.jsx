@@ -160,7 +160,7 @@ export default function EmployeeDetails() {
               justifyContent: 'space-between',
             }}>
             <View>
-            {(SearchByAadhar)? (empDetails.status_id == 1)?<Text style={styles.orgname}>{orgDetails.orgName}</Text> : '' : <Text style={styles.orgname}>{orgName}</Text>}
+            {(SearchByAadhar)? (empDetails.status_id == 1)?<Text style={styles.orgname}>{orgDetails.orgName}</Text> : '' : <Text style={styles.orgname}>{orgDetails.orgName}</Text>}
               <View style={styles.empRatingContainer}>
                 <Rating
                   type="custom"

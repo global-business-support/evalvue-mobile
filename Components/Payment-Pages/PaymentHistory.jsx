@@ -10,6 +10,7 @@ import TruncatedText from '../Othercomponent/TruncatedText';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
 import { primary } from '../Styles/customStyle';
 import PayIcon from 'react-native-vector-icons/MaterialIcons';
+import PaymentShimmerUI from '../ShimmerUI/PaymentShimmerUI';
 
 export default function Subscription() {
     const [list, setList] = useState([])
@@ -80,7 +81,7 @@ export default function Subscription() {
     };
 
     if (loading) {
-        return <ListShimmerUI />
+        return <PaymentShimmerUI />
     };
     if (error) {
         return (
