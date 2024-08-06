@@ -11,7 +11,7 @@ import {
 import { Image } from 'react-native-elements';
 import SearchIcon from 'react-native-vector-icons/MaterialIcons';
 import DotIcon from 'react-native-vector-icons/Entypo';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { NATIVE_API_URL } from '@env';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
@@ -19,7 +19,6 @@ import TruncatedText from '../Othercomponent/TruncatedText';
 import { listStyle } from '../Styles/listStyle';
 import ThreeDotMenu from './ThreeDotMenu ';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
-import SearchByAadhar from './SearchByAadhar';
 
 export default function EmployeeList() {
   const [Empdata, setEmpdata] = useState([]);
@@ -31,6 +30,7 @@ export default function EmployeeList() {
   const route = useRoute();
   const { orgDetails } = route.params;
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   const fetchdata = useCallback(async () => {
     try {
@@ -51,8 +51,10 @@ export default function EmployeeList() {
   }, [orgDetails.orgId]);
 
   useEffect(() => {
-    fetchdata();
-  }, [fetchdata]);
+    if(isFocused){
+      fetchdata();
+    }
+  }, [isFocused, fetchdata]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -73,38 +75,6 @@ export default function EmployeeList() {
     },
     [Empdata],
   );
-
-  // three dot function
-
-  // const showAlert = (empname) => {
-  //   Alert.alert(
-  //     "Terminate Employee",
-  //     `Are you sure you want to terminate ${empname}`,
-  //     [
-  //       { text: "Cancel", onPress: () =>  oncon, style: "cancel" },
-  //       { text: "OK", onPress: () =>  {return true} }
-  //     ],
-  //     { cancelable: false }
-  //   );
-  // };
-
-  // const handleTerminate = (empId, OrgId, empname) => {
-  //   const delId = { organization_id: OrgId, employee_id: empId };
-  //   const confirmuser = showAlert(empname)
-  //   console.log(confirmuser)
-  //   // if (confirmuser) {
-
-  //   //   const res = ApiBackendRequest(`${apiUrl}/terminate/employee/`, delId)
-  //   //   console.log(res)
-  //   //       if (res.data) {
-  //   //         if (res.data.is_employee_terminated_successfull) {
-  //   //           fetchdata()
-  //   //         } else if (res.isexception) {
-  //   //           setError(res.exceptionmessage.error);
-  //   //         }
-  //   //       }
-  //   // }
-  // };
 
   const showAlert = (empname, onConfirm) => {
     Alert.alert(
@@ -143,19 +113,18 @@ export default function EmployeeList() {
       }
     });
   };
-  // change function
+  
   const handleEdit = (empId, OrgId) => {
-
-    // Navigate to the edit page
     navigation.navigate(`AddEmployee`, {
-      state: {
         employee_id: empId,
         organization_id: OrgId,
-        addEmp: false,
-        orgImage: orgDetails.orgImage,
-        orgName: orgDetails.orgName,
-        orgAddress:orgDetails.orgAddress
-      },
+        orgDetails: {
+          orgId: orgDetails.orgId,
+          orgName: orgDetails.orgName,
+          orgAddress: orgDetails.orgAddress,
+          orgImage: orgDetails.orgImage,
+          addEmp: false
+        },
     });
   };
   const renderItem = useCallback(
@@ -195,8 +164,9 @@ export default function EmployeeList() {
             <Text style={listStyle.listBtn}>Reviews</Text>
           </TouchableOpacity>
           <ThreeDotMenu
-            onEdit={() =>
-              handleEdit(item.employee_id, orgDetails.orgId)
+            onEdit={() =>{
+              handleEdit(item.employee_id, orgDetails.orgId);
+            }
             }
             onDelete={() =>
               handleTerminate(

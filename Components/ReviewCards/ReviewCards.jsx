@@ -1,30 +1,44 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { Image, Rating } from 'react-native-elements';
+import {StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Image, Rating} from 'react-native-elements';
 import TruncatedText from '../Othercomponent/TruncatedText';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {primary} from '../Styles/customStyle';
+import ImagePreview from '../ImagePreview/ImagePreview';
 
-const ReviewCards = ({ item }) => {
+const ReviewCards = React.memo(({item}) => {
   const [name, setName] = useState('');
-  const [readMore, setReadMore] = useState(false)
+  const [readMore, setReadMore] = useState(false);
+  const [showImage, setShowImage] = useState(false);
+  const [url, setUrl] = useState('');
 
-  const handleReadMore = () =>{
-    setReadMore(!readMore)
-  }
+  const handleReadMore = () => {
+    setReadMore(!readMore);
+  };
   useEffect(() => {
-    // Set name only if item and item.name are available
     if (item && item.name) {
       setName(item.name);
     }
-  }, [item]); // Dependency array ensures effect runs when `item` changes
+  }, [item]);
+  const handleImagePreview = url => {
+    setUrl(url);
+    setShowImage(true);
+  };
 
-  console.log(name);
   return (
     <View style={styles.Container}>
       <View style={styles.mainContainer}>
         <View style={styles.firstContainer}>
           <View style={styles.subContainer}>
-            <Image source={{ uri: item.organization_image }} style={styles.orgImg} />
+            <TouchableOpacity
+              onPress={() => {
+                handleImagePreview(item?.organization_image);
+              }}>
+              <Image
+                source={{uri: item.organization_image}}
+                style={styles.orgImg}
+              />
+            </TouchableOpacity>
             <View>
               <Text style={styles.orgName}>{item.organization_name}</Text>
             </View>
@@ -33,21 +47,51 @@ const ReviewCards = ({ item }) => {
         </View>
         <View style={styles.secondContainer}>
           <View style={styles.empContainer}>
-            <Image source={{ uri: item.employee_image }} style={styles.empImg} />
+            <TouchableOpacity
+              onPress={() => {
+                handleImagePreview(item?.employee_image);
+              }}>
+              <Image
+                source={{uri: item.employee_image}}
+                style={styles.empImg}
+              />
+            </TouchableOpacity>
             <View>
               <Text style={styles.empNameStyle}>{item.employee_name}</Text>
               <Text style={styles.dsgText}>{item.designation}</Text>
             </View>
           </View>
           <View style={styles.commentConatiner}>
-            
-                <Text style={styles.commentText}>
-                  <TruncatedText text={item.comment} maxLength={(item.image)? (readMore)? item.comment.length : 150 : item.comment.length} dot={true} />
-                  {item.image&& <Text style={{color : '#777', fontSize : 12,}} onPress={()=>{handleReadMore()}}>{" "}{readMore ? "Less." : "Read More."}</Text>}
-              </Text>
-            
+            <Text style={styles.commentText}>
+              <TruncatedText
+                text={item.comment}
+                maxLength={
+                  item.image
+                    ? readMore
+                      ? item.comment.length
+                      : 150
+                    : item.comment.length
+                }
+                dot={true}
+              />
+              {item.image && (
+                <Text
+                  style={{color: primary, fontSize: 12, fontWeight: '500'}}
+                  onPress={() => {
+                    handleReadMore();
+                  }}>
+                  {' '}
+                  {readMore ? 'Less.' : 'Read More.'}
+                </Text>
+              )}
+            </Text>
+
             {item.image && item.image !== 'null' && (
-              <Image source={{ uri: item?.image }} style={styles.reviewImg} />
+              <Image
+                source={{uri: item?.image}}
+                style={styles.reviewImg}
+                
+              />
             )}
             <View style={styles.ratingContainer}>
               <Rating
@@ -62,9 +106,14 @@ const ReviewCards = ({ item }) => {
           </View>
         </View>
       </View>
+      <ImagePreview
+        imageUrl={url}
+        visible={showImage}
+        onClose={() => setShowImage(false)}
+      />
     </View>
   );
-};
+});
 
 export default ReviewCards;
 
@@ -90,14 +139,14 @@ const styles = StyleSheet.create({
   subContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 6
+    paddingVertical: 6,
   },
   orgImg: {
     width: 25,
     height: 25,
     borderRadius: 25 / 2,
     borderWidth: 0.3,
-    borderColor: '#d2dae2'
+    borderColor: '#d2dae2',
   },
   secondContainer: {
     justifyContent: 'center',
@@ -112,7 +161,7 @@ const styles = StyleSheet.create({
     height: 35,
     borderRadius: 35 / 2,
     borderWidth: 0.3,
-    borderColor: '#d2dae2'
+    borderColor: '#d2dae2',
   },
   commentConatiner: {
     paddingVertical: 5,
@@ -129,8 +178,9 @@ const styles = StyleSheet.create({
   },
   reviewImg: {
     width: '100%',
-    height: 150,
-    borderRadius: 6,
+    height: 300,
+    borderWidth: 1,
+    borderColor: '#DAE0E2',
   },
   orgName: {
     color: '#535C68',
@@ -143,12 +193,12 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   commentText: {
-    color: '#333',
+    color: '#444',
     fontSize: 11,
     marginBottom: 6,
-    textAlign: "justify",
+    textAlign: 'justify',
     fontFamily: 'inter',
-    lineHeight: 16
+    lineHeight: 16,
   },
   dsgText: {
     color: '#2C3335',
@@ -158,5 +208,5 @@ const styles = StyleSheet.create({
   ratingContainer: {
     alignItems: 'flex-start',
     paddingTop: 6,
-  }
+  },
 });

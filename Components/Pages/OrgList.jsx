@@ -12,12 +12,14 @@ import SearchIcon from 'react-native-vector-icons/MaterialIcons';
 import { listStyle } from '../Styles/listStyle';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AddIcon from 'react-native-vector-icons/MaterialIcons';
+import RupeeIcon from 'react-native-vector-icons/FontAwesome';
 import { NATIVE_API_URL } from '@env';
 import TruncatedText from '../Othercomponent/TruncatedText';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import ThreeDotMenu from './ThreeDotMenu ';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { primary } from '../Styles/customStyle';
 
 export default function OrgList() {
   const [Orgdata, setOrgdata] = useState([]);
@@ -29,6 +31,7 @@ export default function OrgList() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   const fetchdata = async () => {
     try {
@@ -51,8 +54,10 @@ export default function OrgList() {
   };
 
   useEffect(() => {
-    fetchdata();
-  }, [Isorgmap]);
+    if(isFocused){
+      fetchdata();
+    }
+  }, [Isorgmap, isFocused]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -71,20 +76,15 @@ export default function OrgList() {
     }
   };
 
-  // three dot function
   const handleEdit = (organizationId) => {
-    // Navigate to the edit page
     navigation.navigate(`AddOrganization`, {
       editOrgData: { organization_id: organizationId, editorg: true },
     });
-    // navigate(`/dashboard/organization/edit/${organizationId}`)
   };
   const handleInfo = (organizationId) => {
-    // Navigate to the edit page
     navigation.navigate(`infoorganization`, {
       editOrgData: { organization_id: organizationId, editorg: true },
     });
-    // navigate(`/dashboard/organization/edit/${organizationId}`)
   };
 
   const renderItem = ({ item }) => (
@@ -102,21 +102,57 @@ export default function OrgList() {
         </View>
       </View>
       <View style={listStyle.listBtnContainer}>
-        <TouchableOpacity
-          style={listStyle.btnStyle}
-          onPress={() =>
-            navigation.navigate('EmployeeList', {
-              orgDetails: {
-                orgName: item.name,
-                orgId: item.organization_id,
-                orgAddress: item.area + ' ' + item.city_name,
-                orgImage: item.image,
-              },
-            })
-          }>
-          <Text style={listStyle.listBtn}>View</Text>
+        {item.organization_rejected ? (
+          <TouchableOpacity
+          style={styles.reapplyBtnStyle}
+          >
+          <Text style={styles.reapplyBtn}>Re-Apply</Text>
         </TouchableOpacity>
-        <ThreeDotMenu onEdit={() => handleEdit(item.organization_id)} edit={true} deleted={false} />
+        ): item.organization_paid ? (
+          item.organization_verified ? (
+            <TouchableOpacity
+                style={listStyle.btnStyle}
+                onPress={() =>
+                  navigation.navigate('EmployeeList', {
+                    orgDetails: {
+                      orgName: item.name,
+                      orgId: item.organization_id,
+                      orgAddress: item.area + ' ' + item.city_name,
+                      orgImage: item.image,
+                    },
+                  })
+                }>
+              <Text style={styles.viewBtn}>View</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.pendingBtnStyle} disabled={true}>
+              <Text style={styles.pendingBtn}>Pending...</Text>
+            </TouchableOpacity>
+          )
+        ): (
+          <TouchableOpacity
+                style={styles.payBtnStyle}
+                // onPress={() =>
+                //   
+                // }
+                >
+              <Text style={styles.payBtn}>Pay {""}
+                <RupeeIcon
+                name="rupee"
+                size={15}
+                color="white"
+                style={styles.payBtn}
+              />{count == 0 ? "5" : "99"}</Text>
+          </TouchableOpacity>
+        )
+        }
+         
+       { item.organization_verified&&<ThreeDotMenu 
+        onEdit={() => handleEdit(item.organization_id)} 
+        edit={true} 
+        deleted={false} 
+        path="OrgInfo" 
+        params={item} />}
       </View>
     </View>
   );
@@ -220,4 +256,62 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingHorizontal: 8
   },
+  viewBtn : {
+    color: '#FFF',
+    fontSize: 13,
+    fontWeight : '500',
+    paddingHorizontal : 15,
+    textAlign: 'center'
+  },
+  pendingBtn: {
+    color: 'white',
+    fontWeight : '500',
+    fontSize: 13,
+    textAlign: 'center'
+  },
+  payBtn : {
+    color: '#FFF',
+    fontWeight : '500',
+    paddingHorizontal : 8,
+    fontSize: 13,
+    textAlign: 'center'
+  },
+  reapplyBtn : {
+    color: '#FFF',
+    fontWeight : '500',
+    paddingHorizontal : 8,
+    fontSize: 13,
+    textAlign: 'center'
+  },
+  reapplyBtnStyle : {
+    backgroundColor: '#FF6666',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+    borderRadius: 2,
+    flexDirection: 'row',
+    paddingVertical: 3,
+    marginRight: 32
+  },
+  pendingBtnStyle : {
+    backgroundColor: '#88898B',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    borderRadius: 2,
+    flexDirection: 'row',
+    paddingVertical: 3,
+    marginRight: 32
+  },
+  payBtnStyle  : {
+    backgroundColor: primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+    paddingHorizontal: 6,
+    borderRadius: 2,
+    flexDirection: 'row',
+    paddingVertical: 3,
+    marginRight: 32
+}
 });
