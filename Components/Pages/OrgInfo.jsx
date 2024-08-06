@@ -7,7 +7,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import TruncatedText from '../Othercomponent/TruncatedText';
 import { primary } from '../Styles/customStyle';
 
-export default function EmpInfo() {
+export default function OrgInfo() {
     const [visible, setVisible] = useState(true)
     const navigation = useNavigation();
     const route = useRoute()
@@ -15,59 +15,83 @@ export default function EmpInfo() {
   return (
     <>
         <View style={styles.closeButton} >
-            <Text style={styles.closeButtonText} onPress={()=> {navigation.navigate("EmployeeList", {
-            orgDetails : orgDetails
-        })}}>✕</Text>
+            <Text style={styles.closeButtonText} onPress={()=> {navigation.navigate("OrganizationList")}}>✕</Text>
           </View>
         <View style={styles.mainContainer}>
             <View style={styles.subContainer}>
                 <View style={styles.imageContainer}>
                     <Image
-                        source={{ uri: params.employee_image }}
+                        source={{ uri: params.image }}
                         style={styles.image}
                         />
                 </View>
                 <View style={{gap:40}}>
                     <View>
                         <Text style={styles.empName}>
-                        {params.employee_name}
+                        {params.name}
                         </Text>
-                        <Text style={styles.empDesigation}>
-                        {params.designation}
-                        </Text>
+                        {/* <Text style={styles.empDesigation}>
+                        {params.area}
+                        </Text> */}
                     </View>
                     <View style={styles.infoBox}>
-                        <View style={styles.align}>
+                        <View>
                                 <Text style={styles.heading}>
-                                Email id
+                                    Address
                                 </Text>
-                                <Text style={styles.info}>
-                                    {params.email}
-                                </Text>
+                                <View style={styles.align}>
+                                    <Text style={styles.info}>
+                                        {params.area}
+                                    </Text>
+                                    <Text style={styles.info}t>,</Text>
+                                    <Text style={styles.info}>
+                                        {params.city_name}
+                                    </Text>
+                                    <Text style={styles.info}t>,</Text>
+                                    <Text style={styles.info}>
+                                        {params.state_name}
+                                    </Text>
+                                </View>
                         </View>
-                        <View  style={styles.align}>
+                        <View>
                                 <Text style={styles.heading}>
-                                Current Organization 
+                                    PinCode
                                 </Text>
-                                <Text style={styles.info}>
-                                <TruncatedText text={orgDetails.orgName} maxLength={25} dot={true} />
-                                </Text>
+                                <View style={styles.align}>
+                                    <Text style={styles.info}>
+                                        {params.pincode}
+                                    </Text>
+                                </View>
                         </View>
-                        <View  style={styles.align}>
+                        <View>
                                 <Text style={styles.heading}>
-                                    Aadhar Number  
+                                    Sector 
                                 </Text>
-                                <Text style={styles.info}>
-                                    {params.aadhar_number}
-                                </Text>
+                                <View style={styles.align}>
+                                    <Text style={styles.info}>
+                                        {params.sector_name}
+                                    </Text>
+                                </View>
                         </View>
-                        <View  style={styles.align}>
+                        <View>
                                 <Text style={styles.heading}>
-                                    Mobile Number  
+                                    Listed Type 
                                 </Text>
-                                <Text style={styles.info}>
-                                    {params.mobile_number}
+                                <View style={styles.align}>
+                                    <Text style={styles.info}>
+                                        {params.listed_name}
+                                    </Text>
+                                </View>
+                        </View>
+                        <View>
+                                <Text style={styles.heading}>
+                                    Document Number 
                                 </Text>
+                                <View style={styles.align}>
+                                    <Text style={styles.info}>
+                                        {params.document_number}
+                                    </Text>
+                                </View>
                         </View>
                     
 
@@ -148,4 +172,8 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight : '600'
       },
+      align : {
+        flexDirection : 'row',
+        gap : 5
+      }
 })

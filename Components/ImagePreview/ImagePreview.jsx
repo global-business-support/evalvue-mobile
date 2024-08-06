@@ -3,18 +3,23 @@ import React, { useState } from 'react';
 import { Modal, View, Image, TouchableOpacity, StyleSheet, Text } from 'react-native';
 
 const ImagePreview = ({ imageUrl, visible, onClose }) => {
+  console.log(imageUrl)
   return (
     <Modal
-    transparent={true} 
-    isVisible={visible} 
-    onBackdropPress={onClose}>
-    <View style={styles.overlay}>
-      <View style={styles.modalContainer}>
-        <Image source={{ uri: imageUrl }} style={styles.image} resizeMode="contain" />
-        <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-          <Text style={styles.closeButtonText}>Close</Text>
-        </TouchableOpacity>
-      </View>
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}
+      
+      >
+      <View style={styles.overlay}>
+        <View style={styles.modalContainer}>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <Text style={styles.closeButtonText}>✕</Text>
+          </TouchableOpacity>
+          <View style={styles.content}>
+            <Image source={{uri : imageUrl}} style={styles.image}/>
+          </View>
+        </View>
       </View>
     </Modal>
   );
@@ -25,33 +30,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)'
     },
     modalContainer: {
-        height : 800,
+        height : 600,
         width: 400,
-        backgroundColor: 'white',
         borderRadius: 10,
-        padding: 20,
+        // padding: 10,
         alignItems: 'center',
-        shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
       },
   image: {
-    width: '100%',
-    height: '80%',
+    height: 600,
+    width: 320,
+    objectFit : 'contain'
   },
   closeButton: {
-    marginTop: 20,
     padding: 10,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,1.5)',
     borderRadius: 5,
   },
   closeButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 20,
   },
 });
 
