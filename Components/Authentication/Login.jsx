@@ -22,13 +22,19 @@ export default function Login({ navigation, route }) {
     const [validPasswordIcon, setValidPasswordIcon] = useState(false);
     const [isEmailFocused, setIsEmailFocused] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+    const [accessToken,setaccessToken]=useState(false)
 
     useEffect(() => {
-        if (sessionExpired) {
-            setError("Please login again. Your session has timed out.");
-            setModalVisible(true);
+        // not working properly
+        if (getStringData('accessToken')) {
+            navigation.navigate('Dashboard');
+            setaccessToken(true)
         }
-    }, [sessionExpired]);
+        else{
+            console.log('don\'t have access token  ')
+            setaccessToken(true)
+        }
+    }, [accessToken]);
 
     const handleChange = (name, value) => {
         if (name === "email") {
@@ -52,33 +58,6 @@ export default function Login({ navigation, route }) {
         if (!loginData.password) errors.password = "Password is required";
         return errors;
     };
-
-    // const handleSubmit = async () => {
-    //     const errors = validate();
-    //     setFormErrors(errors);
-    //     if (Object.keys(errors).length === 0) {
-    //         setIsLoading(true);
-    //         const res = await ApiAxiosRequest(`${NATIVE_API_URL}/login/user/`, loginData);
-    //         setIsLoading(false);
-    //         if (res.data) {
-    //             if (res.data.is_login_successfull && res.data.is_user_verified) {
-    //                 storeData("accessToken", res.data.access);
-    //                 storeData("accessTokenExpiry", res.data.accessTokenExpiry);
-    //                 storeData("isLogin", res.data.is_login_successfull);
-    //                 navigation.navigate("Dashboard");
-    //             }
-    //             else if (res.data.is_user_verified === false) {
-    //                 navigation.navigate('Verify', { isForget: false, stateEmail: loginData.email });
-    //             }
-    //         }
-    //         else if (res.isexception) {
-    //             setError(res.exceptionmessage.error);
-    //             setModalVisible(true);
-    //         }
-    //     } else {
-    //         setError(null);
-    //     }
-    // };
     const handleSubmit = async () => {
         const errors = validate();
         setFormErrors(errors);

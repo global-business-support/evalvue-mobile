@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -6,13 +7,13 @@ import {
   View,
   RefreshControl
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
 import NotificationIcon from 'react-native-vector-icons/MaterialIcons';
 import SearchIcon from 'react-native-vector-icons/AntDesign';
 import ReviewCards from '../ReviewCards/ReviewCards';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import { NATIVE_API_URL } from '@env';
 import ReviewShimmerUI from '../ShimmerUI/ReviewShimmerUI';
+import OfferPoster from '../Othercomponent/OfferPosters'; // Import OfferPoster
 
 export default function Feed({ navigation }) {
   const [feeds, setFeeds] = useState([]);
@@ -20,8 +21,10 @@ export default function Feed({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [isReviewMapped, setIsReviewMapped] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isOfferVisible, setOfferVisible] = useState(true);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(
+  async () => {
     try {
       setLoading(true);
       const res = await ApiBackendRequest(`${NATIVE_API_URL}/dashboard/feed/`);
@@ -38,15 +41,21 @@ export default function Feed({ navigation }) {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchData();
-  }, [isReviewMapped]);
+  }, [fetchData]);
 
   const onRefresh = () => {
     setRefreshing(true);
     fetchData();
+  };
+
+  const renderItem = useCallback(({item}) => <ReviewCards item={item} />, []);
+
+  const toggleOfferVisibility = () => {
+    setOfferVisible(prev => !prev);
   };
 
   if (loading) {
@@ -86,7 +95,7 @@ export default function Feed({ navigation }) {
       </View>
       <FlatList
         data={feeds}
-        renderItem={({ item }) => <ReviewCards item={item} />}
+        renderItem={renderItem}
         keyExtractor={item => item?.review_id.toString()}
         refreshControl={
           <RefreshControl
@@ -96,6 +105,19 @@ export default function Feed({ navigation }) {
           />
         }
       />
+      {/* Add OfferPoster here */}
+      <OfferPoster
+        mediaUri="https://i.pinimg.com/564x/48/59/06/485906bb4f7f0b8f6957928796fdf6a9.jpg" // Replace with your media URI
+        type="image" // Change to 'video' if using video
+        visible={isOfferVisible}
+        onClose={toggleOfferVisibility}
+      />
+      <TouchableOpacity
+        style={styles.showOfferButton}
+        onPress={toggleOfferVisibility}
+      >
+        <Text style={styles.showOfferText}>Upcoming Plans</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -141,5 +163,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#616C6F',
     marginLeft: 6,
+  },
+  showOfferButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#5e3aeb',
+    padding: 15,
+    borderRadius: 30,
+    elevation: 5,
+  },
+  showOfferText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });

@@ -8,84 +8,104 @@ import AppTabs from './Drawer/AppTabs';
 import OtpPassword from './Components/Authentication/OtpPassword';
 import ForgotPassword from './Components/Authentication/ForgotPassword';
 import { getOnboardingStatus, setOnboardingStatus } from './Utils/Storage';
+import { getStringData } from './API-Management/mmkv-Storage'; // Assuming this is your storage utility
 
 const Stack = createNativeStackNavigator();
 
 export default function AppStack() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState(false);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null); // Loading state
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Authentication state
 
   useEffect(() => {
-    const checkOnboardingStatus = async () => {
-      const hasViewedOnboarding = getOnboardingStatus();
-      if (hasViewedOnboarding === false) {
-        // If there is no value, assume it's the first launch
-        setOnboardingStatus(false); // Initialize with false
-        setIsFirstLaunch(true);
-      } else {
-        setIsFirstLaunch(!hasViewedOnboarding);
+    const initializeApp = async () => {
+      try {
+        // Check for onboarding status
+        const hasViewedOnboarding = await getOnboardingStatus();
+        if (hasViewedOnboarding === false) {
+          setOnboardingStatus(false); // Initialize with false if not set
+          setIsFirstLaunch(true); // Show onboarding
+        } else {
+          setIsFirstLaunch(false); // Skip onboarding
+        }
+
+        // Check for access token
+        const accessToken = await getStringData('accessToken');
+        if (accessToken) {
+          setIsAuthenticated(true); // User is authenticated
+        } else {
+          setIsAuthenticated(false); // User is not authenticated
+        }
+      } catch (error) {
+        console.error('Error initializing app', error);
+        setIsFirstLaunch(false); // Default to not showing onboarding in case of error
+        setIsAuthenticated(false); // Handle errors gracefully
       }
     };
-    checkOnboardingStatus();
+
+    initializeApp();
   }, []);
 
-  if (isFirstLaunch === false) {
+  if (isFirstLaunch === null) {
     // Optionally render a splash screen or loading indicator while checking
-    return false;
-  };
+    return null; // Or return a <SplashScreen /> component
+  }
 
   return (
-    <Stack.Navigator>
-      {isFirstLaunch ? (
-        <>
-          <Stack.Screen
-            name="Onboarding"
-            component={Onboarding}
-            options={{ headerShown: false }}
-            listeners={{
-              // Set onboarding status to true when Onboarding screen is done
-              blur: async () => await setOnboardingStatus(true),
-            }}
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Dashboard"
-            component={AppTabs}
-            options={{ headerShown: false }}
-          />
-        </>
-      ) : (
-        <>
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Dashboard"
-            component={AppTabs}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Register"
-            component={UserRegistration}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Verify"
-            component={OtpPassword}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="ForgotPassword"
-            component={ForgotPassword}
-            options={{ headerShown: false }}
-          />
-        </>
-      )}
-    </Stack.Navigator>
+      <Stack.Navigator>
+        {isAuthenticated ? (
+          <>
+            <Stack.Screen
+              name="Dashboard"
+              component={AppTabs}
+              options={{ headerShown: false }}
+            />
+            {/* Optionally, you can also add other authenticated routes here */}
+          </>
+        ) : isFirstLaunch ? (
+          <>
+            <Stack.Screen
+              name="Onboarding"
+              component={Onboarding}
+              options={{ headerShown: false }}
+              listeners={{
+                blur: async () => await setOnboardingStatus(true),
+              }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerShown: false }}
+            />
+          </>
+        ) : (
+          <>
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerShown: false }}
+            />
+             <Stack.Screen
+              name="Dashboard"
+              component={AppTabs}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={UserRegistration}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Verify"
+              component={OtpPassword}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ForgotPassword"
+              component={ForgotPassword}
+              options={{ headerShown: false }}
+            />
+          </>
+        )}
+      </Stack.Navigator>
   );
 }

@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, Modal } from 'react-native';
 import Video from 'react-native-video'; // Import Video component
+import Icon from 'react-native-vector-icons/AntDesign'
 
 const { width } = Dimensions.get('window');
 
@@ -11,23 +12,23 @@ const OfferPoster = ({ mediaUri, type, visible, onClose }) => {
   const renderContent = () => {
     switch (type) {
       case 'image':
-      case 'gif': // Treat GIFs as images
+      case 'gif':
         return (
           <Image 
             source={{ uri: mediaUri }} 
             style={styles.media} 
-            resizeMode="contain" // Ensures GIF scales properly
+            resizeMode="contain"
           />
         );
       case 'video':
         return (
           <Video
-            source={mediaUri} // Use mediaUri directly if it's a local require
+            source={{ uri: mediaUri }} // Ensure uri is correct
             style={styles.media}
-            controls={false} // Hide controls
-            resizeMode="cover" // Ensures video scales properly
-            muted={true} // Mute the video
-            repeat={true} // Loop the video
+            controls={false}
+            resizeMode="cover"
+            muted={true}
+            repeat={true}
           />
         );
       default:
@@ -46,7 +47,9 @@ const OfferPoster = ({ mediaUri, type, visible, onClose }) => {
         <View style={styles.promoContainer}>
           {renderContent()}
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeButtonText}>✕</Text>
+            <Text style={styles.closeButtonText}>
+              <Icon name="closecircle" size={24}/>
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)', // Semi-transparent background
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   promoContainer: {
     width: width * 0.9,
@@ -68,25 +71,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
     position: 'relative',
-    alignItems: 'center', // Center align items
-    justifyContent: 'center', // Center align items
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   media: {
     width: '100%',
     height: '100%',
-    resizeMode: 'contain', // Ensure proper scaling
+    resizeMode: 'contain',
   },
   closeButton: {
     position: 'absolute',
     top: 10,
     right: 10,
-    backgroundColor: '#d9c6f7',
     borderRadius: 5,
-    padding: 10,
   },
   closeButtonText: {
-    color: '#5e3aeb', // Replace with your primary color
-    fontSize: 18,
+    color: '#5e3aeb',
     fontWeight: 'bold',
   },
   errorText: {

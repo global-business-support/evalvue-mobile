@@ -6,6 +6,7 @@ export const storeData = (key, value) => {
   try {
     if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
       storage.set(key, value);
+      console.log('access token is saved',key,value)
     } else {
       console.error(`Failed to store ${key}. Value must be of type string, number, or boolean.`);
     }
