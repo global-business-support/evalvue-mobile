@@ -19,7 +19,7 @@ function AppDrawer() {
       screenOptions={{
         headerShown: false,
         drawerStyle: {
-          width: '90%',
+          width: '100%',
         },
       }}>
       <Drawer.Screen

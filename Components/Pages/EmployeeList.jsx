@@ -20,6 +20,11 @@ import { listStyle } from '../Styles/listStyle';
 import ThreeDotMenu from './ThreeDotMenu ';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
 
+import ImagePreview from '../ImagePreview/ImagePreview';
+
+import { capitalizeEachWord } from '../Custom-Functions/customFunctions';
+
+
 export default function EmployeeList() {
   const [Empdata, setEmpdata] = useState([]);
   const [filteredEmpData, setFilteredEmpData] = useState([]);
@@ -31,6 +36,13 @@ export default function EmployeeList() {
   const { orgDetails } = route.params;
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const [showImage, setShowImage] = useState(false);
+  const [url, setUrl] = useState('');
+
+   const handleImagePreview = url => {
+    setUrl(url);
+    setShowImage(true);
+  };
 
   const fetchdata = useCallback(async () => {
     try {
@@ -134,17 +146,20 @@ export default function EmployeeList() {
           <Image
             source={{ uri: item.employee_image }}
             style={listStyle.listLogoImg}
+            onPress={() => {
+              handleImagePreview(item?.employee_image);
+            }}
           />
           <View>
             <Text style={listStyle.listTitleText}>
               <TruncatedText
-                text={item.employee_name}
+                text={capitalizeEachWord(item.employee_name)}
                 maxLength={20}
                 dot={true}
               />
             </Text>
             <Text style={listStyle.listSubTitleText}>
-              <TruncatedText text={item.designation} maxLength={20} />
+              <TruncatedText text={capitalizeEachWord(item.designation)} maxLength={20} />
             </Text>
           </View>
         </View>
@@ -228,16 +243,19 @@ export default function EmployeeList() {
             <Image
               source={{ uri: orgDetails.orgImage }}
               style={[listStyle.listLogoImg, { borderColor: 'white' }]}
+              onPress={() => {
+                handleImagePreview(orgDetails?.orgImage);
+              }}
             />
             <View>
               <Text style={listStyle.listText}>
                 <TruncatedText
-                  text={orgDetails.orgName}
+                  text={capitalizeEachWord(orgDetails.orgName)}
                   maxLength={17}
                   dot={true}
                 />
               </Text>
-              <Text style={listStyle.listSubText}>{orgDetails.orgAddress}</Text>
+              <Text style={listStyle.listSubText}>{capitalizeEachWord(orgDetails.orgAddress)}</Text>
             </View>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('AddEmployee', {
@@ -270,6 +288,11 @@ export default function EmployeeList() {
         scrollEnabled
         removeClippedSubviews={true}
         initialNumToRender={10}
+      />
+       <ImagePreview
+        imageUrl={url}
+        visible={showImage}
+        onClose={() => setShowImage(false)}
       />
     </View>
   );

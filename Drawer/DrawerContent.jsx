@@ -1,13 +1,24 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
+import LogIcon from 'react-native-vector-icons/MaterialIcons';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { primary } from '../Components/Styles/customStyle';
 import kisaan from '../assets/kisaan.jpg';
 import { useNavigation } from '@react-navigation/native';
+import { getStringData, removeData, storeData } from '../API-Management/mmkv-Storage';
 
 export default function DrawerContent(props) {
   const navigation = useNavigation();
+  const email = getStringData("email")
+  const userName = email[0]?.toUpperCase()
+
+  const handleLogout = () =>{
+    removeData('email')
+    removeData('accessToken')
+    storeData('isLogin', false)
+    navigation.navigate("Login")
+  }
 
   return (
     <View style={styles.Container}>
@@ -21,16 +32,17 @@ export default function DrawerContent(props) {
         </TouchableOpacity>
       </View>
       <View style={styles.profileContainer}>
-        <View style={styles.imageContainer}>
-          <Image source={kisaan} style={styles.image} />
+        <View style={styles.userNameContainer}>
+          {/* <Image source={kisaan} style={styles.image} /> */}
+          <Text style={styles.firstlatter}>{userName}</Text>
         </View>
         <View>
           <Text style={styles.userName}>Ritik Sharma</Text>
-          <Text style={{ color: '#ced6e0' }}>ritiksharma011@gmail.com</Text>
+          <Text style={{ color: '#ced6e0' }}>{email}</Text>
         </View>
       </View>
       <View>
-        <Text style={{ fontSize: 20, color: 'black', fontWeight: '500' }}>
+        <Text style={{ fontSize: 20, color: 'black', fontWeight: '500',marginTop : 50 }}>
           How can we help ?
         </Text>
       </View>
@@ -41,10 +53,10 @@ export default function DrawerContent(props) {
       </View>
       <View style={styles.loginView}>
         {/* Uncomment and implement logout logic if needed */}
-        {/* <TouchableOpacity style={styles.loginTouchable} onPress={() => handleLogout()}>
+        <TouchableOpacity style={styles.loginTouchable} onPress={() => handleLogout()}>
           <LogIcon name="logout" style={styles.logIcon} />
           <Text style={styles.logText}>Logout</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -60,6 +72,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom : 20
   },
   headingText: {
     fontSize: 20,
@@ -77,14 +90,18 @@ const styles = StyleSheet.create({
     padding: 15,
     justifyContent: 'space-between',
   },
-  imageContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  image: {
+  userNameContainer: {
     height: 50,
     width: 50,
-    borderRadius: 50 / 2,
+    borderRadius: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent : 'center',
+    backgroundColor : '#EF6C00'
+  },
+  firstlatter : {
+    fontSize : 30,
+    color : 'white'
   },
   userName: {
     fontSize: 18,

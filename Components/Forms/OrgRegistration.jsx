@@ -14,7 +14,6 @@ import NameIcon from 'react-native-vector-icons/Ionicons';
 import FileIcon from 'react-native-vector-icons/AntDesign';
 import CancelImgIcon from 'react-native-vector-icons/Entypo';
 import {Picker} from '@react-native-picker/picker';
-import {Image} from 'react-native-elements';
 import DocumentPicker from 'react-native-document-picker';
 import TruncatedText from '../Othercomponent/TruncatedText';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
@@ -116,7 +115,7 @@ export default function OrgRegistration() {
     var tempList = [];
     tempList.push(
       <Picker.Item
-        key="placeholder" // Ensure the key for the placeholder is unique
+        key="placeholder" 
         label="Select Option"
         value="placeholder"
         style={styles.pickerItem}
@@ -127,7 +126,7 @@ export default function OrgRegistration() {
       if (data[key].CountryId == id) {
         tempList.push(
           <Picker.Item
-            key={key} // Use a unique value from data as the key
+            key={key} 
             label={data[key].Name}
             value={key}
             style={styles.pickerItem}
@@ -137,14 +136,14 @@ export default function OrgRegistration() {
     });
     setisstate(true);
     setstate(tempList);
-  }, [statedata]); // Add statedata as dependency
+  }, [statedata]); 
   
   const populateCity = useCallback((id) => {
     var data = citydata;
     var tempList = [];
     tempList.push(
       <Picker.Item
-        key="placeholder" // Ensure the key for the placeholder is unique
+        key="placeholder"
         label="Select Option"
         value="placeholder"
         style={styles.pickerItem}
@@ -155,7 +154,7 @@ export default function OrgRegistration() {
       if (data[key].StateId == id) {
         tempList.push(
           <Picker.Item
-            key={key} // Use a unique value from data as the key
+            key={key} 
             label={data[key].Name}
             value={key}
             style={styles.pickerItem}
@@ -165,13 +164,13 @@ export default function OrgRegistration() {
     });
     setiscity(true);
     setcity(tempList);
-  }, [citydata]); // Add citydata as dependency
+  }, [citydata]);
   
   const populateDropDown = useCallback((data) => {
     var tempList = [];
     tempList.push(
       <Picker.Item
-        key="placeholder" // Ensure the key for the placeholder is unique
+        key="placeholder" 
         label="Select Option"
         value="placeholder"
         style={styles.pickerItem}
@@ -181,7 +180,6 @@ export default function OrgRegistration() {
     Object.keys(data).forEach(function (key, index) {
       tempList.push(
         <Picker.Item
-          key={key} // Use a unique value from data as the key
           label={data[key].Name }
           value={key}
           style={styles.pickerItem}
@@ -191,8 +189,6 @@ export default function OrgRegistration() {
     return tempList;
   }, []);
   
-// edit functionallty 
-
    
   
   
@@ -215,7 +211,6 @@ export default function OrgRegistration() {
       const doc = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.images],
       });
-      // console.log(name, doc);
       setOrgdata(prev => ({...prev, [name]: doc}));
     } catch (error) {
       console.log("error selectimage",error);
@@ -227,35 +222,44 @@ export default function OrgRegistration() {
     const editdata = {
       organization_id: editOrgData.organization_id || "",
     };
-  useEffect(() => {
-    
-    const fetchData = async() =>{
-      try {
-      const res = await ApiBackendRequest(`${NATIVE_API_URL}/organization/editable/data/`, editdata)
-      if(res){
-            setOrgdata((pre)=>({
-              ...pre,
-              ...res.data.organization_list[0]
-            }));
-            setFileUrl(res.data.organization_list[0].organization_image)
-            setFileLogoName(getFileNameFromUrl(res.data.organization_list[0].organization_image))
-  
-            seteditOrgEnabled(
-              res.data.organization_editable_data_send_succesfull
-            );
-            if(res.isexception){
-              setError(res.exceptionmessage.error)
-            }
-          }
-      } catch (error) {
-        console.log(error)
-      }
+      useEffect(() => {
+        
+        const fetchData = async() =>{
+          try {
+          const res = await ApiBackendRequest(`${NATIVE_API_URL}/organization/editable/data/`, editdata)
+          if(res.organization_editable_data_send_succesfull){
+            const newOrgData = res.organization_list[0]
+                setOrgdata((previewOrgData)=>({
+                  ...previewOrgData,
+                  organization_name : newOrgData.organization_name || previewOrgData.organization_name,
+                  sector_id : newOrgData.sector_id || previewOrgData.sector_id,
+                  listed_id : newOrgData.listed_id || previewOrgData.listed_id,
+                  number_of_employee : newOrgData.number_of_employee || previewOrgData.number_of_employee,
+                  area : newOrgData.area || previewOrgData.area,
+                  country_id : newOrgData.country_id || previewOrgData.country_id,
+                  state_id : newOrgData.state_id || previewOrgData.state_id,
+                  city_id : newOrgData.city_id || previewOrgData.city_id,
+                  pincode : newOrgData.pincode || previewOrgData.pincode
+                }));
+                setFileUrl(res.data.organization_list[0].organization_image)
+                setFileLogoName(getFileNameFromUrl(res.data.organization_list[0].organization_image))
       
-    }
+                seteditOrgEnabled(
+                  res.data.organization_editable_data_send_succesfull
+                );
+                if(res.isexception){
+                  setError(res.exceptionmessage.error)
+                }
+              }
+          } catch (error) {
+            console.log(error)
+          }
+          
+        }
     
         fetchData()
-        }, [editdata.organization_id]);
-}
+      }, [editdata.organization_id]);
+  }
 
 const getFileNameFromUrl = (url) => {
   return url.substring(url.lastIndexOf('/') + 1);
@@ -272,21 +276,17 @@ const getFileNameFromUrl = (url) => {
     });
 
     try{
-      // console.log('before api')
       const res = await ApiBackendRequest(
         `${NATIVE_API_URL}${'/create/organization/'}`,formData,
       );
       if (res.data) {
-        // console.log('after api')
         if (
           res.data.is_organization_register_successfull ||
           res.data.organization_edit_sucessfull
         ) {
-          // console.log('organization created successfully');
           navigation.navigate('OrganizationList');
         }
       } else if (res.isexception) {
-        // console.log(res.exceptionmessage.error)
         setError(res.exceptionmessage.error);
         setModalVisible(true);
         validate();
@@ -314,7 +314,8 @@ const getFileNameFromUrl = (url) => {
         <View style={styles.mainContainer}>
           <View style={styles.container}>
             <Text style={[customStyle.heading, {paddingBottom: 8}]}>
-              Register your organization
+              {editOrgEnabled? "Edit Organization Details" : "Register Organization"}
+              
             </Text>
             <ScrollView
               style={styles.orgScroll}
@@ -354,7 +355,7 @@ const getFileNameFromUrl = (url) => {
                     <View style={customStyle.fileBtn}>
                       <FileIcon name="clouduploado" size={20} color="#592DA1" />
                       <Text style={customStyle.fileBtnText}>
-                        {Object.keys(Orgdata.organization_image).length == 0 ? (
+                        {Object.keys(Orgdata?.organization_image).length == 0 ? (
                           'UPLOAD FILE'
                         ) : (
                           <TruncatedText
@@ -696,7 +697,7 @@ const getFileNameFromUrl = (url) => {
               style={customStyle.loginBtn}
               onPress={() => handleOrgSubmit()}>
               <Text style={customStyle.loginText}>
-                Register Your Organization
+              {editOrgEnabled? "Update Details" : "Register your Organization"}
               </Text>
             </TouchableOpacity>
           </View>

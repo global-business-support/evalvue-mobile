@@ -33,7 +33,7 @@ export const listStyle = StyleSheet.create({
     },
     listText: {
         color: '#FFF',
-        fontSize: 14,
+        fontSize: 15,
         marginLeft: 4,
         fontWeight: '500'
     },
@@ -76,7 +76,7 @@ export const listStyle = StyleSheet.create({
     },
     listTitleText: {
         color: '#000',
-        fontSize: 12,
+        fontSize: 14,
         marginLeft: 4,
         fontWeight: '500'
     },
@@ -95,7 +95,7 @@ export const listStyle = StyleSheet.create({
         color: '#535C68',
         fontSize: 10,
         marginLeft: 6,
-    
+        fontWeight: '500'
     },
     btnStyle: {
         backgroundColor: primary,

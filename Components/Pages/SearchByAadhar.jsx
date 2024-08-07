@@ -16,25 +16,25 @@ export default function SearchByAadhar() {
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
-  const [empmappedbyaadhar, setempmappedbyaadhar] = useState(false);
+  const [employeeMappedtoAadhar, setEmployeeMappedtoAadhar] = useState(false);
 
   const navigation = useNavigation();
 
   let value = '';
   const handleSearchChange = async (number) => {
-
+    if(number.length==0){
+      setEmployees([])
+    }
     value = number.replace(/[^0-9]/g, '');
     setSearchTerm(value);
-    // console.log(value)
     if (value.length > 0) {
       try {
         const response = await ApiBackendRequest(`${NATIVE_API_URL}/search/employee/aadhar/`, {
           aadhar_number: value,
         })
-        // console.log(response.data.employees_list_by_aadhar)
           if (response.data) {
             setEmployees(response.data.employees_list_by_aadhar);
-            setempmappedbyaadhar(response.data.employees_mapped_to_aadhar);
+            setEmployeeMappedtoAadhar(response.data.employees_mapped_to_aadhar);
           } else if (response.isexception) {
             setError(response.exceptionmessage.error);
           }
@@ -46,7 +46,6 @@ export default function SearchByAadhar() {
       }
     }
   };
-  console.log(employees)
 
   const renderItem = useCallback(
     ({ item }) => (
@@ -114,6 +113,11 @@ export default function SearchByAadhar() {
       <Text style={styles.emptyMessage}>Please Search for Employee...</Text>
     </View>
   );
+  const renderNoMatchFound = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyMessage}>No Match Found...</Text>
+    </View>
+  );
 
   if (loading) {
     return <ListShimmerUI />
@@ -121,18 +125,6 @@ export default function SearchByAadhar() {
 
   return (
     <View style={[listStyle.listMainContainer]}>
-      {/* <View style={listStyle.listHeaderContainer}>
-        <Text style={listStyle.listHeading}>Search By Aadhaar Number</Text>
-        <TextInput
-        value={searchTerm}
-          style={listStyle.searchInputStyle}
-          placeholder="Employee Aadhar number..."
-          placeholderTextColor="#592DA1"
-          keyboardType="numeric"
-          maxLength={12}
-          onChangeText={number => handleSearchChange(number)}
-        />
-      </View> */}
       <View style={styles.addStyle}>
           <Text style={listStyle.listHeading}>Search by Aadhaar </Text>
         
@@ -159,7 +151,7 @@ export default function SearchByAadhar() {
               data={employees}
               keyExtractor={item => item?.employee_id.toString()}
               renderItem={renderItem}
-              ListEmptyComponent={renderEmptyList}
+              ListEmptyComponent={employeeMappedtoAadhar==true ? renderEmptyList : renderNoMatchFound}
               contentContainerStyle={[listStyle.listFooterContainer,{backgroundColor : ''}]}
               scrollEnabled
               removeClippedSubviews={true}
@@ -180,9 +172,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   emptyContainer: {
+    marginTop : 50,
     flex: 1,
-    justifyContent: 'start',
-    alignItems: 'start',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyMessage: {
     fontSize: 16,

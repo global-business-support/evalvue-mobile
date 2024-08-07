@@ -25,6 +25,11 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { primary } from '../Styles/customStyle';
 import RazorpayCheckout from 'react-native-razorpay';
 
+import ImagePreview from '../ImagePreview/ImagePreview';
+
+import { capitalizeEachWord } from '../Custom-Functions/customFunctions';
+
+
 export default function OrgList() {
   const [Orgdata, setOrgdata] = useState([]);
   const [filteredOrgData, setFilteredOrgData] = useState([]);
@@ -39,6 +44,13 @@ export default function OrgList() {
   const [print, setPrint] = useState(false);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const [showImage, setShowImage] = useState(false);
+  const [url, setUrl] = useState('');
+
+  const handleImagePreview = url => {
+    setUrl(url);
+    setShowImage(true);
+  };
 
   const fetchdata = async () => {
     try {
@@ -96,14 +108,16 @@ export default function OrgList() {
   const renderItem = ({ item }) => (
     <View style={listStyle.listContainer}>
       <View style={listStyle.listSubContainer}>
-        <Image source={{ uri: item.image }} style={listStyle.listLogoImg} />
+        <Image source={{ uri: item.image }} style={listStyle.listLogoImg}  onPress={() => {
+                handleImagePreview(item.image);
+              }}/>
         <View>
           <Text style={listStyle.listTitleText}>
-            <TruncatedText text={item.name} maxLength={20} dot={true} />
+            <TruncatedText text={capitalizeEachWord(item.name)} maxLength={18} dot={true} />
           </Text>
           <Text style={listStyle.listSubTitleText}>
-            <TruncatedText text={item.area} maxLength={20} />
-            {item.city_name}
+            <TruncatedText text={capitalizeEachWord(item.area)} maxLength={20} />
+            {capitalizeEachWord(item.city_name)}
           </Text>
         </View>
       </View>
@@ -114,8 +128,29 @@ export default function OrgList() {
           </TouchableOpacity>
         ) : item.organization_paid ? (
           item.organization_verified ? (
-            <Text style={styles.viewBtn}>View</Text>
-           
+
+            <>
+            <TouchableOpacity
+                style={listStyle.btnStyle}
+                onPress={() =>
+                  navigation.navigate('EmployeeList', {
+                    orgDetails: {
+                      orgName: item.name,
+                      orgId: item.organization_id,
+                      orgAddress: item.area + ' ' + item.city_name,
+                      orgImage: item.image,
+                    },
+                  })
+                }>
+              <Text style={styles.viewBtn}>View</Text>
+            </TouchableOpacity>
+            <ThreeDotMenu 
+            onEdit={() => handleEdit(item.organization_id)} 
+            edit={true} 
+            deleted={false} 
+            path="OrgInfo" 
+            params={item} />
+            </>
           ) : (
             <TouchableOpacity style={styles.pendingBtnStyle} disabled={true}>
               <Text style={styles.pendingBtn}>Pending...</Text>
@@ -549,6 +584,11 @@ export default function OrgList() {
         removeClippedSubviews={true}
         initialNumToRender={10}
       />
+      <ImagePreview
+        imageUrl={url}
+        visible={showImage}
+        onClose={() => setShowImage(false)}
+      />
     </View>
   );
 }
@@ -588,19 +628,22 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 13,
     fontWeight : '500',
+    paddingVertical : 3,
     paddingHorizontal : 15,
     textAlign: 'center'
   },
   pendingBtn: {
     color: 'white',
     fontWeight : '500',
+    paddingVertical : 3,
     fontSize: 13,
     textAlign: 'center'
   },
   payBtn : {
     color: '#FFF',
     fontWeight : '500',
-    paddingHorizontal : 8,
+    paddingHorizontal : 10,
+    paddingVertical : 3,
     fontSize: 13,
     textAlign: 'center'
   },
@@ -608,6 +651,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontWeight : '500',
     paddingHorizontal : 8,
+    paddingVertical : 3,
     fontSize: 13,
     textAlign: 'center'
   },
