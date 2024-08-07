@@ -7,7 +7,7 @@ import {
   View,
   RefreshControl
 } from 'react-native';
-import NotificationIcon from 'react-native-vector-icons/MaterialIcons';
+import NotificationIcon from 'react-native-vector-icons/Ionicons';
 import SearchIcon from 'react-native-vector-icons/AntDesign';
 import ReviewCards from '../ReviewCards/ReviewCards';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
@@ -57,6 +57,13 @@ export default function Feed({ navigation }) {
   const toggleOfferVisibility = () => {
     setOfferVisible(prev => !prev);
   };
+  const noFeed = () => {
+    return (
+      <View>
+        <Text style={{ color: primary, fontSize: 16, fontWeight: '600', textAlign: 'left', padding: 10 }}>No review given.</Text>
+      </View>
+    )
+  };
 
   if (loading) {
     return <ReviewShimmerUI />;
@@ -85,18 +92,19 @@ export default function Feed({ navigation }) {
           style={styles.searchBtn}
           onPress={() => navigation.navigate('SearchByAadhar')}>
           <SearchIcon name="search1" size={16} color="#616C6F" />
-          <Text style={styles.searchText}>Click to Search Employee</Text>
+          <Text style={styles.searchText}>Click to Search Employee...</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation.navigate('Notifications')}
         >
-          <NotificationIcon name="notification-important" size={30} color="#47535E" />
+          <NotificationIcon name="notifications" size={28} color="#47535E" />
         </TouchableOpacity>
       </View>
       <FlatList
         data={feeds}
         renderItem={renderItem}
         keyExtractor={item => item?.review_id.toString()}
+        ListEmptyComponent={noFeed}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -116,7 +124,7 @@ export default function Feed({ navigation }) {
         style={styles.showOfferButton}
         onPress={toggleOfferVisibility}
       >
-        <Text style={styles.showOfferText}>Upcoming Plans</Text>
+        <Text style={styles.showOfferText}>Show plans</Text>
       </TouchableOpacity>
     </View>
   );
@@ -152,7 +160,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#DAE0E2',
     width: '70%',
     height: 35,
-    borderRadius: 10,
+    borderRadius: 6,
     fontSize: 10,
     color: '#2C3335',
     paddingHorizontal: 8,
@@ -169,7 +177,8 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 20,
     backgroundColor: '#5e3aeb',
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
     borderRadius: 30,
     elevation: 5,
   },

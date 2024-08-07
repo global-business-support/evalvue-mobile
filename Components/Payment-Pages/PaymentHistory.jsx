@@ -11,6 +11,7 @@ import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
 import { primary } from '../Styles/customStyle';
 import PayIcon from 'react-native-vector-icons/MaterialIcons';
 import PaymentShimmerUI from '../ShimmerUI/PaymentShimmerUI';
+import { capitalizeEachWord } from '../Custom-Functions/customFunctions';
 
 export default function Subscription() {
     const [list, setList] = useState([])
@@ -41,7 +42,7 @@ export default function Subscription() {
                         <PayIcon name='payments' size={30} color='black' style={{ marginRight: 4 }} />
                         <View>
                             <Text style={listStyle.listTitleText}>
-                                <TruncatedText text={item?.org_name} maxLength={20} dot={true} />
+                                <TruncatedText text={capitalizeEachWord(item?.org_name)} maxLength={20} dot={true} />
                             </Text>
                             <Text style={[listStyle.listSubTitleText, { color: primary, fontWeight: '600', fontSize: 12 }]}>
                                 ₹{item.amount}
