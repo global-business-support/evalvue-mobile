@@ -19,6 +19,7 @@ import TruncatedText from '../Othercomponent/TruncatedText';
 import { listStyle } from '../Styles/listStyle';
 import ThreeDotMenu from './ThreeDotMenu ';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
+import ImagePreview from '../ImagePreview/ImagePreview';
 
 export default function EmployeeList() {
   const [Empdata, setEmpdata] = useState([]);
@@ -31,6 +32,13 @@ export default function EmployeeList() {
   const { orgDetails } = route.params;
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const [showImage, setShowImage] = useState(false);
+  const [url, setUrl] = useState('');
+
+   const handleImagePreview = url => {
+    setUrl(url);
+    setShowImage(true);
+  };
 
   const fetchdata = useCallback(async () => {
     try {
@@ -134,6 +142,9 @@ export default function EmployeeList() {
           <Image
             source={{ uri: item.employee_image }}
             style={listStyle.listLogoImg}
+            onPress={() => {
+              handleImagePreview(item?.employee_image);
+            }}
           />
           <View>
             <Text style={listStyle.listTitleText}>
@@ -228,6 +239,9 @@ export default function EmployeeList() {
             <Image
               source={{ uri: orgDetails.orgImage }}
               style={[listStyle.listLogoImg, { borderColor: 'white' }]}
+              onPress={() => {
+                handleImagePreview(orgDetails?.orgImage);
+              }}
             />
             <View>
               <Text style={listStyle.listText}>
@@ -270,6 +284,11 @@ export default function EmployeeList() {
         scrollEnabled
         removeClippedSubviews={true}
         initialNumToRender={10}
+      />
+       <ImagePreview
+        imageUrl={url}
+        visible={showImage}
+        onClose={() => setShowImage(false)}
       />
     </View>
   );

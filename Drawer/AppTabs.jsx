@@ -19,7 +19,6 @@ import EmpForm from '../Components/Forms/EmpForm';
 import AppDrawer from './AppDrawer';
 import PostReview from '../Components/Forms/PostReview';
 import AddToOrganization from '../Components/Pages/AddToOrganization';
-import EmpInfo from '../Components/Pages/EmpInfo';
 import { primary } from '../Components/Styles/customStyle';
 
 

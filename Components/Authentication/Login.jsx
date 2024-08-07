@@ -26,6 +26,7 @@ export default function Login({ navigation, route }) {
 
     useEffect(() => {
         // not working properly
+        setLoginData({email : '', password : ''})
         if (getStringData('accessToken')) {
             navigation.navigate('Dashboard');
             setaccessToken(true)
@@ -68,6 +69,7 @@ export default function Login({ navigation, route }) {
           if (res.data) {
             if (res.data.is_login_successfull && res.data.is_user_verified) {
               storeData("accessToken", res.data.access);
+              storeData("email", loginData.email)
             //   storeData("accessTokenExpiry", res.data.accessTokenExpiry.toString()); // Ensure it's stored as a string
               storeData("isLogin", res.data.is_login_successfull);
               navigation.navigate("Dashboard");

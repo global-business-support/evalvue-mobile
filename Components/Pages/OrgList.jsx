@@ -20,6 +20,7 @@ import ThreeDotMenu from './ThreeDotMenu ';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { primary } from '../Styles/customStyle';
+import ImagePreview from '../ImagePreview/ImagePreview';
 
 export default function OrgList() {
   const [Orgdata, setOrgdata] = useState([]);
@@ -32,6 +33,13 @@ export default function OrgList() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const [showImage, setShowImage] = useState(false);
+  const [url, setUrl] = useState('');
+
+  const handleImagePreview = url => {
+    setUrl(url);
+    setShowImage(true);
+  };
 
   const fetchdata = async () => {
     try {
@@ -90,7 +98,9 @@ export default function OrgList() {
   const renderItem = ({ item }) => (
     <View style={listStyle.listContainer}>
       <View style={listStyle.listSubContainer}>
-        <Image source={{ uri: item.image }} style={listStyle.listLogoImg} />
+        <Image source={{ uri: item.image }} style={listStyle.listLogoImg}  onPress={() => {
+                handleImagePreview(item.image);
+              }}/>
         <View>
           <Text style={listStyle.listTitleText}>
             <TruncatedText text={item.name} maxLength={20} dot={true} />
@@ -110,6 +120,7 @@ export default function OrgList() {
         </TouchableOpacity>
         ): item.organization_paid ? (
           item.organization_verified ? (
+            <>
             <TouchableOpacity
                 style={listStyle.btnStyle}
                 onPress={() =>
@@ -124,6 +135,13 @@ export default function OrgList() {
                 }>
               <Text style={styles.viewBtn}>View</Text>
             </TouchableOpacity>
+            <ThreeDotMenu 
+            onEdit={() => handleEdit(item.organization_id)} 
+            edit={true} 
+            deleted={false} 
+            path="OrgInfo" 
+            params={item} />
+            </>
           ) : (
             <TouchableOpacity style={styles.pendingBtnStyle} disabled={true}>
               <Text style={styles.pendingBtn}>Pending...</Text>
@@ -146,13 +164,6 @@ export default function OrgList() {
           </TouchableOpacity>
         )
         }
-         
-       { item.organization_verified&&<ThreeDotMenu 
-        onEdit={() => handleEdit(item.organization_id)} 
-        edit={true} 
-        deleted={false} 
-        path="OrgInfo" 
-        params={item} />}
       </View>
     </View>
   );
@@ -221,6 +232,11 @@ export default function OrgList() {
         removeClippedSubviews={true}
         initialNumToRender={10}
       />
+      <ImagePreview
+        imageUrl={url}
+        visible={showImage}
+        onClose={() => setShowImage(false)}
+      />
     </View>
   );
 }
@@ -260,19 +276,22 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 13,
     fontWeight : '500',
+    paddingVertical : 3,
     paddingHorizontal : 15,
     textAlign: 'center'
   },
   pendingBtn: {
     color: 'white',
     fontWeight : '500',
+    paddingVertical : 3,
     fontSize: 13,
     textAlign: 'center'
   },
   payBtn : {
     color: '#FFF',
     fontWeight : '500',
-    paddingHorizontal : 8,
+    paddingHorizontal : 10,
+    paddingVertical : 3,
     fontSize: 13,
     textAlign: 'center'
   },
@@ -280,6 +299,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontWeight : '500',
     paddingHorizontal : 8,
+    paddingVertical : 3,
     fontSize: 13,
     textAlign: 'center'
   },
