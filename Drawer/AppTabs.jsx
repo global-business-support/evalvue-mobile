@@ -19,11 +19,7 @@ import EmpForm from '../Components/Forms/EmpForm';
 import AppDrawer from './AppDrawer';
 import PostReview from '../Components/Forms/PostReview';
 import AddToOrganization from '../Components/Pages/AddToOrganization';
-import EmpInfo from '../Components/Pages/EmpInfo';
 import { primary } from '../Components/Styles/customStyle';
-
-
-// Create navigators
 import EmpInfo from '../Components/Pages/EmpInfo';
 import OrgInfo from '../Components/Pages/OrgInfo';
 const Tab = createBottomTabNavigator();
@@ -62,7 +58,15 @@ function OrgStackScreen() {
 
 function AppTabs() {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
+    <Tab.Navigator screenOptions={{
+      headerShown: false,
+      tabBarShowLabel: false,
+      tabBarStyle: {
+        backgroundColor: '#FFF',
+        borderTopWidth: 0.3,
+        borderColor: '#2e3131'
+      }
+    }}>
       <Tab.Screen
         name="HomeStack"
         component={HomeStackScreen}
@@ -71,7 +75,7 @@ function AppTabs() {
             <HomeIcon
               name="home"
               size={23}
-              color={focused ? primary : 'gray'}
+              color={focused ? primary : '#2e3131'}
               style={focused ? styles.activeIcon : styles.icon}
             />
           ),
@@ -85,7 +89,7 @@ function AppTabs() {
             <OrgIcon
               name="organization"
               size={23}
-              color={focused ? primary : '#b2b2b2'}
+              color={focused ? primary : '#2e3131'}
               style={focused ? styles.activeIcon : styles.icon}
             />
           ),
@@ -93,17 +97,17 @@ function AppTabs() {
       />
       <Tab.Screen
         name="Add"
-        component={OrgRegistration} // Ensure this is the correct component
+        component={OrgRegistration}
         options={{
           tabBarIcon: ({ focused }) => (
             <OrgIcon
               name="diff-added"
               size={23}
-              color={focused ? primary : '#b2b2b2'}
+              color={focused ? primary : '#2e3131'}
               style={focused ? styles.activeIcon : styles.icon}
             />
           ),
-          initialParams: { editOrgData: {editorg: false }, }
+          initialParams: { editOrgData: { editorg: false }, }
         }}
       />
       <Tab.Screen
@@ -114,7 +118,7 @@ function AppTabs() {
             <SubIcon
               name="subscriptions"
               size={23}
-              color={focused ? primary : '#b2b2b2'}
+              color={focused ? primary : '#2e3131'}
               style={focused ? styles.activeIcon : styles.icon}
             />
           ),
@@ -128,7 +132,7 @@ function AppTabs() {
             <HistoryIcon
               name="history"
               size={23}
-              color={focused ? primary : '#b2b2b2'}
+              color={focused ? primary : '#2e3131'}
               style={focused ? styles.activeIcon : styles.icon}
             />
           ),
@@ -145,14 +149,14 @@ const styles = StyleSheet.create({
     borderRadius: 0,
   },
   activeIcon: {
-    backgroundColor: '#C0C0E7', // Change this to the color you want for the active state
+    backgroundColor: '#C0C0E7', 
     padding: 6,
     textAlign: 'center',
     verticalAlign: 'middle',
     height: 40,
     width: 40,
     borderRadius: 50,
-    transform: [{ scale: 1.08 }], // Optional: scale up the icon for the active state
+    transform: [{ scale: 1.08 }],
   },
 });
 

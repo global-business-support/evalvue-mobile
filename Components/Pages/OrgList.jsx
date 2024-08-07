@@ -20,6 +20,7 @@ import ThreeDotMenu from './ThreeDotMenu ';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { primary } from '../Styles/customStyle';
+import { capitalizeEachWord } from '../Custom-Functions/customFunctions';
 
 export default function OrgList() {
   const [Orgdata, setOrgdata] = useState([]);
@@ -93,11 +94,11 @@ export default function OrgList() {
         <Image source={{ uri: item.image }} style={listStyle.listLogoImg} />
         <View>
           <Text style={listStyle.listTitleText}>
-            <TruncatedText text={item.name} maxLength={20} dot={true} />
+            <TruncatedText text={capitalizeEachWord(item.name)} maxLength={18} dot={true} />
           </Text>
           <Text style={listStyle.listSubTitleText}>
-            <TruncatedText text={item.area} maxLength={20} />
-            {item.city_name}
+            <TruncatedText text={capitalizeEachWord(item.area)} maxLength={20} />
+            {capitalizeEachWord(item.city_name)}
           </Text>
         </View>
       </View>
