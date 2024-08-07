@@ -14,6 +14,7 @@ import TruncatedText from '../Othercomponent/TruncatedText';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import { NATIVE_API_URL } from '@env';
 import { ValidateEmail } from '../../Validation/Validation';
+import ImagePreview from '../ImagePreview/ImagePreview';
 
 export default function EmpForm() {
     const route = useRoute();
@@ -38,6 +39,9 @@ export default function EmpForm() {
     const [isEmailFocused, setIsEmailFocused] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [fileUrl, setFileUrl] = useState("");
+    const [showImage,setShowImage] = useState(false)
+    const [url, setUrl] = useState('')
     const navigation = useNavigation();
 
     function validate() {
@@ -104,6 +108,7 @@ export default function EmpForm() {
                             mobile_number: newEmployeeData.mobile_number || prevEmpData.mobile_number,
                         }));
                         setFileName(getFileNameFromUrl(res.data.employee_list[0].employee_image))
+                        setFileUrl(res.data.employee_list[0].employee_image)
                         setEditEnable(res.data.employee_editable_data_send_successfull);
                     }
                     if (res.isexception) {
@@ -155,6 +160,11 @@ export default function EmpForm() {
         setModalVisible(false);
     };
 
+    const handleImagePreview = (url) =>{
+        setUrl(url)
+        setShowImage(true)
+      }
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -162,7 +172,7 @@ export default function EmpForm() {
             <ScrollView>
                 <View style={styles.mainContainer}>
                     <View style={styles.container}>
-                        <Text style={[customStyle.heading, { paddingBottom: 8 }]}>Employee Details</Text>
+                        <Text style={[customStyle.heading, { paddingBottom: 8 }]}>{!editEnable?  " Add Employee Details": 'Edit Employee Details' }</Text>
                         <ScrollView
                             style={styles.orgScroll}
                             horizontal={false}
@@ -351,14 +361,14 @@ export default function EmpForm() {
                                     </TouchableOpacity>
                                     {Object.keys(empData.employee_image).length !== 0 && (
                                         <View style={styles.viewContainer}>
-                                            <TouchableOpacity>
+                                            <TouchableOpacity onPress={()=>handleImagePreview(empData.employee_image.uri || fileUrl)}>
                                                 <Text style={styles.viewText}>View</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity
                                                 onPress={() =>
                                                     setEmpData(previous => ({
                                                         ...previous,
-                                                        empImage: {},
+                                                        employee_image: {},
                                                     }))
                                                 }>
                                                 <Text style={styles.cancelText}>Cancel</Text>
@@ -377,10 +387,8 @@ export default function EmpForm() {
                         >
                             {
                                 loading ? (<ActivityIndicator size="small" color="white" />) :
-                                    (
-                                        !editEnable ? (<Text style={customStyle.loginText}>Register Employee</Text>) :
-                                            <Text style={customStyle.loginText}>Update Details</Text>
-                                    )
+                                    
+                                       (<Text style={customStyle.loginText}>{ !editEnable ? 'Register Employee' : 'Update Details'}</Text>)
                             }
                         </TouchableOpacity>
                     </View>
@@ -396,6 +404,7 @@ export default function EmpForm() {
                         onPress: closeModal,
                     }}
                 />
+                <ImagePreview imageUrl={url} visible={showImage} onClose={() => setShowImage(false)}/>
             </ScrollView>
         </KeyboardAvoidingView>
     );
