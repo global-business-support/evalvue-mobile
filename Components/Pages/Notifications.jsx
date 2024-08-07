@@ -3,7 +3,7 @@ import React from 'react';
 import { primary, windowHeight } from '../Styles/customStyle';
 import notificationImg from '../../assets/notification.webp';
 import { Image } from 'react-native-elements';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function Notifications() {
@@ -22,7 +22,7 @@ export default function Notifications() {
           />
         </TouchableOpacity>
       </View>
-      <View style={{paddingHorizontal: 10}}>
+      <ScrollView style={{ paddingHorizontal: 8 }}>
         <View style={styles.notificationContainer}>
           <Icon name='notifications-active' size={30} color='#000' />
           <View style={styles.textContainer}>
@@ -47,7 +47,33 @@ export default function Notifications() {
             <Text style={styles.textStyle}>Add your organizations with us and use our services for ease of employee management.</Text>
           </View>
         </View>
-      </View>
+        <View style={styles.notificationContainer}>
+          <Icon name='notifications-active' size={30} color='#000' />
+          <View style={styles.textContainer}>
+            <Text style={styles.textStyle}>Complete your self-assessment before disconnecting with us.</Text>
+          </View>
+        </View>
+        <View style={styles.notificationContainer}>
+          <Icon name='notifications-active' size={30} color='#000' />
+          <View style={styles.textContainer}>
+            <Text style={styles.textStyle}>Gather any supporting documents or evidence of your achievements</Text>
+          </View>
+        </View>
+        <View style={styles.notificationContainer}>
+          <Icon name='notifications-active' size={30} color='#000' />
+          <View style={styles.textContainer}>
+            <Text style={styles.textStyle}>Reflect on your goals and any professional development activities you wish to undertake</Text>
+          </View>
+        </View>
+        <View style={styles.notificationContainer}>
+          <Icon name='notifications-active' size={30} color='#000' />
+          <View style={styles.textContainer}>
+            <Text style={styles.textStyle}>
+              We hope this message finds you well. This is to inform you that it is time for your scheduled performance review. These reviews are an essential part of our continuous efforts to support your professional growth and development within our organization.
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   )
 };
@@ -80,13 +106,13 @@ const styles = StyleSheet.create({
   },
   notificationContainer: {
     padding: 10,
-    backgroundColor: '#99AAAB',
+    backgroundColor: '#ede7e1',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
     marginVertical: 4,
-    borderRadius: 25,
-    elevation: 5
+    borderRadius: 8,
+    elevation: 1
   },
   textContainer: {
     width: '85%'
@@ -94,6 +120,6 @@ const styles = StyleSheet.create({
   textStyle: {
     color: '#192A56',
     fontWeight: '500',
-    fontSize: 14
+    fontSize: 12
   }
 });

@@ -19,7 +19,11 @@ import TruncatedText from '../Othercomponent/TruncatedText';
 import { listStyle } from '../Styles/listStyle';
 import ThreeDotMenu from './ThreeDotMenu ';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
+
 import ImagePreview from '../ImagePreview/ImagePreview';
+
+import { capitalizeEachWord } from '../Custom-Functions/customFunctions';
+
 
 export default function EmployeeList() {
   const [Empdata, setEmpdata] = useState([]);
@@ -149,13 +153,13 @@ export default function EmployeeList() {
           <View>
             <Text style={listStyle.listTitleText}>
               <TruncatedText
-                text={item.employee_name}
+                text={capitalizeEachWord(item.employee_name)}
                 maxLength={20}
                 dot={true}
               />
             </Text>
             <Text style={listStyle.listSubTitleText}>
-              <TruncatedText text={item.designation} maxLength={20} />
+              <TruncatedText text={capitalizeEachWord(item.designation)} maxLength={20} />
             </Text>
           </View>
         </View>
@@ -246,12 +250,12 @@ export default function EmployeeList() {
             <View>
               <Text style={listStyle.listText}>
                 <TruncatedText
-                  text={orgDetails.orgName}
+                  text={capitalizeEachWord(orgDetails.orgName)}
                   maxLength={17}
                   dot={true}
                 />
               </Text>
-              <Text style={listStyle.listSubText}>{orgDetails.orgAddress}</Text>
+              <Text style={listStyle.listSubText}>{capitalizeEachWord(orgDetails.orgAddress)}</Text>
             </View>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('AddEmployee', {

@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import React from 'react';
-import NotificationIcon from 'react-native-vector-icons/MaterialIcons';
+import NotificationIcon from 'react-native-vector-icons/Ionicons';
 import { ScrollView } from 'react-native-gesture-handler';
 import ShimmerText from './ShimmerText';
 
@@ -25,7 +25,7 @@ export default function ReviewShimmerUI() {
             <View style={styles.headerContainer}>
                 <ShimmerText style={styles.profile}></ShimmerText>
                 <ShimmerText style={styles.searchBar}></ShimmerText>
-                <NotificationIcon name="notification-important" size={28} color="#DAE0E2" />
+                <NotificationIcon name="notifications" size={28} color="#DAE0E2" />
             </View>
             <ScrollView style={styles.scrollStyle}>
                 {Array.from({ length: 3 }).map((_, index) => (
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     searchBar: {
         width: '70%',
         height: 25,
-        borderRadius: 10
+        borderRadius: 6
     },
     imgLogo: {
         width: 30,

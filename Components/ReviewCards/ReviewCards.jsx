@@ -1,12 +1,13 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Image, Rating} from 'react-native-elements';
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, Rating } from 'react-native-elements';
 import TruncatedText from '../Othercomponent/TruncatedText';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {primary} from '../Styles/customStyle';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { primary } from '../Styles/customStyle';
 import ImagePreview from '../ImagePreview/ImagePreview';
+import { capitalizeEachWord } from '../Custom-Functions/customFunctions';
 
-const ReviewCards = React.memo(({item}) => {
+const ReviewCards = React.memo(({ item }) => {
   const [name, setName] = useState('');
   const [readMore, setReadMore] = useState(false);
   const [showImage, setShowImage] = useState(false);
@@ -35,30 +36,43 @@ const ReviewCards = React.memo(({item}) => {
                 handleImagePreview(item?.organization_image);
               }}>
               <Image
-                source={{uri: item.organization_image}}
+                source={{ uri: item.organization_image }}
                 style={styles.orgImg}
               />
             </TouchableOpacity>
             <View>
-              <Text style={styles.orgName}>{item.organization_name}</Text>
+              <Text style={styles.orgName}>{capitalizeEachWord(item.organization_name)}</Text>
             </View>
           </View>
           <Text style={styles.orgName}>{item.created_on}</Text>
         </View>
         <View style={styles.secondContainer}>
           <View style={styles.empContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                handleImagePreview(item?.employee_image);
-              }}>
-              <Image
-                source={{uri: item.employee_image}}
-                style={styles.empImg}
+            <View style={styles.empSubContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  handleImagePreview(item?.employee_image);
+                }}>
+                <Image
+                  source={{ uri: item.employee_image }}
+                  style={styles.empImg}
+                />
+              </TouchableOpacity>
+              <View>
+                <Text style={styles.empNameStyle}>{capitalizeEachWord(item.employee_name)}</Text>
+                <Text style={styles.dsgText}>{capitalizeEachWord(item.designation)}</Text>
+              </View>
+            </View>
+            <View style={styles.ratingContainer}>
+              <Rating
+                type="custom"
+                ratingColor='#FFA823'
+                ratingBackgroundColor="#FFF"
+                ratingCount={5}
+                startingValue={item?.rating}
+                imageSize={14}
+                readonly
               />
-            </TouchableOpacity>
-            <View>
-              <Text style={styles.empNameStyle}>{item.employee_name}</Text>
-              <Text style={styles.dsgText}>{item.designation}</Text>
             </View>
           </View>
           <View style={styles.commentConatiner}>
@@ -69,40 +83,29 @@ const ReviewCards = React.memo(({item}) => {
                   item.image
                     ? readMore
                       ? item.comment.length
-                      : 150
+                      : 70
                     : item.comment.length
                 }
                 dot={true}
               />
               {item.image && (
                 <Text
-                  style={{color: primary, fontSize: 12, fontWeight: '500'}}
+                  style={{ color: primary, fontSize: 13, fontWeight: '500' }}
                   onPress={() => {
                     handleReadMore();
                   }}>
                   {' '}
-                  {readMore ? 'Less.' : 'Read More.'}
+                  {readMore ? 'less' : 'read more'}
                 </Text>
               )}
             </Text>
-
             {item.image && item.image !== 'null' && (
               <Image
-                source={{uri: item?.image}}
+                source={{ uri: item?.image }}
                 style={styles.reviewImg}
-                
+                onPress={() => handleImagePreview(item?.image)}
               />
             )}
-            <View style={styles.ratingContainer}>
-              <Rating
-                type="star"
-                ratingColor="gold"
-                ratingCount={5}
-                startingValue={item?.rating}
-                imageSize={20}
-                readonly
-              />
-            </View>
           </View>
         </View>
       </View>
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: '#FFF',
-    marginTop: 4,
+    marginTop: 10,
   },
   firstContainer: {
     flexDirection: 'row',
@@ -153,8 +156,12 @@ const styles = StyleSheet.create({
   },
   empContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     padding: 8,
+  },
+  empSubContainer: {
+    flexDirection: 'row'
   },
   empImg: {
     width: 35,
@@ -164,10 +171,7 @@ const styles = StyleSheet.create({
     borderColor: '#d2dae2',
   },
   commentConatiner: {
-    paddingVertical: 5,
-    paddingHorizontal: 6,
-    margin: 5,
-    marginBottom: 5,
+    paddingTop: 5,
     justifyContent: 'center',
     backgroundColor: 'white',
     borderRadius: 6,
@@ -179,34 +183,36 @@ const styles = StyleSheet.create({
   reviewImg: {
     width: '100%',
     height: 300,
-    borderWidth: 1,
-    borderColor: '#DAE0E2',
   },
   orgName: {
-    color: '#535C68',
+    color: '#2e3131',
     fontSize: 11,
     marginLeft: 4,
+    fontWeight: '500'
   },
   empNameStyle: {
-    color: '#2C3335',
-    fontSize: 13,
+    color: '#2e3131',
+    fontSize: 15,
     marginLeft: 4,
+    fontWeight: '600'
   },
   commentText: {
-    color: '#444',
-    fontSize: 11,
+    color: '#000',
+    fontSize: 13,
     marginBottom: 6,
     textAlign: 'justify',
     fontFamily: 'inter',
     lineHeight: 16,
+    fontWeight: '600',
+    paddingHorizontal: 12
   },
   dsgText: {
     color: '#2C3335',
-    fontSize: 8,
+    fontSize: 10,
     marginLeft: 4,
   },
   ratingContainer: {
     alignItems: 'flex-start',
-    paddingTop: 6,
+    height: '100%'
   },
 });

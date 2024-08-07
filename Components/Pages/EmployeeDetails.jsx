@@ -14,6 +14,7 @@ import EmpReviewShimmerUI from '../ShimmerUI/EmpReviewShimmerUI'
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import TruncatedText from '../Othercomponent/TruncatedText';
+import { capitalizeEachWord } from '../Custom-Functions/customFunctions';
 
 export default function EmployeeDetails() {
   const [reviewData, setReviewData] = useState([]);
@@ -21,14 +22,14 @@ export default function EmployeeDetails() {
   const [error, setError] = useState('');
   const [isReviewMapped, setIsReviewMapped] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [readMore, setReadMore] = useState(false);
   const route = useRoute();
-  const { empDetails, orgDetails, orgId, empId, SearchByAadhar } = route.params;
+  const { empDetails, orgDetails, orgName, orgId, empId, SearchByAadhar } = route.params;
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
 
   useEffect(() => {
-    console.log(empDetails.status_id)
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -52,10 +53,14 @@ export default function EmployeeDetails() {
         setLoading(false);
       }
     };
-    if(isFocused){
+    if (isFocused) {
       fetchData();
     }
-  }, [isFocused,orgId,empId]);
+  }, [isFocused, orgId, empId]);
+
+  const handleReadMore = () => {
+    setReadMore(!readMore);
+  };
 
   const renderItem = ({ item }) => {
     return (
@@ -69,31 +74,55 @@ export default function EmployeeDetails() {
               <View>
                 <Text style={empListStyle.empNameStyle}>
                   <TruncatedText
-                      text={empData?.employee_name}
-                      maxLength={15}
-                      dot={true}
+                    text={capitalizeEachWord(empData?.employee_name)}
+                    maxLength={15}
+                    dot={true}
                   />
                 </Text>
-                <Text style={empListStyle.dsgText}>{empData?.designation}</Text>
+                <Text style={empListStyle.dsgText}>{capitalizeEachWord(empData?.designation)}</Text>
               </View>
             </View>
-            <Text style={empListStyle.timeText}>{item?.created_on}</Text>
+            <View>
+              <Text style={empListStyle.timeText}>{item?.created_on}</Text>
+              <View style={styles.ratingContainer}>
+                <Rating
+                  type="star"
+                  ratingColor="gold"
+                  ratingCount={5}
+                  startingValue={item?.rating}
+                  imageSize={14}
+                  readonly
+                />
+              </View>
+            </View>
           </View>
           <View style={empListStyle.commentConatiner}>
-            <Text style={empListStyle.commentText}>{item?.comment}</Text>
+            <Text style={empListStyle.commentText}>
+              <TruncatedText
+                text={item?.comment}
+                maxLength={
+                  item?.image
+                    ? readMore
+                      ? item?.comment?.length
+                      : 70
+                    : item?.comment?.length
+                }
+                dot={true}
+              />
+              {item.image && (
+                <Text
+                  style={{ color: primary, fontSize: 13, fontWeight: '500' }}
+                  onPress={() => {
+                    handleReadMore();
+                  }}>
+                  {' '}
+                  {readMore ? 'less' : 'read more'}
+                </Text>
+              )}
+            </Text>
             {item?.image && item?.image !== 'null' && (
               <Image source={{ uri: item?.image }} style={empListStyle.reviewImg} />
             )}
-            <View style={styles.ratingContainer}>
-              <Rating
-                type="star"
-                ratingColor="gold"
-                ratingCount={5}
-                startingValue={item?.rating}
-                imageSize={20}
-                readonly
-              />
-            </View>
           </View>
         </View>
       </View>
@@ -137,18 +166,18 @@ export default function EmployeeDetails() {
                 justifyContent: 'space-between',
               }}>
               <View>
-                <Text style={styles.nameText}>{empDetails?.employee_name}</Text>
+                <Text style={styles.nameText}>{capitalizeEachWord(empDetails?.employee_name)}</Text>
                 <Text
-                  style={{ color: '#ced6e0', fontSize: 10, fontWeight: '500' }}>
-                  {empDetails?.designation}
+                  style={{ color: '#FFF', fontSize: 10, fontWeight: '500' }}>
+                  {capitalizeEachWord(empDetails?.designation)}
                 </Text>
               </View>
               <View style={styles.activeInactive}>
-                    <View style={[styles.dot, { backgroundColor : (SearchByAadhar)?(empDetails.status_id == 1 )? '#00e600' : '#ff8566' : '#00e600'}]}/>
-                    <Text style={[styles.activeInactiveText,{ color: (SearchByAadhar)?(empDetails.status_id == 1 )? '#00e600' : '#ff8566' : '#00e600', paddingRight : (empDetails.status_id == 1)? 15 : '#ff8566' }]}>
-                      {(SearchByAadhar) ?  (empDetails.status_id == 1)? 'Active' : 'In Active' : 'Active'}
-                     
-                    </Text>
+                <View style={[styles.dot, { backgroundColor: (SearchByAadhar) ? (empDetails.status_id == 1) ? '#00e600' : '#ff8566' : '#00e600' }]} />
+                <Text style={[styles.activeInactiveText, { color: (SearchByAadhar) ? (empDetails.status_id == 1) ? '#00e600' : '#ff8566' : '#00e600', paddingRight: (empDetails.status_id == 1) ? 15 : '#ff8566' }]}>
+                  {(SearchByAadhar) ? (empDetails.status_id == 1) ? 'Active' : 'In Active' : 'Active'}
+
+                </Text>
               </View>
             </View>
           </View>
@@ -160,65 +189,63 @@ export default function EmployeeDetails() {
               justifyContent: 'space-between',
             }}>
             <View>
-            {(SearchByAadhar)? (empDetails.status_id == 1)?<Text style={styles.orgname}>{orgDetails.orgName}</Text> : '' : <Text style={styles.orgname}>{orgDetails.orgName}</Text>}
+              {(SearchByAadhar) ? (empDetails.status_id == 1) ? <Text style={styles.orgname}>{capitalizeEachWord(orgName)}</Text> : '' : <Text style={styles.orgname}>{capitalizeEachWord(orgName)}</Text>}
               <View style={styles.empRatingContainer}>
                 <Rating
                   type="custom"
                   ratingColor={primary}
                   ratingCount={5}
                   startingValue={empData?.avg_rating}
-                  imageSize={20}
+                  imageSize={14}
                   readonly
                   style={styles.ratingStyle}
                 />
               </View>
             </View>
-            
-            <View style={{gap : 5}}>
+
+            <View style={{ gap: 5 }}>
               {(SearchByAadhar) ? empDetails.status_id == 1 ? (
                 <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate('AddReview',{
-                  empDetails: empDetails,
-                  orgDetails : orgDetails,
+                  style={styles.button}
+                  onPress={() => navigation.navigate('AddReview', {
+                    empDetails: empDetails,
+                    orgDetails: orgDetails,
                     id: {
                       orgId: orgId,
                       empId: empId,
-                    },}
-                 )}
-              >
-                <Text style={styles.buttonText}>Add Review</Text>
-              </TouchableOpacity>
+                    },
+                  }
+                  )}
+                >
+                  <Text style={styles.buttonText}>Add Review</Text>
+                </TouchableOpacity>
               ) : (
                 <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate('AddToOrganization',{
-                  empDetails: empDetails,
-                  orgDetails : orgDetails
-                }
-                 )}
-              >
-                <Text style={styles.buttonText}>Add Employee</Text>
-              </TouchableOpacity>
+                  style={styles.button}
+                  onPress={() => navigation.navigate('AddToOrganization', {
+                    empDetails: empDetails,
+                    orgDetails: orgDetails
+                  }
+                  )}
+                >
+                  <Text style={styles.buttonText}>Add Employee</Text>
+                </TouchableOpacity>
               ) : (
                 <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate('AddReview',{
-                  empDetails: empDetails,
-                  orgDetails : orgDetails,
+                  style={styles.button}
+                  onPress={() => navigation.navigate('AddReview', {
+                    empDetails: empDetails,
+                    orgDetails: orgDetails,
                     id: {
                       orgId: orgId,
                       empId: empId,
-                    },}
-                 )}
-              >
-                <Text style={styles.buttonText}>Add Review</Text>
-              </TouchableOpacity>
-              )
-              
-              }
-              
-
+                    },
+                  }
+                  )}
+                >
+                  <Text style={styles.buttonText}>Add Review</Text>
+                </TouchableOpacity>
+              )}
               <Text style={styles.totalReviews}>Total Reviews : {reviewData.length}</Text>
             </View>
           </View>
@@ -244,15 +271,16 @@ const styles = StyleSheet.create({
     marginBottom: 2
   },
   orgname: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 14,
+    fontWeight: '600',
     color: 'white',
   },
   headerPartTwo: {
     gap: 20,
     backgroundColor: primary,
     paddingHorizontal: 8,
-    paddingVertical: 15,
+    paddingTop: 15,
+    paddingBottom: 4
   },
   profileLogo: {
     width: 45,
@@ -266,7 +294,7 @@ const styles = StyleSheet.create({
   nameText: {
     color: '#FFF',
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   buttonText: {
     fontSize: 11,
@@ -281,7 +309,8 @@ const styles = StyleSheet.create({
   },
   ratingContainer: {
     alignItems: 'flex-start',
-    paddingVertical: 6,
+    paddingTop: 4,
+    alignItems: 'flex-end'
   },
   empRatingContainer: {
     alignItems: 'flex-start',
@@ -293,23 +322,24 @@ const styles = StyleSheet.create({
     borderColor: '#FFF',
     borderRadius: 2
   },
-  activeInactive : {
+  activeInactive: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 3,
   },
-  dot :{
+  dot: {
     height: 8,
     width: 8,
-    borderRadius: 8 / 2, 
+    borderRadius: 8 / 2,
     marginTop: 5,
   },
-  activeInactiveText : {
-    fontWeight: '500', 
-    fontSize : 12
+  activeInactiveText: {
+    fontWeight: '500',
+    fontSize: 12
   },
-  totalReviews : {
-    color : 'white',
-    fontWeight : '500'
+  totalReviews: {
+    color: 'white',
+    fontWeight: '500',
+    fontSize: 10
   }
 });
