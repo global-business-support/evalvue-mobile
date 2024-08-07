@@ -5,8 +5,11 @@ import {
   View,
   FlatList,
   RefreshControl,
+  TouchableHighlight,
+  Alert
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import logo from '../../assets/logo.png'
 import { Image } from 'react-native-elements';
 import SearchIcon from 'react-native-vector-icons/MaterialIcons';
 import { listStyle } from '../Styles/listStyle';
@@ -20,6 +23,7 @@ import ThreeDotMenu from './ThreeDotMenu ';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { primary } from '../Styles/customStyle';
+import RazorpayCheckout from 'react-native-razorpay';
 
 import ImagePreview from '../ImagePreview/ImagePreview';
 
@@ -35,6 +39,9 @@ export default function OrgList() {
   const [error, setError] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [paymentSuccessfull, setPaymentSuccessfull] = useState(false);
+  const [payment_response_list, setpayment_response_list] = useState([]);
+  const [print, setPrint] = useState(false);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [showImage, setShowImage] = useState(false);
@@ -98,7 +105,6 @@ export default function OrgList() {
       editOrgData: { organization_id: organizationId, editorg: true },
     });
   };
-
   const renderItem = ({ item }) => (
     <View style={listStyle.listContainer}>
       <View style={listStyle.listSubContainer}>
@@ -117,13 +123,12 @@ export default function OrgList() {
       </View>
       <View style={listStyle.listBtnContainer}>
         {item.organization_rejected ? (
-          <TouchableOpacity
-          style={styles.reapplyBtnStyle}
-          >
-          <Text style={styles.reapplyBtn}>Re-Apply</Text>
-        </TouchableOpacity>
-        ): item.organization_paid ? (
+          <TouchableOpacity style={styles.reapplyBtnStyle}>
+            <Text style={styles.reapplyBtn}>Re-Apply</Text>
+          </TouchableOpacity>
+        ) : item.organization_paid ? (
           item.organization_verified ? (
+
             <>
             <TouchableOpacity
                 style={listStyle.btnStyle}
@@ -151,26 +156,109 @@ export default function OrgList() {
               <Text style={styles.pendingBtn}>Pending...</Text>
             </TouchableOpacity>
           )
-        ): (
-          <TouchableOpacity
-                style={styles.payBtnStyle}
-                // onPress={() =>
-                //   
-                // }
-                >
-              <Text style={styles.payBtn}>Pay {""}
-                <RupeeIcon
-                name="rupee"
-                size={15}
-                color="white"
-                style={styles.payBtn}
-              />{count == 0 ? "5" : "99"}</Text>
+        ) : (
+          <TouchableOpacity style={styles.payBtnStyle}>
+             <TouchableHighlight
+              
+              onPress={() => {
+                CreatePayment(item.organization_id, count === 0 ? 3 : 4);
+              }}
+            >
+            <Text style={styles.payBtn}>
+              Pay{' '}
+              <RupeeIcon name="rupee" size={15} color="white" style={styles.payBtn} />
+              {count === 0 ? '5' : '99'}
+            </Text>
+            </TouchableHighlight>
           </TouchableOpacity>
-        )
-        }
+        )}
+        {item.organization_verified && (
+          <ThreeDotMenu
+            onEdit={() => handleEdit(item.organization_id)}
+            edit={true}
+            deleted={false}
+            path="OrgInfo"
+            params={item}
+          />
+        )}
       </View>
     </View>
   );
+  
+  // const renderItem = ({ item }) => (
+  //   <View style={listStyle.listContainer}>
+  //     <View style={listStyle.listSubContainer}>
+  //       <Image source={{ uri: item.image }} style={listStyle.listLogoImg} />
+  //       <View>
+  //         <Text style={listStyle.listTitleText}>
+  //           <TruncatedText text={item.name} maxLength={20} dot={true} />
+  //         </Text>
+  //         <Text style={listStyle.listSubTitleText}>
+  //           <TruncatedText text={item.area} maxLength={20} />
+  //           {item.city_name}
+  //         </Text>
+  //       </View>
+  //     </View>
+  //     <View style={listStyle.listBtnContainer}>
+  //       {item.organization_rejected ? (
+  //         <TouchableOpacity
+  //         style={styles.reapplyBtnStyle}
+  //         >
+  //         <Text style={styles.reapplyBtn}>Re-Apply</Text>
+  //       </TouchableOpacity>
+  //       ): item.organization_paid ? (
+  //         item.organization_verified ? (
+  //           <TouchableOpacity
+  //               style={listStyle.btnStyle}
+  //               onPress={() =>
+  //                 navigation.navigate('EmployeeList', {
+  //                   orgDetails: {
+  //                     orgName: item.name,
+  //                     orgId: item.organization_id,
+  //                     orgAddress: item.area + ' ' + item.city_name,
+  //                     orgImage: item.image,
+  //                   },
+  //                 })
+  //               }>
+  //             <TouchableHighlight style={styles.viewBtn} onPress={() => {
+  //                             CreatePayment(
+  //                               item.organization_id,
+  //                               count == 0 ? 1 : 2
+  //                             );
+  //                           }}>View </TouchableHighlight>
+  //           </TouchableOpacity>
+  //         ) : (
+  //           <TouchableOpacity style={styles.pendingBtnStyle} disabled={true}>
+  //             <Text style={styles.pendingBtn}>Pending...</Text>
+  //           </TouchableOpacity>
+  //         )
+  //       ): (
+  //         <TouchableOpacity
+  //               style={styles.payBtnStyle}
+  //               // onPress={() =>
+  //               //   
+  //               // }
+  //               >
+  //             <Text style={styles.payBtn}>Pay {""}
+  //               <RupeeIcon
+  //               name="rupee"
+  //               size={15}
+  //               color="white"
+  //               style={styles.payBtn}
+  //             />{count == 0 ? "5" : "99"}</Text>
+  //         </TouchableOpacity>
+  //       )
+  //       }
+         
+  //      { item.organization_verified&&<ThreeDotMenu 
+  //       onEdit={() => handleEdit(item.organization_id)} 
+  //       edit={true} 
+  //       deleted={false} 
+  //       path="OrgInfo" 
+  //       params={item} />}
+  //     </View>
+  //   </View>
+  // );
 
   const renderEmptyList = () => (
     <View style={styles.emptyContainer}>
@@ -187,6 +275,266 @@ export default function OrgList() {
       </View>
     )
   };
+
+  // payment code
+
+  function CreatePayment(organizationId, planId) {
+    console.log(planId,organizationId)
+    if (planId == 3) {
+      const confirmationpayment = confirm("Thank you for your payment. Please note that your payment has been automatically refunded.");
+      if (confirmationpayment) {
+        const response = ApiBackendRequest(
+          `${NATIVE_API_URL}/create/subscription/id/`,
+          {
+            
+            organization_id: organizationId,
+            plan_id: planId,
+          }
+        );
+        if(response)
+        response.then((response) => {
+          console.log(response.data);
+
+          if (
+            response.data.is_subscription_id_created_successfull ||
+            response.data.is_subscription_id_already_exist
+          ) {
+            const subid =
+              response.data.subscription_response_list[0].subscription_id;
+            console.log(subid);
+
+            if (subid) {
+              setLoading(false);
+              var options = {
+                key: "rzp_test_mHIc2FsOxWbBD7",
+                // key: "rzp_live_0KlxeEsfpZArko",
+                subscription_id: `${subid}`,
+                name: "Evalvue",
+                description: "Monthly Test Plan",
+                image: `${logo}`,
+                // "subscription_card_change": 0,
+                handler: function (response) {
+                  console.log("payment successfull ");
+                  const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+                    payment_id: response.razorpay_payment_id,
+                    subscription_id: response.razorpay_subscription_id,
+                    
+                    organization_id: organizationId,
+                  });
+                  res.then((response) => {
+                    console.log(response);
+                    if (response.data.is_payment_response_sent_succefull) {
+                      setpayment_response_list(
+                        response.data.generate_reciept_data[0]
+                      );
+                      setPaymentSuccessfull(
+                        response.data.is_payment_response_sent_succefull
+                      );
+                      // setLoading(false);
+                    }
+                    console.log(payment_response_list);
+                  });
+                  res.catch((err) => {
+                    console.log(err);
+                    if (err.isexception) {
+                      setPaymentSuccessfull(
+                        response.data.is_payment_response_sent_succefull
+                      );
+                      console.log(err.exceptionmessage);
+                    }
+                  });
+                },
+                prefill: {
+                  name: "",
+                  email: "",
+                  contact: "",
+                },
+                theme: {
+                  color: "#5134a9",
+                },
+              };
+
+              
+              RazorpayCheckout.open(options);
+              
+                // setpayment_response_list({ reason: response.error.reason });
+                console.log(payment_response_list);
+                console.log("payment id called");
+                const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+                  payment_id: response.error.metadata.payment_id,
+                  
+                  organization_id: organizationId,
+                });
+                res.then((response) => {
+                  console.log(response);
+                  setLoading(false);
+                  if (response.data.is_payment_response_sent_succefull) {
+                    setpayment_response_list(
+                      response.data.generate_reciept_data[0]
+                    );
+                    setPaymentSuccessfull(
+                      response.data.is_payment_response_sent_succefull
+                    );
+                  }
+                  console.log(payment_response_list);
+                });
+                res.catch((err) => {
+                  console.log(err);
+                  if (err.isexception) {
+                    setPaymentSuccessfull(
+                      response.data.is_payment_response_sent_succefull
+                    );
+                    console.log(err.exceptionmessage);
+                  }
+                });
+                console.log("payment will be failed ");
+              // });
+            }
+          } else {
+            alert(
+              "Payment is not available at this time. Please try again later. "
+            );
+          }
+        });
+
+        response.catch((err) => {
+          console.log(err);
+        });
+      }
+    } else {
+      const response = ApiBackendRequest(`${NATIVE_API_URL}/create/subscription/id/`, {
+        
+        organization_id: organizationId,
+        plan_id: planId,
+      });
+      if(response)
+      response.then((response) => {
+        console.log(response)
+        // setError();
+        if(response.isexception){
+          alert(response.exceptionmessage.error)
+        }
+
+        if (
+          response.data.is_subscription_id_created_successfull ||
+          response.data.is_subscription_id_already_exist
+        ) {
+          const subid =
+            response.data.subscription_response_list[0].subscription_id;
+          console.log(subid);
+
+          if (subid) {
+            var options = {
+              key: "rzp_test_mHIc2FsOxWbBD7",
+              // key: "rzp_live_0KlxeEsfpZArko",
+              subscription_id: `${subid}`,
+              name: "Evalvue",
+              description: "Monthly Test Plan",
+              image: `${logo}`,
+              prefill: {
+                name: "",
+                email: "",
+                contact: "",
+              },
+              theme: {
+                color: "#5134a9",
+              },
+            };
+
+            
+            console.log("ans is called ")
+            RazorpayCheckout.open(options).then((response) => {
+              // handle success
+              console.log("payment successfull ");
+              setLoading(true);
+              console.log(response,'inside')
+              const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+                payment_id: response.razorpay_payment_id,
+                subscription_id: response.razorpay_subscription_id,
+                
+                organization_id: organizationId,
+              });
+              res.then((response) => {
+                console.log(response);
+                setLoading(false);
+                if (response.data.is_payment_response_sent_succefull) {
+                  setpayment_response_list(
+                    response.data.generate_reciept_data[0]
+                  );
+                  setPaymentSuccessfull(
+                    response.data.is_payment_response_sent_succefull
+                  );
+                }
+                console.log(payment_response_list);
+              });
+              res.catch((err) => {
+                console.log(err);
+                if (err.isexception) {
+                  setPaymentSuccessfull(
+                    response.data.is_payment_response_sent_succefull
+                  );
+                  console.log(err.exceptionmessage);
+                }
+              });
+              alert(`Success: ${response.razorpay_payment_id}`);
+            }).catch((error) => {
+              // handle failure
+              alert(`Error: ${error.error}`);
+              console.log(error)
+            
+                // alert(response.error.code);
+                // alert(response.error.description);
+                // alert(response.error.source);
+                // alert(response.error.step);
+                // alert(response.error.reason);
+                // alert(response.error.metadata.order_id);
+                // alert(response.error.metadata.payment_id);
+                setpayment_response_list({ reason: error.error.reason });
+                console.log(payment_response_list);
+                console.log("payment id called");
+                const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+                  payment_id: error.error.metadata.payment_id,
+                  organization_id: organizationId,
+                });
+                res.then((response) => {
+                  console.log(response);
+                  setLoading(false);
+                  if(response.data){
+                  if (response.data.is_payment_response_sent_succefull) {
+                    setpayment_response_list(
+                      response.data.generate_reciept_data[0]
+                    );
+                    setPaymentSuccessfull(
+                      response.data.is_payment_response_sent_succefull
+                    );
+                    // setLoading(false);
+                  }}
+                  // console.log(payment_response_list);
+                });
+                res.catch((err) => {
+                  // console.log(err);
+                  if (err.isexception) {
+                    setPaymentSuccessfull(
+                      response.data.is_payment_response_sent_succefull
+                    );
+                    // console.log(err.exceptionmessage);
+                  }
+                });
+                console.log("payment will be failed ");
+              
+            });
+     
+          }
+        } else {
+          alert(
+            "Payment is not available at this time. Please try again later. "
+          );
+        }
+      });
+
+    }
+  }
+
 
   return (
     <View style={listStyle.listMainContainer}>
