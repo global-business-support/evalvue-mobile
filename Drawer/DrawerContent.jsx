@@ -1,24 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import LogIcon from 'react-native-vector-icons/MaterialIcons';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { primary } from '../Components/Styles/customStyle';
-import kisaan from '../assets/kisaan.jpg';
 import { useNavigation } from '@react-navigation/native';
-import { getStringData, removeData, storeData } from '../API-Management/mmkv-Storage';
+import { getBooleanData, getStringData, removeData, storeData } from '../API-Management/mmkv-Storage';
+import { navigate } from '../API-Management/navigationService';
 
 export default function DrawerContent(props) {
   const navigation = useNavigation();
-  const email = getStringData("email")
-  const userName = email[0]?.toUpperCase()
+  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [isLogin, setIsLogin] = useState(false);
 
-  const handleLogout = () =>{
+  const handleLogout = () => {
     removeData('email')
     removeData('accessToken')
     storeData('isLogin', false)
-    navigation.navigate("Login")
-  }
+    navigate("Login")
+  };
+
+  useEffect(() => {
+    setIsLogin(getBooleanData('isLogin'));
+    if (isLogin) {
+      setEmail(getStringData("email"));
+      setUserName(email[0]?.toUpperCase());
+    }
+  });
 
   return (
     <View style={styles.Container}>
@@ -33,16 +42,15 @@ export default function DrawerContent(props) {
       </View>
       <View style={styles.profileContainer}>
         <View style={styles.userNameContainer}>
-          {/* <Image source={kisaan} style={styles.image} /> */}
           <Text style={styles.firstlatter}>{userName}</Text>
         </View>
         <View>
-          <Text style={styles.userName}>Ritik Sharma</Text>
-          <Text style={{ color: '#ced6e0' }}>{email}</Text>
+          {/* <Text style={styles.userName}>Ritik Sharma</Text> */}
+          <Text style={styles.userNameText}>{email}</Text>
         </View>
       </View>
       <View>
-        <Text style={{ fontSize: 20, color: 'black', fontWeight: '500',marginTop : 50 }}>
+        <Text style={styles.textStyle}>
           How can we help ?
         </Text>
       </View>
@@ -52,7 +60,6 @@ export default function DrawerContent(props) {
         </DrawerContentScrollView>
       </View>
       <View style={styles.loginView}>
-        {/* Uncomment and implement logout logic if needed */}
         <TouchableOpacity style={styles.loginTouchable} onPress={() => handleLogout()}>
           <LogIcon name="logout" style={styles.logIcon} />
           <Text style={styles.logText}>Logout</Text>
@@ -60,7 +67,7 @@ export default function DrawerContent(props) {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   Container: {
@@ -72,7 +79,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom : 20
+    marginBottom: 20
   },
   headingText: {
     fontSize: 20,
@@ -80,11 +87,11 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   icon: {
-    fontSize: 25,
+    fontSize: 30,
     color: '#6739B7',
   },
   profileContainer: {
-    height: 150,
+    paddingVertical: 20,
     borderRadius: 10,
     backgroundColor: '#6739B7',
     padding: 15,
@@ -96,12 +103,12 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent : 'center',
-    backgroundColor : '#EF6C00'
+    justifyContent: 'center',
+    backgroundColor: '#EF6C00'
   },
-  firstlatter : {
-    fontSize : 30,
-    color : 'white'
+  firstlatter: {
+    fontSize: 30,
+    color: 'white'
   },
   userName: {
     fontSize: 18,
@@ -109,7 +116,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   loginView: {
-    flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
@@ -118,7 +124,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     borderRadius: 5,
     backgroundColor: primary,
   },
@@ -131,4 +138,17 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: 'white',
   },
+  userNameText: {
+    color: "#FFF",
+    paddingTop: 10,
+    fontWeight: '600',
+    fontSize: 15
+  },
+  textStyle: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: '600',
+    paddingHorizontal: 12,
+    paddingVertical: 6
+  }
 });
