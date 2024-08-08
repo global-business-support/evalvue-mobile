@@ -14,6 +14,7 @@ import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import { NATIVE_API_URL } from '@env';
 import ReviewShimmerUI from '../ShimmerUI/ReviewShimmerUI';
 import OfferPoster from '../Othercomponent/OfferPosters'; // Import OfferPoster
+import { getBooleanData, getStringData } from '../../API-Management/mmkv-Storage';
 
 export default function Feed({ navigation }) {
   const [feeds, setFeeds] = useState([]);
@@ -22,6 +23,17 @@ export default function Feed({ navigation }) {
   const [isReviewMapped, setIsReviewMapped] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isOfferVisible, setOfferVisible] = useState(true);
+  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [isLogin, setIsLogin] = useState(false);
+
+  useEffect(() => {
+    setIsLogin(getBooleanData('isLogin'));
+    if (isLogin) {
+      setEmail(getStringData("email"));
+      setUserName(email[0]?.toUpperCase());
+    }
+  });
 
   const fetchData = useCallback(
   async () => {
@@ -86,7 +98,7 @@ export default function Feed({ navigation }) {
           onPress={() => {
             navigation.openDrawer();
           }}>
-          <Text style={styles.profileText}>R</Text>
+          <Text style={styles.profileText}>{userName}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.searchBtn}
@@ -103,20 +115,22 @@ export default function Feed({ navigation }) {
       <FlatList
         data={feeds}
         renderItem={renderItem}
+        initialNumToRender={3} 
+        maxToRenderPerBatch={4}
+        windowSize={5}
         keyExtractor={item => item?.review_id.toString()}
         ListEmptyComponent={noFeed}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#e06c0d', '#1c387a', '#e3c100', '#e30048']} // Set custom colors here
+            colors={['#e06c0d', '#1c387a', '#e3c100', '#e30048']} 
           />
         }
       />
-      {/* Add OfferPoster here */}
       <OfferPoster
-        mediaUri="https://i.pinimg.com/564x/48/59/06/485906bb4f7f0b8f6957928796fdf6a9.jpg" // Replace with your media URI
-        type="image" // Change to 'video' if using video
+        mediaUri="https://i.pinimg.com/564x/48/59/06/485906bb4f7f0b8f6957928796fdf6a9.jpg"
+        type="image" 
         visible={isOfferVisible}
         onClose={toggleOfferVisibility}
       />
