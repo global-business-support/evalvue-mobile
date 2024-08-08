@@ -32,7 +32,7 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
 
       console.log("Access token expired or invalid. Clearing token and redirecting to login...");
-      await removeData('accessToken');
+       removeData('accessToken');
       navigate("Login"); // Redirect to Login screen
 
       return Promise.reject(error);

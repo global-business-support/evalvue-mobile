@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: '#FFF',
-    marginTop: 10,
+    marginTop: 5,
   },
   firstContainer: {
     flexDirection: 'row',
@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
   },
   commentConatiner: {
     paddingTop: 5,
+    paddingBottom:8,
     justifyContent: 'center',
     backgroundColor: 'white',
     borderRadius: 6,

@@ -22,26 +22,30 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import CustomModal from '../CustomModal/CustomModal';
 import ImagePreview from '../ImagePreview/ImagePreview';
 
-
-
 export default function OrgRegistration() {
+  const route = useRoute();
+  const {editOrgData} = route.params || {};
+  const [editOrgEnabled, seteditOrgEnabled] = useState(editOrgData?.editorg);
   const [Orgdata, setOrgdata] = useState({
-    // organization_id : editOrgData.organization_id || "",
+    organization_id : editOrgData.organization_id || "",
     organization_name: '',
-    document_type_id: '',
     sector_id: '',
     listed_id: '',
     number_of_employee: '',
-    country_id : '',
-    state_id : '',
-    city_id : '',
-    gstin: '',
-    referralNumber: '',
+    country_id: '',
+    state_id: '',
+    city_id: '',
     area: '',
     pincode: '',
     organization_image: {},
-    document_file: {},
+    gstin: '',
   });
+  if(!editOrgEnabled){
+    Orgdata["referralNumber"]= '';
+    Orgdata["document_type_id"]= '';
+    Orgdata["document_file"]= {};
+
+  }
   const [formsErrors, setFormErrors] = useState({});
   const [error, setError] = useState(null);
   const [documenttype, setdocumenttype] = useState([]);
@@ -55,20 +59,18 @@ export default function OrgRegistration() {
   const [iscity, setiscity] = useState(editOrgData?.editorg ? true : false);
   const [isstate, setisstate] = useState(editOrgData?.editorg ? true : false);
   const [modalVisible, setModalVisible] = useState(false);
-  const route = useRoute();
-  const { editOrgData } = route.params || {};
-  const [editOrgEnabled, seteditOrgEnabled] = useState(editOrgData?.editorg);
-  const [fileLogoName, setFileLogoName] = useState("");
-  const [fileUrl, setFileUrl] = useState("");
-  const [showImage,setShowImage] = useState(false)
-  const [url, setUrl] = useState('')
+  const [fileLogoName, setFileLogoName] = useState('');
+  const [fileUrl, setFileUrl] = useState('');
+  const [showImage, setShowImage] = useState(false);
+  const [url, setUrl] = useState('');
   const navigation = useNavigation();
-  
-  
+
   function validate() {
     const errors = {};
-    if (!Orgdata.organization_name) errors.organization_name = 'Name is required*';
-    if (!Orgdata.organization_image) errors.organization_image = 'Organization Logo is required*';
+    if (!Orgdata.organization_name)
+      errors.organization_name = 'Name is required*';
+    if (!Orgdata.organization_image)
+      errors.organization_image = 'Organization Logo is required*';
     if (!Orgdata.document_file)
       errors.document_file = 'Document File is required*';
     if (!Orgdata.document_type_id)
@@ -79,7 +81,8 @@ export default function OrgRegistration() {
       errors.listed_id = 'Organization listed is required*';
     if (!Orgdata.document_number)
       errors.document_number = 'Document Number is required*';
-    if (!Orgdata.number_of_employee) errors.number_of_employee = 'Number of Employees is required*';
+    if (!Orgdata.number_of_employee)
+      errors.number_of_employee = 'Number of Employees is required*';
     if (!Orgdata.area) errors.area = 'Address is required*';
     if (!Orgdata.country_id) errors.country_id = 'Country is required*';
     if (!Orgdata.state_id) errors.state_id = 'State is required*';
@@ -91,7 +94,9 @@ export default function OrgRegistration() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await ApiBackendRequest(`${NATIVE_API_URL}/add/organization/`);
+        const res = await ApiBackendRequest(
+          `${NATIVE_API_URL}/add/organization/`,
+        );
         if (res.data) {
           setdocumenttype(populateDropDown(res.data.document_type || {}));
           setsectortype(populateDropDown(res.data.sector_type || {}));
@@ -106,81 +111,94 @@ export default function OrgRegistration() {
         console.log(error);
       }
     }
-  
+
     fetchData();
   }, []);
 
-  const populateState = useCallback((id) => {
-    var data = statedata;
-    var tempList = [];
-    tempList.push(
-      <Picker.Item
-        key="placeholder" 
-        label="Select Option"
-        value="placeholder"
-        style={styles.pickerItem}
-        color="#535C68"
-      />,
-    );
-    Object.keys(data).forEach(function (key, index) {
-      if (data[key].CountryId == id) {
+  const populateState = useCallback(
+    id => {
+      var data = statedata;
+      var tempList = [];
+      if (!editOrgEnabled) {
         tempList.push(
           <Picker.Item
-            key={key} 
-            label={data[key].Name}
-            value={key}
+            key="placeholder"
+            label="Select Option"
+            value="placeholder"
             style={styles.pickerItem}
+            color="#535C68"
           />,
         );
       }
-    });
-    setisstate(true);
-    setstate(tempList);
-  }, [statedata]); 
-  
-  const populateCity = useCallback((id) => {
-    var data = citydata;
-    var tempList = [];
-    tempList.push(
-      <Picker.Item
-        key="placeholder"
-        label="Select Option"
-        value="placeholder"
-        style={styles.pickerItem}
-        color="#535C68"
-      />,
-    );
-    Object.keys(data).forEach(function (key, index) {
-      if (data[key].StateId == id) {
+      Object.keys(data).forEach(function (key, index) {
+        if (data[key].CountryId == id) {
+          tempList.push(
+            <Picker.Item
+              key={key}
+              label={data[key].Name}
+              value={key}
+              style={styles.pickerItem}
+            />,
+          );
+        }
+      });
+      setisstate(true);
+      setstate(tempList);
+    },
+    [statedata],
+  );
+
+  const populateCity = useCallback(
+    id => {
+      var data = citydata;
+      var tempList = [];
+      if (!editOrgEnabled) {
         tempList.push(
           <Picker.Item
-            key={key} 
-            label={data[key].Name}
-            value={key}
+            key="placeholder"
+            label="Select Option"
+            value="placeholder"
             style={styles.pickerItem}
+            color="#535C68"
           />,
         );
       }
-    });
-    setiscity(true);
-    setcity(tempList);
-  }, [citydata]);
-  
-  const populateDropDown = useCallback((data) => {
+      Object.keys(data).forEach(function (key, index) {
+        if (data[key].StateId == id) {
+          tempList.push(
+            <Picker.Item
+              key={key}
+              label={data[key].Name}
+              value={key}
+              style={styles.pickerItem}
+            />,
+          );
+        }
+      });
+      setiscity(true);
+      setcity(tempList);
+    },
+    [citydata],
+  );
+
+  const populateDropDown = useCallback(data => {
     var tempList = [];
-    tempList.push(
-      <Picker.Item
-        key="placeholder" 
-        label="Select Option"
-        value="placeholder"
-        style={styles.pickerItem}
-        color="#535C68"
-      />,
-    );
+    if (!editOrgEnabled) {
+      tempList.push(
+        <Picker.Item
+          key="placeholder"
+          label="Select Option"
+          value="placeholder"
+          style={styles.pickerItem}
+          color="#535C68"
+        />,
+      );
+    }
     Object.keys(data).forEach(function (key, index) {
       tempList.push(
         <Picker.Item
-          label={data[key].Name }
+        selectedValue={Orgdata.document_type_id==key}
+          label={data[key].Name}
           value={key}
           style={styles.pickerItem}
         />,
@@ -188,21 +206,17 @@ export default function OrgRegistration() {
     });
     return tempList;
   }, []);
-  
-   
-  
-  
 
   const handleChange = (name, value) => {
     setOrgdata(prevData => ({...prevData, [name]: value}));
     if (name == 'country_id') {
       populateState(value);
-      console.log("country id",value)
+      console.log('country id', value);
     } else if (name == 'state_id') {
       populateCity(value);
-      console.log("state id",value)
+      console.log('state id', value);
     }
-    
+
     setFormErrors(prevErrors => ({...prevErrors, [name]: ''}));
   };
 
@@ -213,72 +227,71 @@ export default function OrgRegistration() {
       });
       setOrgdata(prev => ({...prev, [name]: doc}));
     } catch (error) {
-      console.log("error selectimage",error);
+      console.log('error selectimage', error);
     }
   };
 
-
   if (editOrgEnabled) {
     const editdata = {
-      organization_id: editOrgData.organization_id || "",
+      organization_id: editOrgData.organization_id || '',
     };
-      useEffect(() => {
-        
-        const fetchData = async() =>{
-          try {
-          const res = await ApiBackendRequest(`${NATIVE_API_URL}/organization/editable/data/`, editdata)
-          if(res.organization_editable_data_send_succesfull){
-            const newOrgData = res.organization_list[0]
-                setOrgdata((previewOrgData)=>({
-                  ...previewOrgData,
-                  organization_name : newOrgData.organization_name || previewOrgData.organization_name,
-                  sector_id : newOrgData.sector_id || previewOrgData.sector_id,
-                  listed_id : newOrgData.listed_id || previewOrgData.listed_id,
-                  number_of_employee : newOrgData.number_of_employee || previewOrgData.number_of_employee,
-                  area : newOrgData.area || previewOrgData.area,
-                  country_id : newOrgData.country_id || previewOrgData.country_id,
-                  state_id : newOrgData.state_id || previewOrgData.state_id,
-                  city_id : newOrgData.city_id || previewOrgData.city_id,
-                  pincode : newOrgData.pincode || previewOrgData.pincode
-                }));
-                setFileUrl(res.data.organization_list[0].organization_image)
-                setFileLogoName(getFileNameFromUrl(res.data.organization_list[0].organization_image))
-      
-                seteditOrgEnabled(
-                  res.data.organization_editable_data_send_succesfull
-                );
-                if(res.isexception){
-                  setError(res.exceptionmessage.error)
-                }
-              }
-          } catch (error) {
-            console.log(error)
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const res = await ApiBackendRequest(
+            `${NATIVE_API_URL}/organization/editable/data/`,
+            editdata,
+          );
+          if (res.data.organization_editable_data_send_succesfull) {
+            setOrgdata(previewOrgData => ({
+              ...previewOrgData,
+              ...res.data.organization_list[0],
+            }));
+            setFileUrl(res.data.organization_list[0].organization_image);
+            setFileLogoName(
+              getFileNameFromUrl(
+                res.data.organization_list[0].organization_image,
+              ),
+            );
+            setiscity(true);
+            setisstate(true);
+            console.log(Orgdata);
+            seteditOrgEnabled(
+              res.data.organization_editable_data_send_succesfull,
+            );
+            if (res.isexception) {
+              setError(res.exceptionmessage.error);
+            }
           }
-          
+        } catch (error) {
+          console.log(error);
         }
-    
-        fetchData()
-      }, [editdata.organization_id]);
+      };
+
+      fetchData();
+    }, [editdata.organization_id]);
   }
 
-const getFileNameFromUrl = (url) => {
-  return url.substring(url.lastIndexOf('/') + 1);
-};
+  const getFileNameFromUrl = url => {
+    return url.substring(url.lastIndexOf('/') + 1);
+  };
 
   const handleOrgSubmit = async () => {
-    
     const errors = validate();
     setFormErrors(errors);
-    
+
     const formData = new FormData();
     Object.keys(Orgdata).forEach(key => {
       formData.append(key, Orgdata[key]);
     });
 
-    try{
+    try {
+      console.log(formData)
       const res = await ApiBackendRequest(
-        `${NATIVE_API_URL}${'/create/organization/'}`,formData,
+        `${NATIVE_API_URL}${editOrgEnabled ? "/organization/edit/" : "/create/organization/"}`,
+        formData,
       );
+      console.log(res)
       if (res.data) {
         if (
           res.data.is_organization_register_successfull ||
@@ -288,12 +301,13 @@ const getFileNameFromUrl = (url) => {
         }
       } else if (res.isexception) {
         setError(res.exceptionmessage.error);
-        setModalVisible(true);
+        console.log(res)
+        // setModalVisible(true);
         validate();
       }
     } catch (error) {
       setError(error);
-      setModalVisible(true);
+      // setModalVisible(true);
     }
   };
 
@@ -301,11 +315,11 @@ const getFileNameFromUrl = (url) => {
     setModalVisible(false);
   };
 
-  const handleImagePreview = (url) =>{
-    setUrl(url)
-    setShowImage(true)
-  }
-
+  const handleImagePreview = url => {
+    setUrl(url);
+    setShowImage(true);
+  };
+  console.log('sector in form', Orgdata.sector_id);
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -314,8 +328,9 @@ const getFileNameFromUrl = (url) => {
         <View style={styles.mainContainer}>
           <View style={styles.container}>
             <Text style={[customStyle.heading, {paddingBottom: 8}]}>
-              {editOrgEnabled? "Edit Organization Details" : "Register Organization"}
-              
+              {editOrgEnabled
+                ? 'Edit Organization Details'
+                : 'Register Organization'}
             </Text>
             <ScrollView
               style={styles.orgScroll}
@@ -334,12 +349,16 @@ const getFileNameFromUrl = (url) => {
                     placeholder="Name"
                     placeholderTextColor="#535C68"
                     style={customStyle.inputStyle}
-                    value={Orgdata.organization_name} /* editable data*/ 
-                    onChangeText={text => handleChange('organization_name', text)}
+                    value={Orgdata.organization_name} /* editable data*/
+                    onChangeText={text =>
+                      handleChange('organization_name', text)
+                    }
                   />
                 </View>
                 {formsErrors.organization_name && (
-                  <Text style={styles.errors}>{formsErrors.organization_name}</Text>
+                  <Text style={styles.errors}>
+                    {formsErrors.organization_name}
+                  </Text>
                 )}
               </View>
 
@@ -351,15 +370,21 @@ const getFileNameFromUrl = (url) => {
                   <Text style={customStyle.mandatory}>*</Text>
                 </View>
                 <View style={{display: 'flex', flexDirection: 'coloum'}}>
-                  <TouchableOpacity onPress={() => selectImage('organization_image')}>
+                  <TouchableOpacity
+                    onPress={() => selectImage('organization_image')}>
                     <View style={customStyle.fileBtn}>
                       <FileIcon name="clouduploado" size={20} color="#592DA1" />
                       <Text style={customStyle.fileBtnText}>
-                        {Object.keys(Orgdata?.organization_image).length == 0 ? (
+                        {Object.keys(Orgdata?.organization_image).length ==
+                        0 ? (
                           'UPLOAD FILE'
                         ) : (
                           <TruncatedText
-                            text={fileLogoName == "" ? Orgdata.organization_image.name : fileLogoName}
+                            text={
+                              fileLogoName == ''
+                                ? Orgdata.organization_image.name
+                                : fileLogoName
+                            }
                             maxLength={25}
                             dot={true}
                           />
@@ -369,7 +394,12 @@ const getFileNameFromUrl = (url) => {
                   </TouchableOpacity>
                   {Object.keys(Orgdata.organization_image).length !== 0 && (
                     <View style={styles.viewContainer}>
-                      <TouchableOpacity onPress={()=>handleImagePreview(Orgdata.organization_image.uri || fileUrl)}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          handleImagePreview(
+                            Orgdata.organization_image.uri || fileUrl,
+                          )
+                        }>
                         <Text style={styles.viewText}>View</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
@@ -385,71 +415,88 @@ const getFileNameFromUrl = (url) => {
                   )}
                 </View>
                 {formsErrors.organization_image && (
-                  <Text style={styles.errors}>{formsErrors.organization_image}</Text>
+                  <Text style={styles.errors}>
+                    {formsErrors.organization_image}
+                  </Text>
                 )}
               </View>
-              {!editOrgEnabled&&<View>
-                <View style={customStyle.lableContainer}>
-                  <Text style={customStyle.lableHeading}>Document Type</Text>
-                  <Text style={customStyle.mandatory}>*</Text>
-                </View>
-                <View style={styles.option}>
-                  <Picker
-                    selectedValue={Orgdata.document_type_id}
-                    onValueChange={itemValue =>
-                      handleChange('document_type_id', itemValue)
-                    }
-                    >
-                    {documenttype}
-                  </Picker>
-                </View>
-                {formsErrors.document_type_id && (
-                  <Text style={styles.errors}>{formsErrors.document_type_id}</Text>
-                )}
-              </View>}
-              {!editOrgEnabled&&<View>
-                <View style={customStyle.lableContainer}>
-                  <Text style={customStyle.lableHeading}>Document File</Text>
-                  <Text style={customStyle.mandatory}>*</Text>
-                </View>
+              {!editOrgEnabled && (
                 <View>
-                  <TouchableOpacity onPress={() => selectImage('document_file')} >
-                    <View style={customStyle.fileBtn}>
-                      <FileIcon name="clouduploado" size={20} color="#592DA1" />
-                      <Text style={customStyle.fileBtnText}>
-                        {Object.keys(Orgdata.document_file).length == 0 ? (
-                          'UPLOAD FILE'
-                        ) : (
-                          <TruncatedText
-                            text={Orgdata?.document_file.name}
-                            maxLength={25}
-                            dot={true}
-                          />
-                        )}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                  {Object.keys(Orgdata.document_file).length !== 0 && (
-                    <View style={styles.viewContainer}>
-                      <TouchableOpacity onPress={()=>handleImagePreview(Orgdata.document_file.uri)}>
-                        <Text style={styles.viewText}>View</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() =>
-                          setOrgdata(previous => ({
-                            ...previous,
-                            document_file: {},
-                          }))
-                        }>
-                        <Text style={styles.cancelText}>Cancel</Text>
-                      </TouchableOpacity>
-                    </View>
+                  <View style={customStyle.lableContainer}>
+                    <Text style={customStyle.lableHeading}>Document Type</Text>
+                    <Text style={customStyle.mandatory}>*</Text>
+                  </View>
+                  <View style={styles.option}>
+                    <Picker
+                      selectedValue={Orgdata.document_type_id}
+                      onValueChange={itemValue =>
+                        handleChange('document_type_id', itemValue)
+                      }>
+                      {documenttype}
+                    </Picker>
+                  </View>
+                  {formsErrors.document_type_id && (
+                    <Text style={styles.errors}>
+                      {formsErrors.document_type_id}
+                    </Text>
                   )}
                 </View>
-                {formsErrors.document_file && (
-                  <Text style={styles.errors}>{formsErrors.document_file}</Text>
-                )}
-              </View>}
+              )}
+              {!editOrgEnabled && (
+                <View>
+                  <View style={customStyle.lableContainer}>
+                    <Text style={customStyle.lableHeading}>Document File</Text>
+                    <Text style={customStyle.mandatory}>*</Text>
+                  </View>
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => selectImage('document_file')}>
+                      <View style={customStyle.fileBtn}>
+                        <FileIcon
+                          name="clouduploado"
+                          size={20}
+                          color="#592DA1"
+                        />
+                        <Text style={customStyle.fileBtnText}>
+                          {Object.keys(Orgdata.document_file).length == 0 ? (
+                            'UPLOAD FILE'
+                          ) : (
+                            <TruncatedText
+                              text={Orgdata?.document_file.name}
+                              maxLength={25}
+                              dot={true}
+                            />
+                          )}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                    {Object.keys(Orgdata.document_file).length !== 0 && (
+                      <View style={styles.viewContainer}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            handleImagePreview(Orgdata.document_file.uri)
+                          }>
+                          <Text style={styles.viewText}>View</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() =>
+                            setOrgdata(previous => ({
+                              ...previous,
+                              document_file: {},
+                            }))
+                          }>
+                          <Text style={styles.cancelText}>Cancel</Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                  </View>
+                  {formsErrors.document_file && (
+                    <Text style={styles.errors}>
+                      {formsErrors.document_file}
+                    </Text>
+                  )}
+                </View>
+              )}
               <View></View>
               <View>
                 <View style={customStyle.lableContainer}>
@@ -463,8 +510,7 @@ const getFileNameFromUrl = (url) => {
                     selectedValue={Orgdata.sector_id}
                     onValueChange={itemValue =>
                       handleChange('sector_id', itemValue)
-                    }
-                    >
+                    }>
                     {sectortype}
                   </Picker>
                 </View>
@@ -484,8 +530,7 @@ const getFileNameFromUrl = (url) => {
                     selectedValue={Orgdata.listed_id}
                     onValueChange={itemValue =>
                       handleChange('listed_id', itemValue)
-                    }
-                    >
+                    }>
                     {listedtype}
                   </Picker>
                 </View>
@@ -494,26 +539,32 @@ const getFileNameFromUrl = (url) => {
                 )}
               </View>
 
-              {!editOrgEnabled&&<View>
-                <View style={customStyle.lableContainer}>
-                  <Text style={customStyle.lableHeading}>Document Number</Text>
-                  <Text style={customStyle.mandatory}>*</Text>
+              {!editOrgEnabled && (
+                <View>
+                  <View style={customStyle.lableContainer}>
+                    <Text style={customStyle.lableHeading}>
+                      Document Number
+                    </Text>
+                    <Text style={customStyle.mandatory}>*</Text>
+                  </View>
+                  <View style={customStyle.inputBox}>
+                    <TextInput
+                      placeholder="CA947318A"
+                      placeholderTextColor="#535C68"
+                      style={customStyle.inputStyle}
+                      editable={!editOrgEnabled}
+                      onChangeText={text =>
+                        handleChange('document_number', text)
+                      }
+                    />
+                  </View>
+                  {formsErrors.document_number && (
+                    <Text style={styles.errors}>
+                      {formsErrors.document_number}
+                    </Text>
+                  )}
                 </View>
-                <View style={customStyle.inputBox}>
-                  <TextInput
-                    placeholder="CA947318A"
-                    placeholderTextColor="#535C68"
-                    style={customStyle.inputStyle}
-                    editable={!editOrgEnabled}
-                    onChangeText={text => handleChange('document_number', text)}
-                  />
-                </View>
-                {formsErrors.document_number && (
-                  <Text style={styles.errors}>
-                    {formsErrors.document_number}
-                  </Text>
-                )}
-              </View>}
+              )}
               <View>
                 <View style={customStyle.lableContainer}>
                   <Text style={customStyle.lableHeading}>
@@ -542,46 +593,51 @@ const getFileNameFromUrl = (url) => {
                     onValueChange={itemValue =>
                       handleChange('number_of_employee', itemValue)
                     }>
-                    <Picker.Item
-                      label="Select any one"
-                      value="placeholder"
-                      style={styles.pickerItem}
-                      color="#535C68"
-                    />
+                    {!editOrgEnabled ? (
+                      <Picker.Item
+                        label="Select any one"
+                        value="placeholder"
+                        style={styles.pickerItem}
+                        color="#535C68"
+                      />
+                    ) : null}
+                    {/*  */}
                     <Picker.Item
                       label="1 - 50"
-                      value="1-50"
+                      value="50"
                       style={styles.pickerItem}
                     />
                     <Picker.Item
                       label="100-200"
-                      value="100-200"
+                      value="200"
                       style={styles.pickerItem}
                     />
                     <Picker.Item
                       label="200-300"
-                      value="200-300"
+                      value="300"
                       style={styles.pickerItem}
                     />
                     <Picker.Item
                       label="300-500"
-                      value="300-500"
+                      value="500"
                       style={styles.pickerItem}
                     />
                     <Picker.Item
                       label="500-1000"
-                      value="500-1000"
+                      value="1000"
                       style={styles.pickerItem}
                     />
                     <Picker.Item
-                      label="Above 100"
-                      value="Above 100"
+                      label="Above 1000"
+                      value="Above 1000"
                       style={styles.pickerItem}
                     />
                   </Picker>
                 </View>
                 {formsErrors.number_of_employee && (
-                  <Text style={styles.errors}>{formsErrors.number_of_employee}</Text>
+                  <Text style={styles.errors}>
+                    {formsErrors.number_of_employee}
+                  </Text>
                 )}
               </View>
               <View>
@@ -663,7 +719,9 @@ const getFileNameFromUrl = (url) => {
                 <View style={styles.option}>
                   <Picker
                     selectedValue={Orgdata.city_id}
-                    onValueChange={itemValue => handleChange('city_id', itemValue)}
+                    onValueChange={itemValue =>
+                      handleChange('city_id', itemValue)
+                    }
                     enabled={iscity}>
                     {city}
                   </Picker>
@@ -697,7 +755,9 @@ const getFileNameFromUrl = (url) => {
               style={customStyle.loginBtn}
               onPress={() => handleOrgSubmit()}>
               <Text style={customStyle.loginText}>
-              {editOrgEnabled? "Update Details" : "Register your Organization"}
+                {editOrgEnabled
+                  ? 'Update Details'
+                  : 'Register your Organization'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -713,7 +773,11 @@ const getFileNameFromUrl = (url) => {
             onPress: closeModal,
           }}
         />
-        <ImagePreview imageUrl={url} visible={showImage} onClose={() => setShowImage(false)}/>
+        <ImagePreview
+          imageUrl={url}
+          visible={showImage}
+          onClose={() => setShowImage(false)}
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );
