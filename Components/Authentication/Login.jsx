@@ -32,7 +32,7 @@ export default function Login({ navigation, route }) {
             setaccessToken(true)
         }
         else{
-            console.log('don\'t have access token  ')
+            console.log('dont have access token')
             setaccessToken(true)
         }
     }, [accessToken]);
