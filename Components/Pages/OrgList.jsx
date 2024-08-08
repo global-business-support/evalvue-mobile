@@ -6,7 +6,8 @@ import {
   FlatList,
   RefreshControl,
   TouchableHighlight,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import logo from '../../assets/logo.png'
@@ -28,12 +29,14 @@ import RazorpayCheckout from 'react-native-razorpay';
 import ImagePreview from '../ImagePreview/ImagePreview';
 
 import { capitalizeEachWord } from '../Custom-Functions/customFunctions';
+import Receipt from '../Receipt/Receipt';
 
 
 export default function OrgList() {
   const [Orgdata, setOrgdata] = useState([]);
   const [filteredOrgData, setFilteredOrgData] = useState([]);
   const [count, setCount] = useState();
+  const [loadingIndicator, setLoadingIndicator] = useState(false)
   const [loading, setLoading] = useState(true);
   const [Isorgmap, setIsorgmap] = useState(false);
   const [error, setError] = useState();
@@ -42,6 +45,7 @@ export default function OrgList() {
   const [paymentSuccessfull, setPaymentSuccessfull] = useState(false);
   const [payment_response_list, setpayment_response_list] = useState([]);
   const [print, setPrint] = useState(false);
+  const [receiptVisible, setReceiptVisible] = useState(false);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [showImage, setShowImage] = useState(false);
@@ -157,108 +161,26 @@ export default function OrgList() {
             </TouchableOpacity>
           )
         ) : (
-          <TouchableOpacity style={styles.payBtnStyle}>
-             <TouchableHighlight
-              
-              onPress={() => {
-                CreatePayment(item.organization_id, count === 0 ? 3 : 4);
-              }}
-            >
-            <Text style={styles.payBtn}>
+          <TouchableOpacity style={styles.payBtnStyle}
+           onPress={() => {
+            CreatePayment(item.organization_id, count === 0 ? 3 : 4);
+          }}>
+              {loadingIndicator ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <Text style={styles.payBtn}>
               Pay{' '}
               <RupeeIcon name="rupee" size={15} color="white" style={styles.payBtn} />
               {count === 0 ? '5' : '99'}
             </Text>
-            </TouchableHighlight>
+              )}
           </TouchableOpacity>
         )}
-        {item.organization_verified && (
-          <ThreeDotMenu
-            onEdit={() => handleEdit(item.organization_id)}
-            edit={true}
-            deleted={false}
-            path="OrgInfo"
-            params={item}
-          />
-        )}
+        
       </View>
     </View>
   );
   
-  // const renderItem = ({ item }) => (
-  //   <View style={listStyle.listContainer}>
-  //     <View style={listStyle.listSubContainer}>
-  //       <Image source={{ uri: item.image }} style={listStyle.listLogoImg} />
-  //       <View>
-  //         <Text style={listStyle.listTitleText}>
-  //           <TruncatedText text={item.name} maxLength={20} dot={true} />
-  //         </Text>
-  //         <Text style={listStyle.listSubTitleText}>
-  //           <TruncatedText text={item.area} maxLength={20} />
-  //           {item.city_name}
-  //         </Text>
-  //       </View>
-  //     </View>
-  //     <View style={listStyle.listBtnContainer}>
-  //       {item.organization_rejected ? (
-  //         <TouchableOpacity
-  //         style={styles.reapplyBtnStyle}
-  //         >
-  //         <Text style={styles.reapplyBtn}>Re-Apply</Text>
-  //       </TouchableOpacity>
-  //       ): item.organization_paid ? (
-  //         item.organization_verified ? (
-  //           <TouchableOpacity
-  //               style={listStyle.btnStyle}
-  //               onPress={() =>
-  //                 navigation.navigate('EmployeeList', {
-  //                   orgDetails: {
-  //                     orgName: item.name,
-  //                     orgId: item.organization_id,
-  //                     orgAddress: item.area + ' ' + item.city_name,
-  //                     orgImage: item.image,
-  //                   },
-  //                 })
-  //               }>
-  //             <TouchableHighlight style={styles.viewBtn} onPress={() => {
-  //                             CreatePayment(
-  //                               item.organization_id,
-  //                               count == 0 ? 1 : 2
-  //                             );
-  //                           }}>View </TouchableHighlight>
-  //           </TouchableOpacity>
-  //         ) : (
-  //           <TouchableOpacity style={styles.pendingBtnStyle} disabled={true}>
-  //             <Text style={styles.pendingBtn}>Pending...</Text>
-  //           </TouchableOpacity>
-  //         )
-  //       ): (
-  //         <TouchableOpacity
-  //               style={styles.payBtnStyle}
-  //               // onPress={() =>
-  //               //   
-  //               // }
-  //               >
-  //             <Text style={styles.payBtn}>Pay {""}
-  //               <RupeeIcon
-  //               name="rupee"
-  //               size={15}
-  //               color="white"
-  //               style={styles.payBtn}
-  //             />{count == 0 ? "5" : "99"}</Text>
-  //         </TouchableOpacity>
-  //       )
-  //       }
-         
-  //      { item.organization_verified&&<ThreeDotMenu 
-  //       onEdit={() => handleEdit(item.organization_id)} 
-  //       edit={true} 
-  //       deleted={false} 
-  //       path="OrgInfo" 
-  //       params={item} />}
-  //     </View>
-  //   </View>
-  // );
 
   const renderEmptyList = () => (
     <View style={styles.emptyContainer}>
@@ -283,6 +205,7 @@ export default function OrgList() {
     if (planId == 3) {
       const confirmationpayment = confirm("Thank you for your payment. Please note that your payment has been automatically refunded.");
       if (confirmationpayment) {
+        setLoadingIndicator(true)
         const response = ApiBackendRequest(
           `${NATIVE_API_URL}/create/subscription/id/`,
           {
@@ -291,6 +214,7 @@ export default function OrgList() {
             plan_id: planId,
           }
         );
+        setLoadingIndicator(false)
         if(response)
         response.then((response) => {
           console.log(response.data);
@@ -313,37 +237,40 @@ export default function OrgList() {
                 description: "Monthly Test Plan",
                 image: `${logo}`,
                 // "subscription_card_change": 0,
-                handler: function (response) {
-                  console.log("payment successfull ");
-                  const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
-                    payment_id: response.razorpay_payment_id,
-                    subscription_id: response.razorpay_subscription_id,
+                // handler: function (response) {
+                //   console.log("payment successfull ");
+                //   setLoadingIndicator(true)
+                //   const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+                //     payment_id: response.razorpay_payment_id,
+                //     subscription_id: response.razorpay_subscription_id,
                     
-                    organization_id: organizationId,
-                  });
-                  res.then((response) => {
-                    console.log(response);
-                    if (response.data.is_payment_response_sent_succefull) {
-                      setpayment_response_list(
-                        response.data.generate_reciept_data[0]
-                      );
-                      setPaymentSuccessfull(
-                        response.data.is_payment_response_sent_succefull
-                      );
-                      // setLoading(false);
-                    }
-                    console.log(payment_response_list);
-                  });
-                  res.catch((err) => {
-                    console.log(err);
-                    if (err.isexception) {
-                      setPaymentSuccessfull(
-                        response.data.is_payment_response_sent_succefull
-                      );
-                      console.log(err.exceptionmessage);
-                    }
-                  });
-                },
+                //     organization_id: organizationId,
+                //   });
+                //   setLoadingIndicator(false)
+                //   res.then((response) => {
+                //     console.log(response);
+                //     if (response.data.is_payment_response_sent_succefull) {
+                //       setpayment_response_list(
+                //         response.data.generate_reciept_data[0]
+                //       );
+                //       setPaymentSuccessfull(
+                //         response.data.is_payment_response_sent_succefull
+                //       );
+                //       setReceiptVisible(true)
+                //       // setLoading(false);
+                //     }
+                //     console.log(payment_response_list);
+                //   });
+                //   res.catch((err) => {
+                //     console.log(err);
+                //     if (err.isexception) {
+                //       setPaymentSuccessfull(
+                //         response.data.is_payment_response_sent_succefull
+                //       );
+                //       console.log(err.exceptionmessage);
+                //     }
+                //   });
+                // },
                 prefill: {
                   name: "",
                   email: "",
@@ -354,17 +281,19 @@ export default function OrgList() {
                 },
               };
 
-              
-              RazorpayCheckout.open(options);
-              
-                // setpayment_response_list({ reason: response.error.reason });
-                console.log(payment_response_list);
-                console.log("payment id called");
+              RazorpayCheckout.open(options).then((response) => {
+                // handle success
+                console.log("payment successfull ");
+                setLoading(true);
+                console.log(response,'inside')
+                setLoadingIndicator(true)
                 const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
-                  payment_id: response.error.metadata.payment_id,
+                  payment_id: response.razorpay_payment_id,
+                  subscription_id: response.razorpay_subscription_id,
                   
                   organization_id: organizationId,
                 });
+                setLoadingIndicator(false)
                 res.then((response) => {
                   console.log(response);
                   setLoading(false);
@@ -375,6 +304,7 @@ export default function OrgList() {
                     setPaymentSuccessfull(
                       response.data.is_payment_response_sent_succefull
                     );
+                    setReceiptVisible(true)
                   }
                   console.log(payment_response_list);
                 });
@@ -387,8 +317,48 @@ export default function OrgList() {
                     console.log(err.exceptionmessage);
                   }
                 });
-                console.log("payment will be failed ");
-              // });
+                alert(`Success: ${response.razorpay_payment_id}`);
+              }).catch((error) => {
+                // handle failure
+                alert(`Error: ${error.error}`);
+                console.log(error)
+                  setpayment_response_list({ reason: error.error.reason });
+                  console.log(payment_response_list);
+                  console.log("payment id called");
+                  setLoadingIndicator(true)
+                  const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+                    payment_id: error.error.metadata.payment_id,
+                    organization_id: organizationId,
+                  });
+                  setLoadingIndicator(false)
+                  res.then((response) => {
+                    console.log(response);
+                    setLoading(false);
+                    if(response.data){
+                    if (response.data.is_payment_response_sent_succefull) {
+                      setpayment_response_list(
+                        response.data.generate_reciept_data[0]
+                      );
+                      setPaymentSuccessfull(
+                        response.data.is_payment_response_sent_succefull
+                      );
+                      setReceiptVisible(true)
+                      // setLoading(false);
+                    }}
+                    // console.log(payment_response_list);
+                  });
+                  res.catch((err) => {
+                    // console.log(err);
+                    if (err.isexception) {
+                      setPaymentSuccessfull(
+                        response.data.is_payment_response_sent_succefull
+                      );
+                      // console.log(err.exceptionmessage);
+                    }
+                  });
+                  console.log("payment will be failed ");
+                
+              });
             }
           } else {
             alert(
@@ -402,11 +372,13 @@ export default function OrgList() {
         });
       }
     } else {
+      setLoadingIndicator(true)
       const response = ApiBackendRequest(`${NATIVE_API_URL}/create/subscription/id/`, {
         
         organization_id: organizationId,
         plan_id: planId,
       });
+      setLoadingIndicator(false)
       if(response)
       response.then((response) => {
         console.log(response)
@@ -448,12 +420,14 @@ export default function OrgList() {
               console.log("payment successfull ");
               setLoading(true);
               console.log(response,'inside')
+              setLoadingIndicator(true)
               const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
                 payment_id: response.razorpay_payment_id,
                 subscription_id: response.razorpay_subscription_id,
                 
                 organization_id: organizationId,
               });
+              setLoadingIndicator(false)
               res.then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -464,6 +438,7 @@ export default function OrgList() {
                   setPaymentSuccessfull(
                     response.data.is_payment_response_sent_succefull
                   );
+                  setReceiptVisible(true)
                 }
                 console.log(payment_response_list);
               });
@@ -492,10 +467,12 @@ export default function OrgList() {
                 setpayment_response_list({ reason: error.error.reason });
                 console.log(payment_response_list);
                 console.log("payment id called");
+                setLoadingIndicator(true)
                 const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
                   payment_id: error.error.metadata.payment_id,
                   organization_id: organizationId,
                 });
+                setLoadingIndicator(false)
                 res.then((response) => {
                   console.log(response);
                   setLoading(false);
@@ -507,6 +484,7 @@ export default function OrgList() {
                     setPaymentSuccessfull(
                       response.data.is_payment_response_sent_succefull
                     );
+                    setReceiptVisible(true)
                     // setLoading(false);
                   }}
                   // console.log(payment_response_list);
@@ -526,7 +504,7 @@ export default function OrgList() {
      
           }
         } else {
-          alert(
+          Alert.alert(
             "Payment is not available at this time. Please try again later. "
           );
         }
@@ -535,6 +513,7 @@ export default function OrgList() {
     }
   }
 
+ 
 
   return (
     <View style={listStyle.listMainContainer}>
@@ -589,6 +568,11 @@ export default function OrgList() {
         visible={showImage}
         onClose={() => setShowImage(false)}
       />
+      <Receipt
+          visible={receiptVisible}
+          onClose={()=>{setReceiptVisible(false)}}
+          paymentResponseList={payment_response_list}
+        />
     </View>
   );
 }

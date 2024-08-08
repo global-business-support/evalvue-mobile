@@ -1,14 +1,16 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
+import PhoneIcon from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/AntDesign';
 import PolicyIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AboutIcon from 'react-native-vector-icons/AntDesign';
 import Feed from '../Components/Pages/Feed';
 import PdfRender from '../Components/PdfRender/PdfRender';
 import DrawerContent from './DrawerContent';
 import { primary } from '../Components/Styles/customStyle';
+import ContactUs from '../Components/Pages/ContactUs';
+import AboutUs from '../Components/Pages/AboutUs';
 
 const Drawer = createDrawerNavigator();
 
@@ -76,6 +78,32 @@ function AppDrawer() {
         options={{
           drawerIcon: ({ size }) => (
             <PolicyIcon name={'shield-lock'} size={size} color={primary} />
+          ),
+          drawerActiveBackgroundColor: '#DAE0E2',
+          drawerActiveTintColor: 'black',
+          drawerInactiveBackgroundColor: '#F2F5F7',
+          drawerInactiveTintColor: 'black',
+        }}
+      />
+      <Drawer.Screen
+        name="Contact Us"
+        component={ContactUs}
+        options={{
+          drawerIcon: ({ size }) => (
+            <PhoneIcon name={'phone-alt'} size={size} color={primary} />
+          ),
+          drawerActiveBackgroundColor: '#DAE0E2',
+          drawerActiveTintColor: 'black',
+          drawerInactiveBackgroundColor: '#F2F5F7',
+          drawerInactiveTintColor: 'black',
+        }}
+      />
+      <Drawer.Screen
+        name="About Us"
+        component={AboutUs}
+        options={{
+          drawerIcon: ({ size }) => (
+            <AboutIcon name={'exclamationcircle'} size={size} color={primary} />
           ),
           drawerActiveBackgroundColor: '#DAE0E2',
           drawerActiveTintColor: 'black',

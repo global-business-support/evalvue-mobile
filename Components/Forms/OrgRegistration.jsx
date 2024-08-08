@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
@@ -40,12 +41,16 @@ export default function OrgRegistration() {
     organization_image: {},
     gstin: '',
   });
+
   if(!editOrgEnabled){
     Orgdata["referralNumber"]= '';
     Orgdata["document_type_id"]= '';
     Orgdata["document_file"]= {};
 
   }
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const [formsErrors, setFormErrors] = useState({});
   const [error, setError] = useState(null);
   const [documenttype, setdocumenttype] = useState([]);
@@ -285,13 +290,17 @@ export default function OrgRegistration() {
       formData.append(key, Orgdata[key]);
     });
 
-    try {
-      console.log(formData)
+
+    try{
+      setIsLoading(true)
+
       const res = await ApiBackendRequest(
         `${NATIVE_API_URL}${editOrgEnabled ? "/organization/edit/" : "/create/organization/"}`,
         formData,
       );
-      console.log(res)
+
+      setIsLoading(false);
+
       if (res.data) {
         if (
           res.data.is_organization_register_successfull ||
@@ -754,11 +763,15 @@ export default function OrgRegistration() {
             <TouchableOpacity
               style={customStyle.loginBtn}
               onPress={() => handleOrgSubmit()}>
-              <Text style={customStyle.loginText}>
-                {editOrgEnabled
-                  ? 'Update Details'
-                  : 'Register your Organization'}
-              </Text>
+
+                {isLoading ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <Text style={customStyle.loginText}>
+                  {editOrgEnabled? "Update Details" : "Register your Organization"}
+                  </Text>
+                )}
+
             </TouchableOpacity>
           </View>
         </View>

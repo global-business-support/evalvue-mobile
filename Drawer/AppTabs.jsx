@@ -75,7 +75,7 @@ function AppTabs() {
             <HomeIcon
               name="home"
               size={23}
-              color={focused ? primary : '#2e3131'}
+              color={focused ? primary : '#47535E'}
               style={focused ? styles.activeIcon : styles.icon}
             />
           ),
@@ -89,7 +89,7 @@ function AppTabs() {
             <OrgIcon
               name="organization"
               size={23}
-              color={focused ? primary : '#2e3131'}
+              color={focused ? primary : '#47535E'}
               style={focused ? styles.activeIcon : styles.icon}
             />
           ),
@@ -103,7 +103,7 @@ function AppTabs() {
             <OrgIcon
               name="diff-added"
               size={23}
-              color={focused ? primary : '#2e3131'}
+              color={focused ? primary : '#47535E'}
               style={focused ? styles.activeIcon : styles.icon}
             />
           ),
@@ -118,7 +118,7 @@ function AppTabs() {
             <SubIcon
               name="subscriptions"
               size={23}
-              color={focused ? primary : '#2e3131'}
+              color={focused ? primary : '#47535E'}
               style={focused ? styles.activeIcon : styles.icon}
             />
           ),
@@ -132,7 +132,7 @@ function AppTabs() {
             <HistoryIcon
               name="history"
               size={23}
-              color={focused ? primary : '#2e3131'}
+              color={focused ? primary : '#47535E'}
               style={focused ? styles.activeIcon : styles.icon}
             />
           ),
