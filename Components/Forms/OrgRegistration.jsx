@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
@@ -42,6 +43,7 @@ export default function OrgRegistration() {
     organization_image: {},
     document_file: {},
   });
+  const [isLoading, setIsLoading] = useState(false);
   const [formsErrors, setFormErrors] = useState({});
   const [error, setError] = useState(null);
   const [documenttype, setdocumenttype] = useState([]);
@@ -276,9 +278,11 @@ const getFileNameFromUrl = (url) => {
     });
 
     try{
+      setIsLoading(true)
       const res = await ApiBackendRequest(
         `${NATIVE_API_URL}${'/create/organization/'}`,formData,
       );
+      setIsLoading(false);
       if (res.data) {
         if (
           res.data.is_organization_register_successfull ||
@@ -696,9 +700,14 @@ const getFileNameFromUrl = (url) => {
             <TouchableOpacity
               style={customStyle.loginBtn}
               onPress={() => handleOrgSubmit()}>
-              <Text style={customStyle.loginText}>
-              {editOrgEnabled? "Update Details" : "Register your Organization"}
-              </Text>
+                {isLoading ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <Text style={customStyle.loginText}>
+                  {editOrgEnabled? "Update Details" : "Register your Organization"}
+                  </Text>
+                )}
+             
             </TouchableOpacity>
           </View>
         </View>
