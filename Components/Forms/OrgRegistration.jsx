@@ -28,7 +28,7 @@ export default function OrgRegistration() {
   const {editOrgData} = route.params || {};
   const [editOrgEnabled, seteditOrgEnabled] = useState(editOrgData?.editorg);
   const [Orgdata, setOrgdata] = useState({
-    organization_id : editOrgData.organization_id || "",
+    organization_id : editOrgData?.organization_id || "",
     organization_name: '',
     sector_id: '',
     listed_id: '',
@@ -186,31 +186,91 @@ export default function OrgRegistration() {
     [citydata],
   );
 
+  // const populateDropDown = useCallback(data => {
+  //   var tempList = [];
+  //   if (!editOrgEnabled) {
+  //     tempList.push(
+  //       <Picker.Item
+  //         key="placeholder"
+  //         label="Select Option"
+  //         value="placeholder"
+  //         style={styles.pickerItem}
+  //         color="#535C68"
+  //       />,
+  //     );
+  //   }
+  //   Object.keys(data).forEach(function (key, index) {
+  //     tempList.push(
+  //       <Picker.Item
+  //       selectedValue={Orgdata.document_type_id==key}
+  //         label={data[key].Name}
+  //         value={key}
+  //         style={styles.pickerItem}
+  //       />,
+  //     );
+  //   });
+  //   return tempList;
+  // }, []);
+
   const populateDropDown = useCallback(data => {
     var tempList = [];
-    if (!editOrgEnabled) {
-      tempList.push(
-        <Picker.Item
-          key="placeholder"
-          label="Select Option"
-          value="placeholder"
-          style={styles.pickerItem}
-          color="#535C68"
-        />,
-      );
+    var ids = {
+      sector_id : Orgdata.sector_id,
+      listed_id : Orgdata.listed_id,
+      country_id : Orgdata.country_id,
+      state_id : Orgdata.state_id,
+      city_id : Orgdata.city_id
+
     }
-    Object.keys(data).forEach(function (key, index) {
+    if(editOrgData){
+      ids.forEach(ids =>{
+          if(data.key == ids){
+              // id = ids
+          console.log(id)
+        }
+      })
+    }
+    
+    Object.keys(data).forEach((key, index) => {
+      // console.log(key, id)
+      if(key == id){
+        tempList.push(
+          (!editOrgData) ?
+          (<Picker.Item
+            key="placeholder"
+            label="Select Option"
+            value="placeholder"
+            style={styles.pickerItem}
+            color="#535C68"
+          />) : (
+            <Picker.Item
+            key={`item-${key}-${index}`}  // Unique key combining key and index
+            label={id == data.key&&data[key].Name}
+            value={key}
+            style={styles.pickerItem}
+          />
+          )
+        )
+      }
+    });
+      
+    
+  
+    Object.keys(data).forEach((key, index) => {
       tempList.push(
         <Picker.Item
-        selectedValue={Orgdata.document_type_id==key}
+          key={`item-${key}-${index}`}  // Unique key combining key and index
           label={data[key].Name}
           value={key}
           style={styles.pickerItem}
         />,
       );
     });
+  
     return tempList;
-  }, []);
+  }, [editOrgEnabled]);
+  
+  
 
   const handleChange = (name, value) => {
     setOrgdata(prevData => ({...prevData, [name]: value}));
@@ -520,7 +580,7 @@ export default function OrgRegistration() {
                     onValueChange={itemValue =>
                       handleChange('sector_id', itemValue)
                     }>
-                    {sectortype}
+                    {sectortype }
                   </Picker>
                 </View>
                 {formsErrors.sector_id && (
