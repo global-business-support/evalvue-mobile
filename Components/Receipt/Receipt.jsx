@@ -38,7 +38,7 @@ const Receipt = ({visible, onClose, paymentResponseList}) => {
   return (
     <Modal
       transparent={true}
-      visible={true}
+      visible={visible}
       onRequestClose={onClose}
       animationType="fade">
       <View style={styles.overlay}>
