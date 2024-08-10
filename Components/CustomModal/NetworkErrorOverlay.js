@@ -56,12 +56,12 @@ const NetworkErrorOverlay = () => {
     <View style={styles.container}>
       {showSuccess && (
         <Animated.View style={[styles.successOverlay, { transform: [{ translateY: successAnimation }] }]}>
-          <Text style={styles.text}>Your internet is connected successfully</Text>
+          <Text style={styles.text}>We are back</Text>
         </Animated.View>
       )}
       {showOffline && (
         <Animated.View style={[styles.overlay, { transform: [{ translateY: offlineAnimation }] }]}>
-          <Text style={styles.text}>You are offline</Text>
+          <Text style={styles.text}>Could not connect to internet</Text>
         </Animated.View>
       )}
     </View>
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'red',
-    padding: 1,
+    backgroundColor: '#FF4848',
+    paddingVertical: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -92,13 +92,13 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: 'green',
-    padding: 1,
+    paddingVertical: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   text: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 14,
   },
 });
 
