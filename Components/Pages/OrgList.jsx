@@ -120,7 +120,7 @@ export default function OrgList() {
             <TruncatedText text={capitalizeEachWord(item.name)} maxLength={18} dot={true} />
           </Text>
           <Text style={listStyle.listSubTitleText}>
-            <TruncatedText text={capitalizeEachWord(item.area)} maxLength={20} />
+            <TruncatedText text={capitalizeEachWord(item.area)} maxLength={18} dot={true} />
             {capitalizeEachWord(item.city_name)}
           </Text>
         </View>
@@ -202,9 +202,25 @@ export default function OrgList() {
 
   function CreatePayment(organizationId, planId) {
     console.log(planId,organizationId)
+
     if (planId == 3) {
       // const confirmationpayment = confirm("Thank you for your payment. Please note that your payment has been automatically refunded.");
-      if (true) {
+      const confirmationpayment = Alert.alert(
+        "Confirm",
+        "Are you sure you want to proceed?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => {return false},
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => {return true} }
+        ],
+        { cancelable: false }
+      );
+
+      if (confirmationpayment) {
+
         setLoadingIndicator(true)
         const response = ApiBackendRequest(
           `${NATIVE_API_URL}/create/subscription/id/`,
@@ -287,37 +303,37 @@ export default function OrgList() {
                 setLoading(true);
                 console.log(response,'inside')
                 setLoadingIndicator(true)
-                const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
-                  payment_id: response.razorpay_payment_id,
-                  subscription_id: response.razorpay_subscription_id,
+                // const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+                //   payment_id: response.razorpay_payment_id,
+                //   subscription_id: response.razorpay_subscription_id,
                   
-                  organization_id: organizationId,
-                });
-                setLoadingIndicator(false)
-                res.then((response) => {
-                  console.log(response);
-                  setLoading(false);
-                  if (response.data.is_payment_response_sent_succefull) {
-                    setpayment_response_list(
-                      response.data.generate_reciept_data[0]
-                    );
-                    setPaymentSuccessfull(
-                      response.data.is_payment_response_sent_succefull
-                    );
-                    setReceiptVisible(true)
-                  }
-                  console.log(payment_response_list);
-                });
-                res.catch((err) => {
-                  console.log(err);
-                  if (err.isexception) {
-                    setPaymentSuccessfull(
-                      response.data.is_payment_response_sent_succefull
-                    );
-                    console.log(err.exceptionmessage);
-                  }
-                });
-                alert(`Success: ${response.razorpay_payment_id}`);
+                //   organization_id: organizationId,
+                // });
+                // setLoadingIndicator(false)
+                // res.then((response) => {
+                //   console.log(response);
+                //   setLoading(false);
+                //   if (response.data.is_payment_response_sent_succefull) {
+                //     setpayment_response_list(
+                //       response.data.generate_reciept_data[0]
+                //     );
+                //     setPaymentSuccessfull(
+                //       response.data.is_payment_response_sent_succefull
+                //     );
+                //     setReceiptVisible(true)
+                //   }
+                //   console.log(payment_response_list);
+                // });
+                // res.catch((err) => {
+                //   console.log(err);
+                //   if (err.isexception) {
+                //     setPaymentSuccessfull(
+                //       response.data.is_payment_response_sent_succefull
+                //     );
+                //     console.log(err.exceptionmessage);
+                //   }
+                // });
+                alert(`Success: ${response.razorpay_payment_id} , subsriptionid: ${subid}`);
               }).catch((error) => {
                 // handle failure
                 alert(`Error: ${error.error}`);
@@ -326,36 +342,37 @@ export default function OrgList() {
                   console.log(payment_response_list);
                   console.log("payment id called");
                   setLoadingIndicator(true)
-                  const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
-                    payment_id: error.error.metadata.payment_id,
-                    organization_id: organizationId,
-                  });
-                  setLoadingIndicator(false)
-                  res.then((response) => {
-                    console.log(response);
-                    setLoading(false);
-                    if(response.data){
-                    if (response.data.is_payment_response_sent_succefull) {
-                      setpayment_response_list(
-                        response.data.generate_reciept_data[0]
-                      );
-                      setPaymentSuccessfull(
-                        response.data.is_payment_response_sent_succefull
-                      );
-                      setReceiptVisible(true)
-                      // setLoading(false);
-                    }}
-                    // console.log(payment_response_list);
-                  });
-                  res.catch((err) => {
-                    // console.log(err);
-                    if (err.isexception) {
-                      setPaymentSuccessfull(
-                        response.data.is_payment_response_sent_succefull
-                      );
-                      // console.log(err.exceptionmessage);
-                    }
-                  });
+                  // const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+                  //   payment_id: error.error.metadata.payment_id,
+                  //   organization_id: organizationId,
+                  // });
+                  // setLoadingIndicator(false)
+                  // res.then((response) => {
+                  //   console.log(response);
+                  //   setLoading(false);
+                  //   if(response.data){
+                  //   if (response.data.is_payment_response_sent_succefull) {
+                  //     setpayment_response_list(
+                  //       response.data.generate_reciept_data[0]
+                  //     );
+                  //     setPaymentSuccessfull(
+                  //       response.data.is_payment_response_sent_succefull
+                  //     );
+                  //     setReceiptVisible(true)
+                  //     // setLoading(false);
+                  //   }}
+                  //   console.log(error.error.metadata.payment_id)
+                  //   // console.log(payment_response_list);
+                  // });
+                  // res.catch((err) => {
+                  //   // console.log(err);
+                  //   if (err.isexception) {
+                  //     setPaymentSuccessfull(
+                  //       response.data.is_payment_response_sent_succefull
+                  //     );
+                  //     // console.log(err.exceptionmessage);
+                  //   }
+                  // });
                   console.log("payment will be failed ");
                 
               });
@@ -421,37 +438,37 @@ export default function OrgList() {
               setLoading(true);
               console.log(response,'inside')
               setLoadingIndicator(true)
-              const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
-                payment_id: response.razorpay_payment_id,
-                subscription_id: response.razorpay_subscription_id,
+              // const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+              //   payment_id: response.razorpay_payment_id,
+              //   subscription_id: response.razorpay_subscription_id,
                 
-                organization_id: organizationId,
-              });
-              setLoadingIndicator(false)
-              res.then((response) => {
-                console.log(response);
-                setLoading(false);
-                if (response.data.is_payment_response_sent_succefull) {
-                  setpayment_response_list(
-                    response.data.generate_reciept_data[0]
-                  );
-                  setPaymentSuccessfull(
-                    response.data.is_payment_response_sent_succefull
-                  );
-                  setReceiptVisible(true)
-                }
-                console.log(payment_response_list);
-              });
-              res.catch((err) => {
-                console.log(err);
-                if (err.isexception) {
-                  setPaymentSuccessfull(
-                    response.data.is_payment_response_sent_succefull
-                  );
-                  console.log(err.exceptionmessage);
-                }
-              });
-              alert(`Success: ${response.razorpay_payment_id}`);
+              //   organization_id: organizationId,
+              // });
+              // setLoadingIndicator(false)
+              // res.then((response) => {
+              //   console.log(response);
+              //   setLoading(false);
+              //   if (response.data.is_payment_response_sent_succefull) {
+              //     setpayment_response_list(
+              //       response.data.generate_reciept_data[0]
+              //     );
+              //     setPaymentSuccessfull(
+              //       response.data.is_payment_response_sent_succefull
+              //     );
+              //     setReceiptVisible(true)
+              //   }
+              //   console.log(payment_response_list);
+              // });
+              // res.catch((err) => {
+              //   console.log(err);
+              //   if (err.isexception) {
+              //     setPaymentSuccessfull(
+              //       response.data.is_payment_response_sent_succefull
+              //     );
+              //     console.log(err.exceptionmessage);
+              //   }
+              // });
+              alert(`Success: ${response.razorpay_payment_id},subscription id ${subid}`);
             }).catch((error) => {
               // handle failure
               alert(`Error: ${error.error}`);

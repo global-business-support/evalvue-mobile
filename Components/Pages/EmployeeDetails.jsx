@@ -15,6 +15,7 @@ import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import TruncatedText from '../Othercomponent/TruncatedText';
 import { capitalizeEachWord } from '../Custom-Functions/customFunctions';
+import ImagePreview from '../ImagePreview/ImagePreview';
 
 export default function EmployeeDetails() {
   const [reviewData, setReviewData] = useState([]);
@@ -27,7 +28,14 @@ export default function EmployeeDetails() {
   const { empDetails, orgDetails, orgName, orgId, empId, SearchByAadhar } = route.params;
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const [showImage, setShowImage] = useState(false);
+  const [url, setUrl] = useState('');
 
+
+  const handleImagePreview = url => {
+    setUrl(url);
+    setShowImage(true);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,7 +77,9 @@ export default function EmployeeDetails() {
           <View style={empListStyle.empContainer}>
             <View style={empListStyle.subContainer}>
               {empData?.employee_image && empData?.employee_image !== 'null' && (
-                <Image source={{ uri: empData?.employee_image }} style={empListStyle.empImg} />
+                <Image source={{ uri: empData?.employee_image }} style={empListStyle.empImg} onPress={() => {
+                  handleImagePreview(empData?.employee_image);
+                }}/>
               )}
               <View>
                 <Text style={empListStyle.empNameStyle}>
@@ -121,7 +131,9 @@ export default function EmployeeDetails() {
               )}
             </Text>
             {item?.image && item?.image !== 'null' && (
-              <Image source={{ uri: item?.image }} style={empListStyle.reviewImg} />
+              <Image source={{ uri: item?.image }} style={empListStyle.reviewImg} onPress={() => {
+                handleImagePreview(item?.image);
+              }}/>
             )}
           </View>
         </View>
@@ -155,7 +167,9 @@ export default function EmployeeDetails() {
           <View style={{ flexDirection: 'row', gap: 6 }}>
             <View>
               {empDetails?.employee_image && empDetails?.employee_image !== 'null' && (
-                <Image source={{ uri: empDetails?.employee_image }} style={styles.profileLogo} />
+                <Image source={{ uri: empDetails?.employee_image }} style={styles.profileLogo} onPress={() => {
+                  handleImagePreview(empDetails?.employee_image );
+                }}/>
               )}
             </View>
             <View
@@ -166,10 +180,21 @@ export default function EmployeeDetails() {
                 justifyContent: 'space-between',
               }}>
               <View>
-                <Text style={styles.nameText}>{capitalizeEachWord(empDetails?.employee_name)}</Text>
+                <Text style={styles.nameText}>
+                  <TruncatedText 
+                    text={capitalizeEachWord(empDetails?.employee_name)}
+                    maxLength={20}
+                    dot={true}
+                  />
+                  </Text>
                 <Text
                   style={{ color: '#FFF', fontSize: 10, fontWeight: '500' }}>
-                  {capitalizeEachWord(empDetails?.designation)}
+                    <TruncatedText 
+                    text={capitalizeEachWord(empDetails?.designation)}
+                    maxLength={25}
+                    dot={true}
+                  />
+                  
                 </Text>
               </View>
               <View style={styles.activeInactive}>
@@ -256,6 +281,11 @@ export default function EmployeeDetails() {
         keyExtractor={item => item?.review_id ? item?.review_id.toString() : item.toString()}
         renderItem={renderItem}
         ListEmptyComponent={noReview}
+      />
+      <ImagePreview
+        imageUrl={url}
+        visible={showImage}
+        onClose={() => setShowImage(false)}
       />
     </View>
   )

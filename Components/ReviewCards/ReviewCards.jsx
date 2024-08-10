@@ -41,7 +41,13 @@ const ReviewCards = React.memo(({ item }) => {
               />
             </TouchableOpacity>
             <View>
-              <Text style={styles.orgName}>{capitalizeEachWord(item.organization_name)}</Text>
+              <Text style={styles.orgName}>
+              <TruncatedText
+                  text={capitalizeEachWord(item.organization_name)}
+                  maxLength={20}
+                  dot={true}
+                />
+                </Text>
             </View>
           </View>
           <Text style={styles.orgName}>{item.created_on}</Text>
@@ -59,8 +65,20 @@ const ReviewCards = React.memo(({ item }) => {
                 />
               </TouchableOpacity>
               <View>
-                <Text style={styles.empNameStyle}>{capitalizeEachWord(item.employee_name)}</Text>
-                <Text style={styles.dsgText}>{capitalizeEachWord(item.designation)}</Text>
+                <Text style={styles.empNameStyle}>
+                <TruncatedText
+                  text={capitalizeEachWord(item.employee_name)}
+                  maxLength={20}
+                  dot={true}
+                />
+                  </Text>
+                <Text style={styles.dsgText}>
+                <TruncatedText
+                  text={capitalizeEachWord(item.designation)}
+                  maxLength={20}
+                  dot={true}
+                />
+                  </Text>
               </View>
             </View>
             <View style={styles.ratingContainer}>
