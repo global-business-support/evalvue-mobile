@@ -203,8 +203,8 @@ export default function OrgList() {
   function CreatePayment(organizationId, planId) {
     console.log(planId,organizationId)
     if (planId == 3) {
-      const confirmationpayment = confirm("Thank you for your payment. Please note that your payment has been automatically refunded.");
-      if (confirmationpayment) {
+      // const confirmationpayment = confirm("Thank you for your payment. Please note that your payment has been automatically refunded.");
+      if (true) {
         setLoadingIndicator(true)
         const response = ApiBackendRequest(
           `${NATIVE_API_URL}/create/subscription/id/`,

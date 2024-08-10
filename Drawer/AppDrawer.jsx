@@ -3,6 +3,7 @@ import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import PhoneIcon from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/AntDesign';
+import SubIcon from 'react-native-vector-icons/MaterialIcons';
 import PolicyIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AboutIcon from 'react-native-vector-icons/AntDesign';
 import Feed from '../Components/Pages/Feed';
@@ -11,6 +12,8 @@ import DrawerContent from './DrawerContent';
 import { primary } from '../Components/Styles/customStyle';
 import ContactUs from '../Components/Pages/ContactUs';
 import AboutUs from '../Components/Pages/AboutUs';
+import Plan from '../Components/Pages/Plan';
+import Help from '../Components/Pages/Help';
 
 const Drawer = createDrawerNavigator();
 
@@ -86,7 +89,33 @@ function AppDrawer() {
         }}
       />
       <Drawer.Screen
-        name="Contact Us"
+        name="Subscription Plan"
+        component={Plan}
+        options={{
+          drawerIcon: ({ size }) => (
+            <SubIcon name={'subscriptions'} size={size} color={primary} />
+          ),
+          drawerActiveBackgroundColor: '#DAE0E2',
+          drawerActiveTintColor: 'black',
+          drawerInactiveBackgroundColor: '#F2F5F7',
+          drawerInactiveTintColor: 'black',
+        }}
+      />
+      <Drawer.Screen
+        name="Help"
+        component={Help}
+        options={{
+          drawerIcon: ({ size }) => (
+            <SubIcon name={'help'} size={size} color={primary} />
+          ),
+          drawerActiveBackgroundColor: '#DAE0E2',
+          drawerActiveTintColor: 'black',
+          drawerInactiveBackgroundColor: '#F2F5F7',
+          drawerInactiveTintColor: 'black',
+        }}
+      />
+      <Drawer.Screen
+        name="Contact"
         component={ContactUs}
         options={{
           drawerIcon: ({ size }) => (
@@ -99,7 +128,7 @@ function AppDrawer() {
         }}
       />
       <Drawer.Screen
-        name="About Us"
+        name="About"
         component={AboutUs}
         options={{
           drawerIcon: ({ size }) => (

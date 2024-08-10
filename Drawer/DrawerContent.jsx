@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
   loginView: {
     justifyContent: 'flex-end',
     alignItems: 'center',
+    marginTop: 12
   },
   loginTouchable: {
     width: '90%',
