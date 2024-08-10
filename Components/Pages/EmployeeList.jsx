@@ -255,7 +255,13 @@ export default function EmployeeList() {
                   dot={true}
                 />
               </Text>
-              <Text style={listStyle.listSubText}>{capitalizeEachWord(orgDetails.orgAddress)}</Text>
+              <Text style={listStyle.listSubText}>
+              <TruncatedText
+                  text={capitalizeEachWord(orgDetails.orgAddress)}
+                  maxLength={20}
+                  dot={true}
+                />
+                </Text>
             </View>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('AddEmployee', {

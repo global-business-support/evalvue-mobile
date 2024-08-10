@@ -41,6 +41,9 @@ export default function OrgRegistration() {
     organization_image: {},
     gstin: '',
   });
+  const [editableData, setEditableData] = useState({
+
+  })
 
   if(!editOrgEnabled){
     Orgdata["referralNumber"]= '';
@@ -118,7 +121,50 @@ export default function OrgRegistration() {
     }
 
     fetchData();
+    console.log(editableData)
   }, []);
+
+  if (editOrgEnabled) {
+    const editdata = {
+      organization_id: editOrgData.organization_id || '',
+    };
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const res = await ApiBackendRequest(
+            `${NATIVE_API_URL}/organization/editable/data/`,
+            editdata,
+          );
+          if (res.data.organization_editable_data_send_succesfull) {
+            setEditableData(previewOrgData => ({
+              ...previewOrgData,
+              ...res.data.organization_list[0],
+            }));
+            setFileUrl(res.data.organization_list[0].organization_image);
+            setFileLogoName(
+              getFileNameFromUrl(
+                res.data.organization_list[0].organization_image,
+              ),
+            );
+            setiscity(true);
+            setisstate(true);
+            seteditOrgEnabled(
+              res.data.organization_editable_data_send_succesfull,
+            );
+            if (res.isexception) {
+              setError(res.exceptionmessage.error);
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchData();
+    }, [editOrgEnabled]);
+
+  }
 
   const populateState = useCallback(
     id => {
@@ -135,6 +181,7 @@ export default function OrgRegistration() {
           />,
         );
       }
+      
       Object.keys(data).forEach(function (key, index) {
         if (data[key].CountryId == id) {
           tempList.push(
@@ -168,6 +215,7 @@ export default function OrgRegistration() {
           />,
         );
       }
+      
       Object.keys(data).forEach(function (key, index) {
         if (data[key].StateId == id) {
           tempList.push(
@@ -212,50 +260,39 @@ export default function OrgRegistration() {
   //   return tempList;
   // }, []);
 
+  
   const populateDropDown = useCallback(data => {
     var tempList = [];
     var ids = {
-      sector_id : Orgdata.sector_id,
-      listed_id : Orgdata.listed_id,
-      country_id : Orgdata.country_id,
-      state_id : Orgdata.state_id,
-      city_id : Orgdata.city_id
-
+      sector_id : editableData.sector_id,
+      listed_id : editableData.listed_id,
     }
-    if(editOrgData){
-      ids.forEach(ids =>{
-          if(data.key == ids){
-              // id = ids
-          console.log(id)
-        }
-      })
-    }
-    
-    Object.keys(data).forEach((key, index) => {
-      // console.log(key, id)
-      if(key == id){
-        tempList.push(
-          (!editOrgData) ?
-          (<Picker.Item
-            key="placeholder"
-            label="Select Option"
-            value="placeholder"
-            style={styles.pickerItem}
-            color="#535C68"
-          />) : (
-            <Picker.Item
-            key={`item-${key}-${index}`}  // Unique key combining key and index
-            label={id == data.key&&data[key].Name}
-            value={key}
-            style={styles.pickerItem}
-          />
-          )
-        )
+    if (editOrgEnabled) {
+      for (const id of Object.values(ids)) {
+          if (data[id]) {
+              tempList.push(
+                  <Picker.Item
+                      key={`item-${id}`}  // Unique key based on the id
+                      label={data[id].Name}
+                      value={id}
+                      style={styles.pickerItem}
+                  />
+              );
+          }
       }
-    });
+    } else {
+          tempList.push(
+            <Picker.Item
+              key="placeholder"
+              label="Select Option"
+              value="placeholder"
+              style={styles.pickerItem}
+              color="#535C68"
+            />,
+          );
+        }
+        
       
-    
-  
     Object.keys(data).forEach((key, index) => {
       tempList.push(
         <Picker.Item
@@ -266,11 +303,11 @@ export default function OrgRegistration() {
         />,
       );
     });
-  
+
     return tempList;
   }, [editOrgEnabled]);
   
-  
+ 
 
   const handleChange = (name, value) => {
     setOrgdata(prevData => ({...prevData, [name]: value}));
@@ -296,46 +333,7 @@ export default function OrgRegistration() {
     }
   };
 
-  if (editOrgEnabled) {
-    const editdata = {
-      organization_id: editOrgData.organization_id || '',
-    };
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const res = await ApiBackendRequest(
-            `${NATIVE_API_URL}/organization/editable/data/`,
-            editdata,
-          );
-          if (res.data.organization_editable_data_send_succesfull) {
-            setOrgdata(previewOrgData => ({
-              ...previewOrgData,
-              ...res.data.organization_list[0],
-            }));
-            setFileUrl(res.data.organization_list[0].organization_image);
-            setFileLogoName(
-              getFileNameFromUrl(
-                res.data.organization_list[0].organization_image,
-              ),
-            );
-            setiscity(true);
-            setisstate(true);
-            console.log(Orgdata);
-            seteditOrgEnabled(
-              res.data.organization_editable_data_send_succesfull,
-            );
-            if (res.isexception) {
-              setError(res.exceptionmessage.error);
-            }
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-
-      fetchData();
-    }, [editdata.organization_id]);
-  }
+  
 
   const getFileNameFromUrl = url => {
     return url.substring(url.lastIndexOf('/') + 1);
@@ -418,7 +416,7 @@ export default function OrgRegistration() {
                     placeholder="Name"
                     placeholderTextColor="#535C68"
                     style={customStyle.inputStyle}
-                    value={Orgdata.organization_name} /* editable data*/
+                    value={Orgdata.organization_name || editableData.organization_name} /* editable data*/
                     onChangeText={text =>
                       handleChange('organization_name', text)
                     }
@@ -645,6 +643,7 @@ export default function OrgRegistration() {
                     placeholder="CA9473186A789A"
                     placeholderTextColor="#535C68"
                     style={customStyle.inputStyle}
+                    value={Orgdata.gstin || editableData.gstin}
                     onChangeText={text => handleChange('gstin', text)}
                   />
                 </View>
@@ -658,7 +657,7 @@ export default function OrgRegistration() {
                 </View>
                 <View style={styles.option}>
                   <Picker
-                    selectedValue={Orgdata.number_of_employee}
+                    selectedValue={Orgdata.number_of_employee || editableData.number_of_employee}
                     onValueChange={itemValue =>
                       handleChange('number_of_employee', itemValue)
                     }>
@@ -735,7 +734,7 @@ export default function OrgRegistration() {
                     placeholder="Area Ex-148, Nehru Nagar"
                     placeholderTextColor="#535C68"
                     style={customStyle.inputStyle}
-                    value={Orgdata.area}
+                    value={Orgdata.area||editableData.area}
                     onChangeText={text => handleChange('area', text)}
                   />
                 </View>
@@ -750,7 +749,7 @@ export default function OrgRegistration() {
                 </View>
                 <View style={styles.option}>
                   <Picker
-                    selectedValue={Orgdata.country_id}
+                    selectedValue={Orgdata.country_id || editableData.country_id}
                     onValueChange={itemValue =>
                       handleChange('country_id', itemValue)
                     }>
@@ -768,7 +767,7 @@ export default function OrgRegistration() {
                 </View>
                 <View style={styles.option}>
                   <Picker
-                    selectedValue={Orgdata.state_id}
+                    selectedValue={Orgdata.state_id|| editableData.state_id}
                     onValueChange={itemValue =>
                       handleChange('state_id', itemValue)
                     }
@@ -787,7 +786,7 @@ export default function OrgRegistration() {
                 </View>
                 <View style={styles.option}>
                   <Picker
-                    selectedValue={Orgdata.city_id}
+                    selectedValue={Orgdata.city_id|| editableData.city_id}
                     onValueChange={itemValue =>
                       handleChange('city_id', itemValue)
                     }
@@ -809,7 +808,7 @@ export default function OrgRegistration() {
                     placeholder="Pin Number"
                     placeholderTextColor="#535C68"
                     style={customStyle.inputStyle}
-                    value={Orgdata.pincode} /* editable data*/
+                    value={Orgdata.pincode||editableData.pincode} /* editable data*/
                     keyboardType="numeric"
                     maxLength={6}
                     onChangeText={number => handleChange('pincode', number)}

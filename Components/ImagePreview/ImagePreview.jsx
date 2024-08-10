@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.9)'
+    backgroundColor: 'black'
   },
   modalContainer: {
       height : '100%',
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   image: {
     height: 600,
-    width: 320,
+    width: 330,
     objectFit : 'contain',
   },
   closeButton: {
