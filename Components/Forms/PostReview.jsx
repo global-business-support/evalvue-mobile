@@ -9,6 +9,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import DocumentPicker from 'react-native-document-picker';
 import ApiBackendRequest from '../../API-Management/ApiBackendRequest';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import ImagePreview from '../ImagePreview/ImagePreview';
 
 export default function PostReview() {
     const route = useRoute();
@@ -23,7 +24,14 @@ export default function PostReview() {
     const [error, setError] = useState('');
     const navigation = useNavigation();
     const [loading, setLoading] = useState(false);
+    const [showImage, setShowImage] = useState(false);
+    const [url, setUrl] = useState({});
 
+    const handleImagePreview = url => {
+        setShowImage(true);
+        setUrl(url);
+      };
+      
     function validate() {
         const errors = {};
         if (!reviewData.comment) errors.comment = 'Comment is required*';
@@ -46,37 +54,40 @@ export default function PostReview() {
             });
             setReviewData(prev => ({ ...prev, [name]: doc }));
         } catch (error) {
-            setError("error selectimage", error);
+            console.log("error selectimage");
         }
     };
 
     const handleSubmit = async () => {
         const errors = validate();
         setFormErrors(errors)
-        const formData = new FormData();
-        Object.keys(reviewData).forEach(key => {
-            formData.append(key, reviewData[key]);
-        });
-        try {
-            setLoading(true);
-            const res = await ApiBackendRequest(`${NATIVE_API_URL}/create/review/`, formData);
-            setLoading(false);
-            if (res.data) {
-                if (res.data.is_review_added_successfull) {
-                    navigation.navigate('EmployeeDetails', {
-                        empDetails: empDetails,
-                        orgDetails: orgDetails,
-                        orgId: id.orgId,
-                        empId: id.empId
-                    })
+        if(errors){
+            
+            const formData = new FormData();
+            Object.keys(reviewData).forEach(key => {
+                formData.append(key, reviewData[key]);
+            });
+            try {
+                setLoading(true);
+                const res = await ApiBackendRequest(`${NATIVE_API_URL}/create/review/`, formData);
+                setLoading(false);
+                if (res.data) {
+                    if (res.data.is_review_added_successfull) {
+                        navigation.navigate('EmployeeDetails', {
+                            empDetails: empDetails,
+                            orgDetails: orgDetails,
+                            orgId: id.orgId,
+                            empId: id.empId
+                        })
+                    }
                 }
-            }
-            if (res.isexception) {
-                setError(res.exceptionmessage.error)
-            }
-        } catch (error) {
-            setError(error)
-        };
+                if (res.isexception) {
+                    setError(res.exceptionmessage.error)
+                }
+            } catch (error) {
+                setError(error)
+            };
+        }
     };
 
     return (
@@ -89,7 +100,7 @@ export default function PostReview() {
                         <View style={styles.orgContainer}>
                             <Image
                                 source={{
-                                    uri: 'http://test.evalvue.com/assets/evalvuelogo-Cc-YEGpi.jpg'
+                                    uri: orgDetails.orgImage
                                 }}
                                 style={styles.loginLogo}
                             />
@@ -101,7 +112,8 @@ export default function PostReview() {
                             <View style={styles.ratingContainer}>
                                 <Rating
                                     type="custom"
-                                    ratingColor="gold"
+                                    ratingColor="#FFA823"
+                                    ratingBackgroundColor="#FFF"
                                     ratingCount={5}
                                     startingValue={0}
                                     imageSize={30}
@@ -111,7 +123,7 @@ export default function PostReview() {
                                     <Text style={styles.errors}>{formsErrors?.rating}</Text>
                                 )}
                             </View>
-                            {reviewData.image == null ?
+                            {reviewData.image == null?
                                 <TouchableOpacity
                                     onPress={() => selectImage('image')}
                                 >
@@ -121,6 +133,10 @@ export default function PostReview() {
                                     <Image
                                         source={reviewData.image}
                                         style={styles.previewImage}
+                                        onPress={() => {
+                                            handleImagePreview(reviewData?.image.uri);
+                                            console.log(url)
+                                          }}
                                     />
                                     <TouchableOpacity
                                         onPress={() =>
@@ -182,7 +198,13 @@ export default function PostReview() {
                         )}
                     </TouchableOpacity>
                 </View>
+                <ImagePreview
+                    imageUrl={url}
+                    visible={showImage}
+                    onClose={() => setShowImage(false)}
+                />
             </View>
+            
         </KeyboardAvoidingView>
     )
 };

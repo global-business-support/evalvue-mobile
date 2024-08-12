@@ -72,6 +72,7 @@ export default function OrgRegistration() {
   const [showImage, setShowImage] = useState(false);
   const [url, setUrl] = useState('');
   const navigation = useNavigation();
+  const [sectorType, setSectorType] = useState()
 
   function validate() {
     const errors = {};
@@ -121,7 +122,6 @@ export default function OrgRegistration() {
     }
 
     fetchData();
-    console.log(editableData)
   }, []);
 
   if (editOrgEnabled) {
@@ -162,7 +162,8 @@ export default function OrgRegistration() {
       };
 
       fetchData();
-    }, [editOrgEnabled]);
+    }, []);
+
 
   }
 
@@ -269,16 +270,26 @@ export default function OrgRegistration() {
     }
     if (editOrgEnabled) {
       for (const id of Object.values(ids)) {
-          if (data[id]) {
+        Object.keys(data).forEach((key, index) => {
+          if (key == id) {
+            console.log(id)
+            console.log({
+              "key" : key,
+              'label' : data[key].Name, 
+              "value" : key
+            })
               tempList.push(
                   <Picker.Item
-                      key={`item-${id}`}  // Unique key based on the id
-                      label={data[id].Name}
-                      value={id}
+                      key={`item-${key}`}  // Unique key based on the id
+                      label={data[key].Name}
+                      value={key}
                       style={styles.pickerItem}
                   />
               );
+
           }
+        })
+        
       }
     } else {
           tempList.push(

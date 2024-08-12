@@ -57,6 +57,10 @@ const OtpPassword = () => {
     };
 
     const handleEmailSubmit = async () => {
+        if(email.length == 0){
+            setError("Please enter Email address")
+            return
+        }
         setError("");
         const body = {
             email,
@@ -65,19 +69,22 @@ const OtpPassword = () => {
         }
         try {
             setLoading(true);
+            console.log("before")
             const res = await ApiAxiosRequest(`${NATIVE_API_URL}/shoot/otp/`, body);
+            console.log("after")
             setLoading(false);
             if (res.data.otp_send_successfull) {
+                console.log("successfulld")
                 setIsEmailSent(true);
                 setOtpSent(true);
                 startTimer();
                 setShowResendButton(false);
-            } else {
-                setError(res.isexception.error || "Something went wrong. Please try again.");
+            } if(res.isexception) {
+                setError(res.exceptionmessage.error);
             }
         }
         catch (error) {
-            setError("Failed to send email. Please try again.");
+            setError("Failed to send otp. Please try again.");
         }
     };
     const handleChange = (text, index) => {
@@ -185,6 +192,7 @@ const OtpPassword = () => {
                                         keyboardType="email-address"
                                     />
                                 </View>
+                                    {error && <Text style={styles.errorText}>{error}</Text>}
                                 <TouchableOpacity
                                     style={customStyle.loginBtn}
                                     onPress={handleEmailSubmit}
