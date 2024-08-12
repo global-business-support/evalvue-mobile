@@ -13,6 +13,7 @@ export default function DrawerContent(props) {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [isLogin, setIsLogin] = useState(false);
+  const [fullUserName, setFullUserName] = useState('');
 
   const handleLogout = () => {
     removeData('email')
@@ -24,6 +25,7 @@ export default function DrawerContent(props) {
   useEffect(() => {
     setIsLogin(getBooleanData('isLogin'));
     if (isLogin) {
+      setFullUserName(getStringData("userName"));
       setEmail(getStringData("email"));
       setUserName(email[0]?.toUpperCase());
     }
@@ -45,7 +47,7 @@ export default function DrawerContent(props) {
           <Text style={styles.firstlatter}>{userName}</Text>
         </View>
         <View>
-          {/* <Text style={styles.userName}>Ritik Sharma</Text> */}
+          <Text style={styles.userName}>{fullUserName}</Text>
           <Text style={styles.userNameText}>{email}</Text>
         </View>
       </View>
@@ -91,9 +93,8 @@ const styles = StyleSheet.create({
     color: '#6739B7',
   },
   profileContainer: {
-    paddingVertical: 20,
     borderRadius: 10,
-    backgroundColor: '#6739B7',
+    backgroundColor: primary,
     padding: 15,
     justifyContent: 'space-between',
   },
@@ -114,6 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
     fontWeight: '500',
+    paddingTop: 8
   },
   loginView: {
     justifyContent: 'flex-end',
@@ -141,9 +143,9 @@ const styles = StyleSheet.create({
   },
   userNameText: {
     color: "#FFF",
-    paddingTop: 10,
-    fontWeight: '600',
-    fontSize: 15
+    fontWeight: '400',
+    fontSize: 12,
+    paddingTop: 2
   },
   textStyle: {
     color: '#000',

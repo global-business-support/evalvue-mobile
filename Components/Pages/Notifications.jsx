@@ -85,15 +85,12 @@ const styles = StyleSheet.create({
   },
   headingContainer: {
     backgroundColor: '#FFF',
-    width: '85%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
-    elevation: 5
   },
   heading: {
     color: primary,
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600'
   },
   imgContainer: {
@@ -106,7 +103,7 @@ const styles = StyleSheet.create({
   },
   notificationContainer: {
     padding: 10,
-    backgroundColor: '#ede7e1',
+    backgroundColor: '#EAF0F1',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
