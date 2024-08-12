@@ -25,14 +25,12 @@ export default function Login({ navigation, route }) {
     const [accessToken,setaccessToken]=useState(false)
 
     useEffect(() => {
-        // not working properly
         setLoginData({email : '', password : ''})
         if (getStringData('accessToken')) {
             navigation.navigate('Dashboard');
             setaccessToken(true)
         }
         else{
-            console.log('dont have access token')
             setaccessToken(true)
         }
     }, [accessToken]);
@@ -69,7 +67,8 @@ export default function Login({ navigation, route }) {
           if (res.data) {
             if (res.data.is_login_successfull && res.data.is_user_verified) {
               storeData("accessToken", res.data.access);
-              storeData("email", loginData.email)
+              storeData("email", loginData.email);
+              storeData("userName", res.data.user_name);
             //   storeData("accessTokenExpiry", res.data.accessTokenExpiry.toString()); // Ensure it's stored as a string
               storeData("isLogin", res.data.is_login_successfull);
               navigation.navigate("Dashboard");
@@ -84,8 +83,6 @@ export default function Login({ navigation, route }) {
           setError(null);
         }
       };
-      
-
     const closeModal = () => {
         setModalVisible(false);
     };

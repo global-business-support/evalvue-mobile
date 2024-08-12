@@ -3,13 +3,13 @@ import React from 'react';
 import { primary } from '../Styles/customStyle';
 import CheckIcon from 'react-native-vector-icons/Entypo';
 import OkIcon from 'react-native-vector-icons/AntDesign';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 
 export default function Plan() {
   const navigation = useNavigation();
   return (
-    <View style={styles.mainContainer}>
+    <ScrollView style={styles.mainContainer}>
       <View style={styles.headingMainContainer}>
         <View style={styles.headingContainer}>
           <Text style={styles.mainHeadingText}>Subscription Plan</Text>
@@ -59,7 +59,7 @@ export default function Plan() {
           <View></View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   )
 };
 
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
   headingMainContainer: {
     alignItems: 'center',
-    paddingBottom: 10
+    paddingBottom: 30
   },
   headingContainer: {
     backgroundColor: '#FFF',
@@ -110,12 +110,13 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   planDetailContainer: {
-    marginVertical: 30,
-    backgroundColor: '#8B78E6',
+    marginTop: 50,
+    backgroundColor: primary,
     paddingHorizontal: 8,
     paddingVertical: 30,
     elevation: 5,
-    borderRadius: 3
+    borderRadius: 3,
+    justifyContent: 'center',
   },
   planBtnContainer: {
     backgroundColor: '#FFF',
@@ -123,7 +124,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '55%',
     borderRadius: 8,
-    paddingVertical: 6
+    paddingVertical: 6,
+    marginBottom: 30
   },
   planBtnText: {
     color: primary,
@@ -135,16 +137,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingLeft: 4,
     paddingRight: 10,
-    marginVertical: 6,
+    marginVertical: 2,
     paddingVertical: 10
   },
   textStyle: {
-    color: '#000',
-    fontWeight: '500',
+    color: '#FFF',
+    fontWeight: '400',
     fontSize: 15
   },
   amountBtnContainer: {
-    marginTop: 16,
+    marginTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: '#FFF',

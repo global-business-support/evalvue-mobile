@@ -120,8 +120,10 @@ export default function OrgList() {
             <TruncatedText text={capitalizeEachWord(item.name)} maxLength={18} dot={true} />
           </Text>
           <Text style={listStyle.listSubTitleText}>
-            <TruncatedText text={capitalizeEachWord(item.area)} maxLength={18} dot={true} />
-            {capitalizeEachWord(item.city_name)}
+            <TruncatedText text={capitalizeEachWord(item.area)} maxLength={10} dot={true} />
+            {'  '}
+            <TruncatedText text={capitalizeEachWord(item.city_name)} maxLength={12} dot={false} />
+            
           </Text>
         </View>
       </View>

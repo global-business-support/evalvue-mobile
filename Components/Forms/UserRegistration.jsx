@@ -1,6 +1,8 @@
 import {
+  ActivityIndicator,
   Image,
   KeyboardAvoidingView,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -8,19 +10,19 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
-import {customStyle, primary} from '../Styles/customStyle';
+import React, { useState } from 'react';
+import { customStyle, primary } from '../Styles/customStyle';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ValideIcon from 'react-native-vector-icons/Entypo';
 import NameIcon from 'react-native-vector-icons/Ionicons';
 import PhoneIcon from 'react-native-vector-icons/FontAwesome';
-import {CheckBox} from 'react-native-elements';
+import { CheckBox } from 'react-native-elements';
 import logo from '../../assets/evalvue-logo.jpg';
-import {ValidateEmail, ValidatePassword} from '../../Validation/Validation.js';
-import axios from 'axios';
-import {NATIVE_API_URL} from '@env';
+import { ValidateEmail, ValidatePassword } from '../../Validation/Validation.js';
+import { NATIVE_API_URL } from '@env';
 import CustomModal from '../CustomModal/CustomModal.jsx';
 import { useNavigation } from '@react-navigation/native';
+import { ApiAxiosRequest } from '../../API-Management/ApiBackendRequest.js';
 
 export default function UserRegistration() {
   const [checked, setChecked] = useState(false);
@@ -36,10 +38,15 @@ export default function UserRegistration() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
   const [validEmailIcon, setValidEmailIcon] = useState(false);
   const [validPassowordIcon, setValidPasswordIcon] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
- const navigation = useNavigation()
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [userRegistered, setUserRegistered] = useState(false);
+  const navigation = useNavigation();
   function validate() {
     const errors = {};
     if (!RegisterData.name) errors.name = 'Name is required*';
@@ -54,6 +61,16 @@ export default function UserRegistration() {
     return errors;
   }
 
+  const openURL = (url) => {
+    Linking.openURL(url).catch((err) => setError("Couldn't load page", err));
+  };
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword((prevShowConfirmPassword) => !prevShowConfirmPassword);
+  };
+
   const handleChange = (name, value) => {
     if (name === 'email') {
       setValidEmailIcon(ValidateEmail(value).isValid);
@@ -62,10 +79,10 @@ export default function UserRegistration() {
       setValidPasswordIcon(ValidatePassword(value).isValid);
     }
 
-    setRegisterData(prevData => ({...prevData, [name]: value}));
-    // if (value.trim() !== '') {
-    setFormErrors(errors => ({...errors, [name]: null}));
-    // }
+    setRegisterData(prevData => ({ ...prevData, [name]: value }));
+    if (value.trim() !== '') {
+      setFormErrors(errors => ({ ...errors, [name]: null }));
+    }
   };
 
   const handleSubmit = async () => {
@@ -73,41 +90,41 @@ export default function UserRegistration() {
     setFormErrors(errors);
 
     if (Object.keys(errors).length === 0) {
-      const options = {
-        headers: {'Content-Type': 'application/json'},
-      };
-      // const headers = {'Content-Type': 'application/json'};
-      console.log(NATIVE_API_URL);
-      const res = await axios.post(
-        `${NATIVE_API_URL}/create/user/`,
-        RegisterData,
-        options,
-      );
-      if (res.data) {
-        console.log(res.data);
+      setLoading(true);
+      try {
+        const res = await ApiAxiosRequest(`${NATIVE_API_URL}/create/user/`, RegisterData);
         if (res.data.is_user_register_successfull) {
-         setModalVisible(true)
+            setUserRegistered(res.data.is_user_register_successfull);
+            setModalVisible(true);
+        } else if (res.isexception) {
+          setError(res.exceptionmessage.error);
+          setModalVisible(true);
         }
-      } else if (res.isexception) {
-        setError(res.exceptionmessage.error);
+      } catch (error) {
+        setError('Registration failed. Please try again.');
         setModalVisible(true);
       }
+      setLoading(false);
     }
   };
-
   const closeModal = () => {
     setModalVisible(false);
   };
   const handleOksubmit = () => {
-    navigation.navigate('Verify', {
-      state: {isForget: false, stateEmail: RegisterData.email},
-    });
+    if (userRegistered) {
+      navigation.navigate('Verify', {
+        state: { isForget: false, stateEmail: RegisterData.email },
+      })
+    }
+    else {
+      setModalVisible(false);
+    }
   };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}>
+      style={{ flex: 1 }}>
       <ScrollView style={customStyle.scrollStyle}>
         <View style={customStyle.loginContainer}>
           <View>
@@ -115,7 +132,7 @@ export default function UserRegistration() {
           </View>
           <Text style={customStyle.heading}>Create Account</Text>
           <View style={styles.inputContainer}>
-            <View style={customStyle.inputBox}>
+            <View style={[customStyle.inputBox, styles.inputMargin]}>
               <NameIcon name="person-sharp" size={20} color="#592DA1" />
               <TextInput
                 placeholder="Name"
@@ -126,11 +143,7 @@ export default function UserRegistration() {
             {formErrors.name && (
               <Text style={styles.errors}>{formErrors.name}</Text>
             )}
-            <View
-              style={customStyle.inputBox}
-              width={
-                isEmailFocused && RegisterData.email.length > 0 ? '85%' : '90%'
-              }>
+            <View style={[customStyle.inputBox, styles.inputMargin]}>
               <Icon name="email" size={20} color="#592DA1" />
               <TextInput
                 placeholder="Email"
@@ -138,19 +151,29 @@ export default function UserRegistration() {
                 onFocus={() => setIsEmailFocused(true)}
                 onBlur={() => setIsEmailFocused(false)}
                 style={customStyle.inputStyle}
-                onChangeText={text => handleChange('email', text)}></TextInput>
-              {isEmailFocused && RegisterData.email.length > 0 && (
+                keyboardType="email-address"
+                onChangeText={text => handleChange('email', text)}
+              />
+            </View>
+            {formErrors.email && (
+              <Text style={styles.errors}>{formErrors.email}</Text>
+            )}
+            {isEmailFocused && RegisterData.email.length > 0 && (
+              <View style={customStyle.regexContainer}>
                 <ValideIcon
                   name={validEmailIcon ? 'check' : 'cross'}
                   color={validEmailIcon ? 'green' : 'red'}
                   size={18}
                 />
-              )}
-            </View>
-            {formErrors.email && (
-              <Text style={styles.errors}>{formErrors.email}</Text>
+                {!validEmailIcon && (
+                  <Text style={customStyle.regexText}>
+                    Please include '@' or part following '@' is incomplete.
+                  </Text>
+                )}
+                {validEmailIcon && <Text style={customStyle.regexText}>Correct.</Text>}
+              </View>
             )}
-            <View style={customStyle.inputBox} width="91%">
+            <View style={[customStyle.inputBox, styles.inputMargin]}>
               <PhoneIcon name="phone" size={20} color="#592DA1" />
               <TextInput
                 placeholder="Mobile Number"
@@ -160,48 +183,61 @@ export default function UserRegistration() {
                 maxLength={10}
                 onChangeText={number =>
                   handleChange('mobile_number', number)
-                }></TextInput>
+                }
+              />
             </View>
             {formErrors.mobile_number && (
               <Text style={styles.errors}>{formErrors.mobile_number}</Text>
             )}
-            <View
-              style={customStyle.inputBox}
-              width={
-                isPasswordFocused && RegisterData.password.length > 0
-                  ? '85%'
-                  : '90%'
-              }>
+            <View style={[customStyle.inputBox, styles.inputMargin]} width='83%'>
               <Icon name="key" size={20} color="#592DA1" />
               <TextInput
                 placeholder="Password"
                 placeholderTextColor="#535C68"
                 onFocus={() => setIsPasswordFocused(true)}
                 onBlur={() => setIsPasswordFocused(false)}
+                secureTextEntry={!showPassword}
                 style={customStyle.inputStyle}
                 onChangeText={text =>
                   handleChange('password', text)
                 }></TextInput>
-              {isPasswordFocused && RegisterData.password.length > 0 && (
+              <TouchableOpacity onPress={togglePasswordVisibility}>
+                <Icon name={showPassword ? "eye-off" : "eye"} size={20} color="#592DA1" />
+              </TouchableOpacity>
+            </View>
+            {isPasswordFocused && RegisterData.password.length > 0 && (
+              <View style={customStyle.regexContainer}>
                 <ValideIcon
                   name={validPassowordIcon ? 'check' : 'cross'}
                   color={validPassowordIcon ? 'green' : 'red'}
                   size={18}
                 />
-              )}
-            </View>
+                {!validPassowordIcon && (
+                  <Text style={customStyle.regexText}>
+                    Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.
+                  </Text>
+                )}
+                {validPassowordIcon && <Text style={customStyle.regexText}>Strong password.</Text>}
+              </View>
+            )}
             {formErrors.password && (
               <Text style={styles.errors}>{formErrors.password}</Text>
             )}
-            <View style={customStyle.inputBox}>
+            <View style={[customStyle.inputBox, styles.inputMargin]} width='83%'>
               <Icon name="key" size={20} color="#592DA1" />
               <TextInput
                 placeholder="Confirm Password"
                 placeholderTextColor="#535C68"
+                onFocus={() => setIsConfirmPasswordFocused(true)}
+                onBlur={() => setIsConfirmPasswordFocused(false)}
+                secureTextEntry={!showConfirmPassword}
                 style={customStyle.inputStyle}
                 onChangeText={text =>
                   handleChange('confirmPassword', text)
                 }></TextInput>
+                <TouchableOpacity onPress={toggleConfirmPasswordVisibility}>
+                <Icon name={showConfirmPassword ? "eye-off" : "eye"} size={20} color="#592DA1" />
+              </TouchableOpacity>
             </View>
             {formErrors.confirmPassword && (
               <Text style={styles.errors}>{formErrors.confirmPassword}</Text>
@@ -209,14 +245,23 @@ export default function UserRegistration() {
           </View>
           <View>
             <CheckBox
-              title={'I agree with terms and conditions.'}
+              title={
+                <Text style={styles.customTitle}>
+                  I agree with{" "}
+                  <Text
+                    style={styles.link}
+                    onPress={() => openURL('https://api.evalvue.com/media/Terms/Terms%20and%20Conditions.pdf')}
+                  >terms and conditions
+                  </Text>.
+                </Text>
+              }
+              containerStyle={styles.checkBoxContainer}
               checked={checked}
               size={16}
               checkedColor={primary}
               onPress={() => {
                 setChecked(true);
                 setTermsAccepted(true);
-                // handleChange('termsAccepted', true);
               }}
             />
           </View>
@@ -226,8 +271,13 @@ export default function UserRegistration() {
           <TouchableOpacity
             style={customStyle.loginBtn}
             onPress={() => handleSubmit()}>
-            <Text style={customStyle.loginText}>Register</Text>
+            {loading ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={customStyle.loginText}>Register</Text>
+            )}
           </TouchableOpacity>
+
           <View style={styles.footerContainer}>
             <Text style={styles.text}>Already have a account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -236,10 +286,7 @@ export default function UserRegistration() {
           </View>
         </View>
       </ScrollView>
-
-      {/* Modal to show error message */}
-     
-        <CustomModal
+      <CustomModal
         visible={modalVisible}
         onClose={closeModal}
         obj={{
@@ -249,17 +296,17 @@ export default function UserRegistration() {
           buttonTitle: 'OK',
           onPress: handleOksubmit,
         }}
-        />
-      
+      />
+
     </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   loginLogo: {
     height: 110,
     width: 110,
-    marginTop: 50,
+    marginTop: 20,
   },
   inputContainer: {
     marginTop: 30,
@@ -287,5 +334,23 @@ const styles = StyleSheet.create({
   errors: {
     color: 'red',
     paddingLeft: 5,
+    fontSize: 12
+  },
+  inputMargin: {
+    marginVertical: 6
+  },
+  customTitle: {
+    width: '90%',
+    fontSize: 12,
+    color: 'black',
+    marginLeft: 4
+  },
+  link: {
+    color: 'blue',
+    textDecorationLine: 'underline',
+  },
+  checkBoxContainer: {
+    borderWidth: 0,
+    backgroundColor: '#FFF'
   },
 });

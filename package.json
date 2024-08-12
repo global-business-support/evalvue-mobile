@@ -23,6 +23,7 @@
     "@react-navigation/stack": "^6.4.1",
     "axios": "^1.7.2",
     "gradlew": "^0.0.1-security",
+    "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
     "react-devtools": "^4.27.2",
     "react-dom": "^18.2.0",

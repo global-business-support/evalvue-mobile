@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { getStringData, removeData } from './mmkv-Storage'; // Updated import
 import { navigate } from './navigationService';
 import { NATIVE_API_URL } from '@env';
+import { isTokenExpired } from './tokenUtils';
+import { removeData, getStringData } from './mmkv-Storage';
 
 const apiClient = axios.create({
   baseURL: NATIVE_API_URL,
@@ -12,6 +13,11 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
+    if (isTokenExpired()) {
+      removeData('accessToken');
+      navigate('Login');
+      return Promise.reject(new Error('Token expired'));
+    }
     const token = getStringData('accessToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -30,10 +36,8 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-
-      console.log("Access token expired or invalid. Clearing token and redirecting to login...");
-       removeData('accessToken');
-      navigate("Login"); // Redirect to Login screen
+      removeData('accessToken');
+      navigate('Login');
 
       return Promise.reject(error);
     }
