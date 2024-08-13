@@ -6,11 +6,10 @@ import {
   View,
   FlatList,
   RefreshControl,
-  Alert, Button,
+  Alert
 } from 'react-native';
 import { Image } from 'react-native-elements';
 import SearchIcon from 'react-native-vector-icons/MaterialIcons';
-import DotIcon from 'react-native-vector-icons/Entypo';
 import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { NATIVE_API_URL } from '@env';
@@ -19,11 +18,8 @@ import TruncatedText from '../Othercomponent/TruncatedText';
 import { listStyle } from '../Styles/listStyle';
 import ThreeDotMenu from './ThreeDotMenu ';
 import ListShimmerUI from '../ShimmerUI/ListShimmerUI';
-
 import ImagePreview from '../ImagePreview/ImagePreview';
-
 import { capitalizeEachWord } from '../Custom-Functions/customFunctions';
-
 
 export default function EmployeeList() {
   const [Empdata, setEmpdata] = useState([]);
@@ -38,12 +34,31 @@ export default function EmployeeList() {
   const isFocused = useIsFocused();
   const [showImage, setShowImage] = useState(false);
   const [url, setUrl] = useState('');
+  const [reload, setReload] = useState(false);
 
-   const handleImagePreview = url => {
+  const handleImagePreview = url => {
     setUrl(url);
     setShowImage(true);
   };
 
+  const handleTerminate = (empId, OrgId, empname) => {
+    const delId = { organization_id: OrgId, employee_id: empId };
+    showAlert(empname, (confirmuser) => {
+      if (confirmuser) {
+        ApiBackendRequest(`${NATIVE_API_URL}/terminate/employee/`, delId)
+          .then((res) => {
+            if (res.data) {
+              if (res.data.is_employee_terminated_successfull) {
+                setReload(true);
+              } else if (res.isexception) {
+                setError(res.exceptionmessage.error);
+              }
+            }
+          })
+          .finally(() => setLoading(false));
+      }
+    });
+  };
   const fetchdata = useCallback(async () => {
     try {
       const res = await ApiBackendRequest(`${NATIVE_API_URL}/employees/`, {
@@ -60,13 +75,13 @@ export default function EmployeeList() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [orgDetails.orgId]);
+  }, [orgDetails.orgId, reload]);
 
   useEffect(() => {
-    if(isFocused){
+    if (isFocused) {
       fetchdata();
     }
-  }, [isFocused, fetchdata]);
+  }, [isFocused, reload]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -106,37 +121,19 @@ export default function EmployeeList() {
       { cancelable: false }
     );
   };
-  
-  const handleTerminate = (empId, OrgId, empname) => {
-    const delId = { organization_id: OrgId, employee_id: empId };
-    showAlert(empname, (confirmuser) => {
-      if (confirmuser) {
-        ApiBackendRequest(`${NATIVE_API_URL}/terminate/employee/`, delId)
-          .then((res) => {
-            if (res.data) {
-              if (res.data.is_employee_terminated_successfull) {
-                navigation.reload()
-              } else if (res.isexception) {
-                setError(res.exceptionmessage.error);
-              }
-            }
-          })
-          .finally(() => setLoading(false));
-      }
-    });
-  };
-  
+
+
   const handleEdit = (empId, OrgId) => {
     navigation.navigate(`AddEmployee`, {
-        employee_id: empId,
-        organization_id: OrgId,
-        orgDetails: {
-          orgId: orgDetails.orgId,
-          orgName: orgDetails.orgName,
-          orgAddress: orgDetails.orgAddress,
-          orgImage: orgDetails.orgImage,
-          addEmp: false
-        },
+      employee_id: empId,
+      organization_id: OrgId,
+      orgDetails: {
+        orgId: orgDetails.orgId,
+        orgName: orgDetails.orgName,
+        orgAddress: orgDetails.orgAddress,
+        orgImage: orgDetails.orgImage,
+        addEmp: false
+      },
     });
   };
   const renderItem = useCallback(
@@ -169,8 +166,8 @@ export default function EmployeeList() {
             onPress={() =>
               navigation.navigate('EmployeeDetails', {
                 empDetails: item,
-                SearchByAadhar : false,
-                orgDetails:orgDetails ,
+                SearchByAadhar: false,
+                orgDetails: orgDetails,
                 orgName: orgDetails.orgName,
                 orgId: orgDetails.orgId,
                 empId: item.employee_id
@@ -179,7 +176,7 @@ export default function EmployeeList() {
             <Text style={listStyle.listBtn}>Reviews</Text>
           </TouchableOpacity>
           <ThreeDotMenu
-            onEdit={() =>{
+            onEdit={() => {
               handleEdit(item.employee_id, orgDetails.orgId);
             }
             }
@@ -256,12 +253,12 @@ export default function EmployeeList() {
                 />
               </Text>
               <Text style={listStyle.listSubText}>
-              <TruncatedText
+                <TruncatedText
                   text={capitalizeEachWord(orgDetails.orgAddress)}
                   maxLength={20}
                   dot={true}
                 />
-                </Text>
+              </Text>
             </View>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('AddEmployee', {
@@ -277,7 +274,7 @@ export default function EmployeeList() {
           </TouchableOpacity>
         </View>
       </View>
-        
+
       <FlatList
         data={filteredEmpData}
         keyExtractor={item => item?.employee_id.toString()}
@@ -295,7 +292,7 @@ export default function EmployeeList() {
         removeClippedSubviews={true}
         initialNumToRender={10}
       />
-       <ImagePreview
+      <ImagePreview
         imageUrl={url}
         visible={showImage}
         onClose={() => setShowImage(false)}
