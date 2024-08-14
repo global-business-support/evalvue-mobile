@@ -8,24 +8,38 @@ import AppTabs from './Drawer/AppTabs';
 import OtpPassword from './Components/Authentication/OtpPassword';
 import ForgotPassword from './Components/Authentication/ForgotPassword';
 import { getOnboardingStatus, setOnboardingStatus } from './Utils/Storage';
-import { getStringData } from './API-Management/mmkv-Storage'; // Assuming this is your storage utility
+import { getBooleanData, getStringData } from './API-Management/mmkv-Storage'; // Assuming this is your storage utility
+import { storeData } from './API-Management/mmkv-Storage';
 
 const Stack = createNativeStackNavigator();
-
+ 
 export default function AppStack() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState(null); // Loading state
+  const [viewedOnboarding, setViewedOnboarding] = useState(false); // Loading state
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Authentication state
+  
+  const checkOnboaring =  () =>{
+   
+    if(getBooleanData("viewedOnboarding")){
+      setViewedOnboarding(true);
+    }
+    else{
+      setViewedOnboarding(false)
+    }
+  
+  }
+
 
   useEffect(() => {
+    // if(!getStringData('viewedOnboarding')){
+    //   storeData("viewedOnboarding" , false)
+    // }
+    checkOnboaring()
     const initializeApp = async () => {
       try {
         // Check for onboarding status
         const hasViewedOnboarding = await getOnboardingStatus();
         if (hasViewedOnboarding === false) {
           setOnboardingStatus(false); // Initialize with false if not set
-          setIsFirstLaunch(true); // Show onboarding
-        } else {
-          setIsFirstLaunch(false); // Skip onboarding
         }
 
         // Check for access token
@@ -36,8 +50,7 @@ export default function AppStack() {
           setIsAuthenticated(false); // User is not authenticated
         }
       } catch (error) {
-        console.error('Error initializing app', error);
-        setIsFirstLaunch(false); // Default to not showing onboarding in case of error
+        console.error('Error initializing app', error); 
         setIsAuthenticated(false); // Handle errors gracefully
       }
     };
@@ -45,10 +58,7 @@ export default function AppStack() {
     initializeApp();
   }, []);
 
-  if (isFirstLaunch === null) {
-    // Optionally render a splash screen or loading indicator while checking
-    return null; // Or return a <SplashScreen /> component
-  }
+
 
   return (
       <Stack.Navigator>
@@ -61,24 +71,16 @@ export default function AppStack() {
             />
             {/* Optionally, you can also add other authenticated routes here */}
           </>
-        ) : isFirstLaunch ? (
+        ) : (
           <>
-            <Stack.Screen
+          {!viewedOnboarding && (<Stack.Screen
               name="Onboarding"
               component={Onboarding}
               options={{ headerShown: false }}
               listeners={{
                 blur: async () => await setOnboardingStatus(true),
               }}
-            />
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{ headerShown: false }}
-            />
-          </>
-        ) : (
-          <>
+            />)}
             <Stack.Screen
               name="Login"
               component={Login}

@@ -9,13 +9,15 @@ import {
   StatusBar,
   SafeAreaView,
 } from 'react-native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import slides from './slides.js';
 import OnboardingItem from './OnboardingItem.jsx';
 import Paginator from './Paginator.jsx';
 import NextButton from './NextButton.jsx';
 import PreviousButton from './PreviousButton.jsx';
 import { primary } from '../Components/Styles/customStyle.js';
+import { getBooleanData, storeData } from '../API-Management/mmkv-Storage.js';
+import  AsyncStorage  from '@react-native-async-storage/async-storage';
 
 const Onboarding = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -26,12 +28,22 @@ const Onboarding = () => {
     setCurrentIndex(viewableItems[0].index);
   }).current;
 
+useEffect(()=>{
+  if(getBooleanData("viewedOnboarding")=='undefined'){
+
+    console.log("viewonbording update success tru")
+    storeData("viewedOnboarding" , false)
+  }
+    console.log(getBooleanData("viewedOnboarding"),'in obbordingscreen')
+
+},[storeData])
+
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
-  const Next = () => {
+  const Next = async () => {
     if (currentIndex < slides.length - 1) {
       slidesRef.current.scrollToIndex({ index: currentIndex + 1 });
     } else {
-      console.log('Last item');
+    //  storeData("viewedOnboarding" , true)
     }
   };
   const Skip = () => {

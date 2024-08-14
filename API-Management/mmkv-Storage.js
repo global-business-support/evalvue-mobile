@@ -4,10 +4,11 @@ const storage = new MMKV();
 
 export const storeData = (key, value) => {
   try {
-    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    if (typeof(value) === 'string' || typeof(value) === 'number' || typeof(value) === 'boolean') {
       storage.set(key, value);
+      console.log(key,value);
     } else {
-      console.error(`Failed to store ${key}. Value must be of type string, number, or boolean.`);
+      console.error(`Failed to store ${key}. Value must be of type string, number, or boolean.`,key,value);
     }
   } catch (e) {
     console.error(`Failed to store ${key}`, e);
