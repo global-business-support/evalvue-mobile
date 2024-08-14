@@ -5,6 +5,7 @@ import Login from '../../Components/Authentication/Login';
 import slide from '../../assets/slide3.png';
 import Slide2Image from '../../assets/slide2Image.png';
 import { useNavigation } from '@react-navigation/native';
+import { storeData } from '../../API-Management/mmkv-Storage';
 export default function Slide3() {
   const navigation = useNavigation();
   return (
@@ -38,6 +39,7 @@ export default function Slide3() {
       <View style={styles.innerContainer}>
         <TouchableOpacity style={styles.button} onPress={() => {
           navigation.navigate('Login');
+          storeData("viewedOnboarding" , true)
         }}>
           <Text style={styles.text}>Get Start</Text>
         </TouchableOpacity>

@@ -19,7 +19,7 @@ export default function DrawerContent(props) {
     removeData('email')
     removeData('accessToken')
     storeData('isLogin', false)
-    navigate("Login")
+    navigation.navigate("Login")
   };
 
   useEffect(() => {
