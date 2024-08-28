@@ -17,7 +17,6 @@ import NextButton from './NextButton.jsx';
 import PreviousButton from './PreviousButton.jsx';
 import { primary } from '../Components/Styles/customStyle.js';
 import { getBooleanData, storeData } from '../API-Management/mmkv-Storage.js';
-import  AsyncStorage  from '@react-native-async-storage/async-storage';
 
 const Onboarding = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
