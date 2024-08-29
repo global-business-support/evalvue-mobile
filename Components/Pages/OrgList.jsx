@@ -167,15 +167,13 @@ export default function OrgList() {
            onPress={() => {
             CreatePayment(item.organization_id, count === 0 ? 3 : 4);
           }}>
-              {loadingIndicator ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <Text style={styles.payBtn}>
+              
+            <Text style={styles.payBtn}>
               Pay{' '}
               <RupeeIcon name="rupee" size={15} color="white" style={styles.payBtn} />
               {count === 0 ? '5' : '99'}
             </Text>
-              )}
+              
           </TouchableOpacity>
         )}
         
@@ -223,7 +221,6 @@ export default function OrgList() {
 
       if (confirmationpayment) {
 
-        setLoadingIndicator(true)
         const response = ApiBackendRequest(
           `${NATIVE_API_URL}/create/subscription/id/`,
           {
@@ -232,7 +229,6 @@ export default function OrgList() {
             plan_id: planId,
           }
         );
-        setLoadingIndicator(false)
         if(response)
         response.then((response) => {
           console.log(response.data);
@@ -254,41 +250,39 @@ export default function OrgList() {
                 name: "Evalvue",
                 description: "Monthly Test Plan",
                 image: `${logo}`,
-                // "subscription_card_change": 0,
-                // handler: function (response) {
-                //   console.log("payment successfull ");
-                //   setLoadingIndicator(true)
-                //   const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
-                //     payment_id: response.razorpay_payment_id,
-                //     subscription_id: response.razorpay_subscription_id,
+                "subscription_card_change": 0,
+                handler: function (response) {
+                  console.log("payment successfull ");
+                  const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+                    payment_id: response.razorpay_payment_id,
+                    subscription_id: response.razorpay_subscription_id,
                     
-                //     organization_id: organizationId,
-                //   });
-                //   setLoadingIndicator(false)
-                //   res.then((response) => {
-                //     console.log(response);
-                //     if (response.data.is_payment_response_sent_succefull) {
-                //       setpayment_response_list(
-                //         response.data.generate_reciept_data[0]
-                //       );
-                //       setPaymentSuccessfull(
-                //         response.data.is_payment_response_sent_succefull
-                //       );
-                //       setReceiptVisible(true)
-                //       // setLoading(false);
-                //     }
-                //     console.log(payment_response_list);
-                //   });
-                //   res.catch((err) => {
-                //     console.log(err);
-                //     if (err.isexception) {
-                //       setPaymentSuccessfull(
-                //         response.data.is_payment_response_sent_succefull
-                //       );
-                //       console.log(err.exceptionmessage);
-                //     }
-                //   });
-                // },
+                    organization_id: organizationId,
+                  });
+                  res.then((response) => {
+                    console.log(response);
+                    if (response.data.is_payment_response_sent_succefull) {
+                      setpayment_response_list(
+                        response.data.generate_reciept_data[0]
+                      );
+                      setPaymentSuccessfull(
+                        response.data.is_payment_response_sent_succefull
+                      );
+                      setReceiptVisible(true)
+                      // setLoading(false);
+                    }
+                    console.log(payment_response_list);
+                  });
+                  res.catch((err) => {
+                    console.log(err);
+                    if (err.isexception) {
+                      setPaymentSuccessfull(
+                        response.data.is_payment_response_sent_succefull
+                      );
+                      console.log(err.exceptionmessage);
+                    }
+                  });
+                },
                 prefill: {
                   name: "",
                   email: "",
@@ -304,37 +298,35 @@ export default function OrgList() {
                 console.log("payment successfull ");
                 setLoading(true);
                 console.log(response,'inside')
-                setLoadingIndicator(true)
-                // const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
-                //   payment_id: response.razorpay_payment_id,
-                //   subscription_id: response.razorpay_subscription_id,
+                const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+                  payment_id: response.razorpay_payment_id,
+                  subscription_id: response.razorpay_subscription_id,
                   
-                //   organization_id: organizationId,
-                // });
-                // setLoadingIndicator(false)
-                // res.then((response) => {
-                //   console.log(response);
-                //   setLoading(false);
-                //   if (response.data.is_payment_response_sent_succefull) {
-                //     setpayment_response_list(
-                //       response.data.generate_reciept_data[0]
-                //     );
-                //     setPaymentSuccessfull(
-                //       response.data.is_payment_response_sent_succefull
-                //     );
-                //     setReceiptVisible(true)
-                //   }
-                //   console.log(payment_response_list);
-                // });
-                // res.catch((err) => {
-                //   console.log(err);
-                //   if (err.isexception) {
-                //     setPaymentSuccessfull(
-                //       response.data.is_payment_response_sent_succefull
-                //     );
-                //     console.log(err.exceptionmessage);
-                //   }
-                // });
+                  organization_id: organizationId,
+                });
+                res.then((response) => {
+                  console.log(response);
+                  setLoading(false);
+                  if (response.data.is_payment_response_sent_succefull) {
+                    setpayment_response_list(
+                      response.data.generate_reciept_data[0]
+                    );
+                    setPaymentSuccessfull(
+                      response.data.is_payment_response_sent_succefull
+                    );
+                    setReceiptVisible(true)
+                  }
+                  console.log(payment_response_list);
+                });
+                res.catch((err) => {
+                  console.log(err);
+                  if (err.isexception) {
+                    setPaymentSuccessfull(
+                      response.data.is_payment_response_sent_succefull
+                    );
+                    console.log(err.exceptionmessage);
+                  }
+                });
                 alert(`Success: ${response.razorpay_payment_id} , subsriptionid: ${subid}`);
               }).catch((error) => {
                 // handle failure
@@ -343,38 +335,36 @@ export default function OrgList() {
                   setpayment_response_list({ reason: error.error.reason });
                   console.log(payment_response_list);
                   console.log("payment id called");
-                  setLoadingIndicator(true)
-                  // const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
-                  //   payment_id: error.error.metadata.payment_id,
-                  //   organization_id: organizationId,
-                  // });
-                  // setLoadingIndicator(false)
-                  // res.then((response) => {
-                  //   console.log(response);
-                  //   setLoading(false);
-                  //   if(response.data){
-                  //   if (response.data.is_payment_response_sent_succefull) {
-                  //     setpayment_response_list(
-                  //       response.data.generate_reciept_data[0]
-                  //     );
-                  //     setPaymentSuccessfull(
-                  //       response.data.is_payment_response_sent_succefull
-                  //     );
-                  //     setReceiptVisible(true)
-                  //     // setLoading(false);
-                  //   }}
-                  //   console.log(error.error.metadata.payment_id)
-                  //   // console.log(payment_response_list);
-                  // });
-                  // res.catch((err) => {
-                  //   // console.log(err);
-                  //   if (err.isexception) {
-                  //     setPaymentSuccessfull(
-                  //       response.data.is_payment_response_sent_succefull
-                  //     );
-                  //     // console.log(err.exceptionmessage);
-                  //   }
-                  // });
+                  const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+                    payment_id: error.error.metadata.payment_id,
+                    organization_id: organizationId,
+                  });
+                  res.then((response) => {
+                    console.log(response);
+                    setLoading(false);
+                    if(response.data){
+                    if (response.data.is_payment_response_sent_succefull) {
+                      setpayment_response_list(
+                        response.data.generate_reciept_data[0]
+                      );
+                      setPaymentSuccessfull(
+                        response.data.is_payment_response_sent_succefull
+                      );
+                      setReceiptVisible(true)
+                      // setLoading(false);
+                    }}
+                    console.log(error.error.metadata.payment_id)
+                    // console.log(payment_response_list);
+                  });
+                  res.catch((err) => {
+                    // console.log(err);
+                    if (err.isexception) {
+                      setPaymentSuccessfull(
+                        response.data.is_payment_response_sent_succefull
+                      );
+                      // console.log(err.exceptionmessage);
+                    }
+                  });
                   console.log("payment will be failed ");
                 
               });
@@ -391,13 +381,11 @@ export default function OrgList() {
         });
       }
     } else {
-      setLoadingIndicator(true)
       const response = ApiBackendRequest(`${NATIVE_API_URL}/create/subscription/id/`, {
         
         organization_id: organizationId,
         plan_id: planId,
       });
-      setLoadingIndicator(false)
       if(response)
       response.then((response) => {
         console.log(response)
@@ -439,37 +427,36 @@ export default function OrgList() {
               console.log("payment successfull ");
               setLoading(true);
               console.log(response,'inside')
-              setLoadingIndicator(true)
-              // const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
-              //   payment_id: response.razorpay_payment_id,
-              //   subscription_id: response.razorpay_subscription_id,
+              const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
+                payment_id: response.razorpay_payment_id,
+                subscription_id: response.razorpay_subscription_id,
                 
-              //   organization_id: organizationId,
-              // });
-              // setLoadingIndicator(false)
-              // res.then((response) => {
-              //   console.log(response);
-              //   setLoading(false);
-              //   if (response.data.is_payment_response_sent_succefull) {
-              //     setpayment_response_list(
-              //       response.data.generate_reciept_data[0]
-              //     );
-              //     setPaymentSuccessfull(
-              //       response.data.is_payment_response_sent_succefull
-              //     );
-              //     setReceiptVisible(true)
-              //   }
-              //   console.log(payment_response_list);
-              // });
-              // res.catch((err) => {
-              //   console.log(err);
-              //   if (err.isexception) {
-              //     setPaymentSuccessfull(
-              //       response.data.is_payment_response_sent_succefull
-              //     );
-              //     console.log(err.exceptionmessage);
-              //   }
-              // });
+                organization_id: organizationId,
+              });
+              setLoadingIndicator(false)
+              res.then((response) => {
+                console.log(response);
+                setLoading(false);
+                if (response.data.is_payment_response_sent_succefull) {
+                  setpayment_response_list(
+                    response.data.generate_reciept_data[0]
+                  );
+                  setPaymentSuccessfull(
+                    response.data.is_payment_response_sent_succefull
+                  );
+                  setReceiptVisible(true)
+                }
+                console.log(payment_response_list);
+              });
+              res.catch((err) => {
+                console.log(err);
+                if (err.isexception) {
+                  setPaymentSuccessfull(
+                    response.data.is_payment_response_sent_succefull
+                  );
+                  console.log(err.exceptionmessage);
+                }
+              });
               alert(`Success: ${response.razorpay_payment_id},subscription id ${subid}`);
             }).catch((error) => {
               // handle failure
@@ -486,12 +473,10 @@ export default function OrgList() {
                 setpayment_response_list({ reason: error.error.reason });
                 console.log(payment_response_list);
                 console.log("payment id called");
-                setLoadingIndicator(true)
                 const res = ApiBackendRequest(`${NATIVE_API_URL}/verify/payment/`, {
                   payment_id: error.error.metadata.payment_id,
                   organization_id: organizationId,
                 });
-                setLoadingIndicator(false)
                 res.then((response) => {
                   console.log(response);
                   setLoading(false);
@@ -504,7 +489,7 @@ export default function OrgList() {
                       response.data.is_payment_response_sent_succefull
                     );
                     setReceiptVisible(true)
-                    // setLoading(false);
+                    setLoading(false);
                   }}
                   // console.log(payment_response_list);
                 });

@@ -137,10 +137,12 @@ export default function OrgRegistration() {
             editdata,
           );
           if (res.data.organization_editable_data_send_succesfull) {
-            setEditableData(previewOrgData => ({
-              ...previewOrgData,
+            // console.log(res.data.organization_list[0],'orginal data from api')
+            setOrgdata(previewOrgData => ({
+              ...previewOrgData,  
               ...res.data.organization_list[0],
             }));
+            // console.log(Orgdata,'data set in form')
             setFileUrl(res.data.organization_list[0].organization_image);
             setFileLogoName(
               getFileNameFromUrl(
@@ -189,7 +191,7 @@ export default function OrgRegistration() {
             <Picker.Item
               key={key}
               label={data[key].Name}
-              value={key}
+              value={data[key].StateId}
               style={styles.pickerItem}
             />,
           );
@@ -223,9 +225,10 @@ export default function OrgRegistration() {
             <Picker.Item
               key={key}
               label={data[key].Name}
-              value={key}
+              value={data[key].CityId}
               style={styles.pickerItem}
             />,
+            
           );
         }
       });
@@ -235,99 +238,42 @@ export default function OrgRegistration() {
     [citydata],
   );
 
-  // const populateDropDown = useCallback(data => {
-  //   var tempList = [];
-  //   if (!editOrgEnabled) {
-  //     tempList.push(
-  //       <Picker.Item
-  //         key="placeholder"
-  //         label="Select Option"
-  //         value="placeholder"
-  //         style={styles.pickerItem}
-  //         color="#535C68"
-  //       />,
-  //     );
-  //   }
-  //   Object.keys(data).forEach(function (key, index) {
-  //     tempList.push(
-  //       <Picker.Item
-  //       selectedValue={Orgdata.document_type_id==key}
-  //         label={data[key].Name}
-  //         value={key}
-  //         style={styles.pickerItem}
-  //       />,
-  //     );
-  //   });
-  //   return tempList;
-  // }, []);
-
-  
   const populateDropDown = useCallback(data => {
     var tempList = [];
-    var ids = {
-      sector_id : editableData.sector_id,
-      listed_id : editableData.listed_id,
-    }
-    if (editOrgEnabled) {
-      for (const id of Object.values(ids)) {
-        Object.keys(data).forEach((key, index) => {
-          if (key == id) {
-            console.log(id)
-            console.log({
-              "key" : key,
-              'label' : data[key].Name, 
-              "value" : key
-            })
-              tempList.push(
-                  <Picker.Item
-                      key={`item-${key}`}  // Unique key based on the id
-                      label={data[key].Name}
-                      value={key}
-                      style={styles.pickerItem}
-                  />
-              );
-
-          }
-        })
-        
-      }
-    } else {
-          tempList.push(
-            <Picker.Item
-              key="placeholder"
-              label="Select Option"
-              value="placeholder"
-              style={styles.pickerItem}
-              color="#535C68"
-            />,
-          );
-        }
-        
-      
-    Object.keys(data).forEach((key, index) => {
+    if (!editOrgEnabled) {
       tempList.push(
         <Picker.Item
-          key={`item-${key}-${index}`}  // Unique key combining key and index
-          label={data[key].Name}
-          value={key}
+          key="placeholder"
+          label="Select Option"
+          value="placeholder"
           style={styles.pickerItem}
+          color="#535C68"
         />,
       );
+    }
+    Object.keys(data).forEach(function (key, index) {
+      tempList.push(
+        <Picker.Item
+        selectedValue={Orgdata.document_type_id==key}
+          label={data[key].Name}
+          value={data[key].SectorTypeId||data[key].ListedTypeId||data[key].CityId||data[key].StateId||data[key].CountryId}
+          style={styles.pickerItem}
+        />,
+        // console.log(data[key])
+      );
     });
-
     return tempList;
-  }, [editOrgEnabled]);
-  
- 
+  }, []);
+
 
   const handleChange = (name, value) => {
     setOrgdata(prevData => ({...prevData, [name]: value}));
     if (name == 'country_id') {
       populateState(value);
-      console.log('country id', value);
+      // console.log('country id', value);
     } else if (name == 'state_id') {
       populateCity(value);
-      console.log('state id', value);
+      // console.log('state id', value);
     }
 
     setFormErrors(prevErrors => ({...prevErrors, [name]: ''}));
@@ -340,7 +286,7 @@ export default function OrgRegistration() {
       });
       setOrgdata(prev => ({...prev, [name]: doc}));
     } catch (error) {
-      console.log('error selectimage', error);
+      // console.log('error selectimage', error);
     }
   };
 
@@ -397,7 +343,6 @@ export default function OrgRegistration() {
     setUrl(url);
     setShowImage(true);
   };
-  console.log('sector in form', Orgdata.sector_id);
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -589,6 +534,7 @@ export default function OrgRegistration() {
                     onValueChange={itemValue =>
                       handleChange('sector_id', itemValue)
                     }>
+                      {/* {console.log(Orgdata.sector_id,'sectore id=')} */}
                     {sectortype }
                   </Picker>
                 </View>
@@ -609,6 +555,7 @@ export default function OrgRegistration() {
                     onValueChange={itemValue =>
                       handleChange('listed_id', itemValue)
                     }>
+                       {/* {console.log(Orgdata.listed_id,'Listed id=')} */}
                     {listedtype}
                   </Picker>
                 </View>
@@ -668,7 +615,7 @@ export default function OrgRegistration() {
                 </View>
                 <View style={styles.option}>
                   <Picker
-                    selectedValue={Orgdata.number_of_employee || editableData.number_of_employee}
+                    selectedValue={Orgdata.number_of_employee }
                     onValueChange={itemValue =>
                       handleChange('number_of_employee', itemValue)
                     }>
@@ -719,7 +666,8 @@ export default function OrgRegistration() {
                   </Text>
                 )}
               </View>
-              <View>
+              {!editOrgEnabled &&
+              (<View>
                 <View style={customStyle.lableContainer}>
                   <Text style={customStyle.lableHeading}>
                     Referral Number (Optional)
@@ -733,7 +681,8 @@ export default function OrgRegistration() {
                     onChangeText={text => handleChange('referralNumber', text)}
                   />
                 </View>
-              </View>
+              </View>)
+              }
               <Text style={styles.addHeading}>Address</Text>
               <View>
                 <View style={customStyle.lableContainer}>
@@ -765,6 +714,7 @@ export default function OrgRegistration() {
                       handleChange('country_id', itemValue)
                     }>
                     {country}
+                    {/* {console.log(Orgdata.country_id,'country id=')} */}
                   </Picker>
                 </View>
                 {formsErrors.country_id && (
@@ -784,6 +734,7 @@ export default function OrgRegistration() {
                     }
                     enabled={isstate}>
                     {state}
+                    {/* {console.log(Orgdata.state_id,'state_id id=')} */}
                   </Picker>
                 </View>
                 {formsErrors.state_id && (
@@ -802,7 +753,9 @@ export default function OrgRegistration() {
                       handleChange('city_id', itemValue)
                     }
                     enabled={iscity}>
+                    {}
                     {city}
+                    {/* {console.log(Orgdata.city_id,'city_id id=')} */}
                   </Picker>
                 </View>
                 {formsErrors.city_id && (

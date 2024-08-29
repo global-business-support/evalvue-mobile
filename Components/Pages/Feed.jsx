@@ -15,7 +15,7 @@ import { NATIVE_API_URL } from '@env';
 import ReviewShimmerUI from '../ShimmerUI/ReviewShimmerUI';
 import OfferPoster from '../Othercomponent/OfferPosters'; // Import OfferPoster
 import { getBooleanData, getStringData } from '../../API-Management/mmkv-Storage';
-
+import video from '../../assets/Offervideo.mp4'
 export default function Feed({ navigation }) {
   const [feeds, setFeeds] = useState([]);
   const [error, setError] = useState('');
@@ -129,8 +129,8 @@ export default function Feed({ navigation }) {
         }
       />
       <OfferPoster
-        mediaUri="https://i.pinimg.com/564x/48/59/06/485906bb4f7f0b8f6957928796fdf6a9.jpg"
-        type="image" 
+        mediaUri={video}
+        type="video" 
         visible={isOfferVisible}
         onClose={toggleOfferVisibility}
       />
