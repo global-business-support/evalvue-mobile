@@ -26,7 +26,7 @@ const OfferPoster = ({ mediaUri, type, visible, onClose }) => {
             source={{ uri: mediaUri }} // Ensure uri is correct
             style={styles.media}
             controls={false}
-            resizeMode="cover"
+            resizeMode="stretch"
             muted={true}
             repeat={true}
           />
@@ -65,9 +65,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   promoContainer: {
-    width: width * 0.9,
-    maxHeight: 400,
-    backgroundColor: 'white',
+    width: width * 0.8,
+    maxHeight: 500,
+    // backgroundColor: 'white',
     borderRadius: 10,
     overflow: 'hidden',
     position: 'relative',
@@ -86,11 +86,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   closeButtonText: {
-    color: '#5e3aeb',
+    color: 'white',
     fontWeight: 'bold',
   },
   errorText: {
-    padding: 20,
+    // padding: 20,
     textAlign: 'center',
     color: 'red',
     fontSize: 16,
